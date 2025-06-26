@@ -1,0 +1,360 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// User & Role Models
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts  Account[]
+  sessions  Session[]
+  roles     UserRole[]
+  orders    Order[]
+  cartItems CartItem[]
+  wishlist  Wishlist[]
+  addresses Address[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String     @id @default(cuid())
+  name        String     @unique // 
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  users       UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+// Address Model
+model Address {
+  id           String  @id @default(cuid())
+  userId       String
+  type         String  @default("SHIPPING") // SHIPPING, BILLING
+  firstName    String
+  lastName     String
+  company      String?
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  postalCode   String
+  country      String  @default("US")
+  phone        String?
+  isDefault    Boolean @default(false)
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("addresses")
+}
+
+// Category Models
+model Category {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  image          String?
+  parentId       String?
+  isActive       Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
+
+  @@map("categories")
+}
+
+// Product Models
+model Product {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  description       String?
+  shortDescription  String?
+  sku               String   @unique
+  price             Decimal  @db.Decimal(10, 2)
+  comparePrice      Decimal? @db.Decimal(10, 2) // Original price for discounts
+  costPrice         Decimal? @db.Decimal(10, 2) // Cost for profit calculations
+  trackQuantity     Boolean  @default(true)
+  quantity          Int      @default(0)
+  lowStockThreshold Int      @default(5)
+  weight            Decimal? @db.Decimal(8, 2)
+  dimensions        String? // JSON string: {"length": 10, "width": 5, "height": 3}
+
+  // Product options
+  allowCustomPrint Boolean  @default(false)
+  printPrice       Decimal? @db.Decimal(10, 2)
+
+  // SEO & Meta
+  seoTitle       String?
+  seoDescription String?
+  metaKeywords   String?
+
+  // Status
+  status     ProductStatus @default(DRAFT)
+  isActive   Boolean       @default(true)
+  isFeatured Boolean       @default(false)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id])
+  images        ProductImage[]
+  priceTiers    PriceTier[]
+  orderItems    OrderItem[]
+  cartItems     CartItem[]
+  wishlistItems Wishlist[]
+
+  @@map("products")
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  altText   String?
+  sortOrder Int     @default(0)
+  isMain    Boolean @default(false)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// Pricing Tiers for Bulk Discounts
+model PriceTier {
+  id            String  @id @default(cuid())
+  productId     String
+  minQuantity   Int
+  discountType  String  @default("PERCENTAGE") // PERCENTAGE, FIXED_AMOUNT
+  discountValue Decimal @db.Decimal(10, 2)
+  isActive      Boolean @default(true)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, minQuantity])
+  @@map("price_tiers")
+}
+
+// Cart Models
+model CartItem {
+  id          String  @id @default(cuid())
+  userId      String?
+  sessionId   String? // For guest users
+  productId   String
+  quantity    Int
+  customPrint Boolean @default(false)
+  printText   String?
+  unitPrice   Decimal @db.Decimal(10, 2)
+  totalPrice  Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("cart_items")
+}
+
+// Wishlist Model
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String? // For guest users
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@unique([sessionId, productId])
+  @@map("wishlist")
+}
+
+// Order Models
+model Order {
+  id            String        @id @default(cuid())
+  orderNumber   String        @unique
+  userId        String?
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(AWAITING_PAYMENT)
+
+  // Customer Info (for guest orders)
+  customerEmail String
+  customerPhone String?
+  customerName  String
+
+  // Pricing
+  subtotal       Decimal @db.Decimal(10, 2)
+  taxAmount      Decimal @default(0) @db.Decimal(10, 2)
+  shippingAmount Decimal @default(0) @db.Decimal(10, 2)
+  discountAmount Decimal @default(0) @db.Decimal(10, 2)
+  totalAmount    Decimal @db.Decimal(10, 2)
+
+  // Shipping
+  shippingAddressId String?
+  billingAddressId  String?
+  shippingMethod    String?
+  trackingNumber    String?
+
+  // Payment Info
+  paymentMethod    String? // BANK_TRANSFER, WHATSAPP, etc.
+  paymentReference String?
+  bankAccountInfo  String? // JSON string with bank details
+
+  // Notes
+  customerNotes String?
+  adminNotes    String?
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  shippedAt   DateTime?
+  deliveredAt DateTime?
+
+  // Relations
+  user            User?       @relation(fields: [userId], references: [id])
+  shippingAddress Address?    @relation(fields: [shippingAddressId], references: [id])
+  items           OrderItem[]
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  AWAITING_PAYMENT
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String
+  quantity    Int
+  customPrint Boolean @default(false)
+  printText   String?
+  unitPrice   Decimal @db.Decimal(10, 2)
+  totalPrice  Decimal @db.Decimal(10, 2)
+
+  // Product snapshot (in case product details change)
+  productName  String
+  productSku   String
+  productImage String?
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// System Settings (for admin configuration)
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  type  String @default("STRING") // STRING, NUMBER, BOOLEAN, JSON
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
