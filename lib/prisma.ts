@@ -20,7 +20,8 @@ function createPrismaClient() {
   const adapter = new PrismaNeon({ connectionString });
 
   // Create new PrismaClient with the adapter
-  return new PrismaClient({ adapter });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return new PrismaClient({ adapter } as any);
 }
 
 // Use existing Prisma instance if available, otherwise create a new one

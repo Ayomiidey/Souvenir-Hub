@@ -4,7 +4,11 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { SignInData, SignUpFormData, signUpFormSchema } from "@/lib/validators";
+import {
+  SignInData,
+  SignUpFormData,
+  signUpFormSchema,
+} from "@/lib/validations/auth";
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false);
