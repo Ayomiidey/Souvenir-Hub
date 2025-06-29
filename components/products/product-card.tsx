@@ -90,7 +90,7 @@ export function ProductCard({ product }: ProductCardProps) {
       toast.success("Added to cart!");
     } catch (error) {
       toast.error("Failed to add to cart");
-      console.log(error);
+      console.log("Add to Cart error:", error);
     } finally {
       setIsAddingToCart(false);
     }

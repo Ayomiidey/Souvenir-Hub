@@ -411,7 +411,6 @@ export function ProductDetail({
             </div>
           </div>
 
-          {/* Features */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t">
             <div className="text-center space-y-2">
               <Truck className="h-6 w-6 mx-auto text-primary" />
