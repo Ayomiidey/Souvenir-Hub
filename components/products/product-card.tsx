@@ -21,13 +21,13 @@ interface Product {
   id: string;
   name: string;
   slug: string;
-  price: number;
-  comparePrice?: number;
+  price: number | string; // Handle both number and string types
+  comparePrice?: number | string;
   images: { url: string; altText: string }[];
   category: { name: string };
   quantity: number;
   allowCustomPrint: boolean;
-  printPrice?: number;
+  printPrice?: number | string;
   sku: string;
 }
 
@@ -40,16 +40,29 @@ export function ProductCard({ product }: ProductCardProps) {
   const wishlistItems = useAppSelector((state) => state.wishlist.items);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
+  // Convert price to number if it's a string
+  const price =
+    typeof product.price === "string"
+      ? Number.parseFloat(product.price)
+      : product.price;
+  const comparePrice = product.comparePrice
+    ? typeof product.comparePrice === "string"
+      ? Number.parseFloat(product.comparePrice)
+      : product.comparePrice
+    : undefined;
+  const printPrice = product.printPrice
+    ? typeof product.printPrice === "string"
+      ? Number.parseFloat(product.printPrice)
+      : product.printPrice
+    : undefined;
+
   const isInWishlist = wishlistItems.some(
     (item) => item.productId === product.id
   );
   const isOutOfStock = product.quantity <= 0;
-  const hasDiscount =
-    product.comparePrice && product.comparePrice > product.price;
+  const hasDiscount = comparePrice && comparePrice > price;
   const discountPercentage = hasDiscount
-    ? Math.round(
-        ((product.comparePrice! - product.price) / product.comparePrice!) * 100
-      )
+    ? Math.round(((comparePrice! - price) / comparePrice!) * 100)
     : 0;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -65,7 +78,7 @@ export function ProductCard({ product }: ProductCardProps) {
           productId: product.id,
           name: product.name,
           slug: product.slug,
-          price: product.price,
+          price: price,
           image:
             product.images[0]?.url || "/placeholder.svg?height=300&width=300",
           quantity: 1,
@@ -76,8 +89,8 @@ export function ProductCard({ product }: ProductCardProps) {
       );
       toast.success("Added to cart!");
     } catch (error) {
-      console.log(error);
       toast.error("Failed to add to cart");
+      console.log(error);
     } finally {
       setIsAddingToCart(false);
     }
@@ -97,7 +110,7 @@ export function ProductCard({ product }: ProductCardProps) {
           productId: product.id,
           name: product.name,
           slug: product.slug,
-          price: product.price,
+          price: price,
           image:
             product.images[0]?.url || "/placeholder.svg?height=300&width=300",
           sku: product.sku,
@@ -108,10 +121,16 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const handleViewProduct = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = `/products/${product.slug}`;
+  };
+
   return (
     <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300">
-      <Link href={`/products/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="relative aspect-square overflow-hidden bg-muted cursor-pointer">
+        <Link href={`/products/${product.slug}`}>
           <Image
             src={
               product.images[0]?.url || "/placeholder.svg?height=300&width=300"
@@ -120,61 +139,64 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover transition-transform group-hover:scale-105"
           />
+        </Link>
 
-          {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {hasDiscount && (
-              <Badge variant="destructive" className="text-xs">
-                -{discountPercentage}%
-              </Badge>
-            )}
-            {isOutOfStock && (
-              <Badge variant="secondary" className="text-xs">
-                Out of Stock
-              </Badge>
-            )}
-            {product.allowCustomPrint && (
-              <Badge variant="outline" className="text-xs bg-white/90">
-                Custom Print
-              </Badge>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button
-              size="icon"
-              variant="secondary"
-              className="h-8 w-8"
-              onClick={handleWishlistToggle}
-            >
-              <Heart
-                className={`h-4 w-4 ${
-                  isInWishlist ? "fill-red-500 text-red-500" : ""
-                }`}
-              />
-            </Button>
-            <Button size="icon" variant="secondary" className="h-8 w-8" asChild>
-              <Link href={`/products/${product.slug}`}>
-                <Eye className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-
-          {/* Quick Add to Cart */}
-          <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button
-              className="w-full"
-              size="sm"
-              onClick={handleAddToCart}
-              disabled={isOutOfStock || isAddingToCart}
-            >
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              {isAddingToCart ? "Adding..." : "Add to Cart"}
-            </Button>
-          </div>
+        {/* Badges */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
+          {hasDiscount && (
+            <Badge variant="destructive" className="text-xs">
+              -{discountPercentage}%
+            </Badge>
+          )}
+          {isOutOfStock && (
+            <Badge variant="secondary" className="text-xs">
+              Out of Stock
+            </Badge>
+          )}
+          {product.allowCustomPrint && (
+            <Badge variant="outline" className="text-xs bg-white/90">
+              Custom Print
+            </Badge>
+          )}
         </div>
-      </Link>
+
+        {/* Action Buttons */}
+        <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            size="icon"
+            variant="secondary"
+            className="h-8 w-8"
+            onClick={handleWishlistToggle}
+          >
+            <Heart
+              className={`h-4 w-4 ${
+                isInWishlist ? "fill-red-500 text-red-500" : ""
+              }`}
+            />
+          </Button>
+          <Button
+            size="icon"
+            variant="secondary"
+            className="h-8 w-8"
+            onClick={handleViewProduct}
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Quick Add to Cart */}
+        <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            className="w-full"
+            size="sm"
+            onClick={handleAddToCart}
+            disabled={isOutOfStock || isAddingToCart}
+          >
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            {isAddingToCart ? "Adding..." : "Add to Cart"}
+          </Button>
+        </div>
+      </div>
 
       <CardContent className="p-4">
         <div className="space-y-2">
@@ -187,16 +209,16 @@ export function ProductCard({ product }: ProductCardProps) {
             </h3>
           </Link>
           <div className="flex items-center gap-2">
-            <span className="font-semibold">${product.price.toFixed(2)}</span>
+            <span className="font-semibold">${price.toFixed(2)}</span>
             {hasDiscount && (
               <span className="text-sm text-muted-foreground line-through">
-                ${product.comparePrice!.toFixed(2)}
+                ${comparePrice!.toFixed(2)}
               </span>
             )}
           </div>
-          {product.allowCustomPrint && product.printPrice && (
+          {product.allowCustomPrint && printPrice && (
             <div className="text-xs text-muted-foreground">
-              + ${product.printPrice.toFixed(2)} for custom print
+              + ${printPrice.toFixed(2)} for custom print
             </div>
           )}
         </div>

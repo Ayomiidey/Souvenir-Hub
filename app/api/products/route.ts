@@ -92,8 +92,20 @@ export async function GET(request: NextRequest) {
       prisma.product.count({ where }),
     ]);
 
+    // Convert Decimal prices to numbers
+    const formattedProducts = products.map((product) => ({
+      ...product,
+      price: Number(product.price),
+      comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
+      printPrice: product.printPrice ? Number(product.printPrice) : null,
+      priceTiers: product.priceTiers.map((tier) => ({
+        ...tier,
+        discountValue: Number(tier.discountValue),
+      })),
+    }));
+
     return NextResponse.json({
-      products,
+      products: formattedProducts,
       pagination: {
         page,
         limit,
