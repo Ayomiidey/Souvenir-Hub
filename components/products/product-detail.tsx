@@ -95,7 +95,7 @@ export function ProductDetail({
     : 0;
 
   const currentPrice = price + (customPrint ? printPrice || 0 : 0);
-  const totalPrice = currentPrice * quantity;
+  // const totalPrice = currentPrice * quantity;
 
   // Get applicable price tier
   const applicableTier = product.priceTiers
