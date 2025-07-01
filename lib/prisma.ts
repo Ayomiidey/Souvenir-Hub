@@ -1,35 +1,72 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
-import { neonConfig } from "@neondatabase/serverless";
-import ws from "ws"; // Import synchronously
 
-// Configure WebSocket for Neon - MUST happen before any connection attempts
-neonConfig.webSocketConstructor = ws;
+// Type assertion approach if types are still not working
+declare global {
+  var __prisma: PrismaClient | undefined;
+}
 
-// Prevent multiple instances in development
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
-
-// Initialize Prisma Client with Neon adapter
 function createPrismaClient() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error("DATABASE_URL environment variable is not set");
   }
 
-  // Create adapter with proper configuration
   const adapter = new PrismaNeon({ connectionString });
 
-  // Create new PrismaClient with the adapter
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return new PrismaClient({ adapter } as any);
+  // Use type assertion if needed
+  const client = new PrismaClient({
+    adapter: adapter as any,
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  });
+
+  return client;
 }
 
-// Use existing Prisma instance if available, otherwise create a new one
-const prisma = globalForPrisma.prisma || createPrismaClient();
+const prisma = globalThis.__prisma ?? createPrismaClient();
 
-// Save reference to prisma client on the global object in development
 if (process.env.NODE_ENV === "development") {
-  globalForPrisma.prisma = prisma;
+  globalThis.__prisma = prisma;
 }
 
 export default prisma;
+
+// import { PrismaClient } from "@prisma/client";
+// import { PrismaNeon } from "@prisma/adapter-neon";
+// import { neonConfig } from "@neondatabase/serverless";
+// import ws from "ws"; // Import synchronously
+
+// // Configure WebSocket for Neon - MUST happen before any connection attempts
+// neonConfig.webSocketConstructor = ws;
+
+// // Prevent multiple instances in development
+// const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+
+// // Initialize Prisma Client with Neon adapter
+// function createPrismaClient() {
+//   const connectionString = process.env.DATABASE_URL;
+//   if (!connectionString) {
+//     throw new Error("DATABASE_URL environment variable is not set");
+//   }
+
+//   // Create adapter with proper configuration
+//   const adapter = new PrismaNeon({ connectionString });
+
+//   // Create new PrismaClient with the adapter
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   return new PrismaClient({ adapter } as any);
+// }
+
+// // Use existing Prisma instance if available, otherwise create a new one
+// const prisma = globalForPrisma.prisma || createPrismaClient();
+
+// // Save reference to prisma client on the global object in development
+// if (process.env.NODE_ENV === "development") {
+//   globalForPrisma.prisma = prisma;
+// }
+
+// export default prisma;
