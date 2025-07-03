@@ -23,6 +23,7 @@ interface Product {
 export function BestSellers() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetchBestSellers();
@@ -31,10 +32,19 @@ export function BestSellers() {
   const fetchBestSellers = async () => {
     try {
       const response = await fetch("/api/products?featured=true&limit=8");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
-      setProducts(data.products || []);
+
+      // Ensure products is always an array
+      setProducts(Array.isArray(data.products) ? data.products : []);
     } catch (error) {
       console.error("Error fetching best sellers:", error);
+      setError(true);
+      setProducts([]); // Ensure it's always an array
     } finally {
       setLoading(false);
     }
@@ -64,6 +74,22 @@ export function BestSellers() {
     );
   }
 
+  if (error) {
+    return (
+      <section className="space-y-8">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold">Best Sellers</h2>
+          <p className="text-muted-foreground">
+            Unable to load products at the moment
+          </p>
+          <Button onClick={fetchBestSellers} variant="outline">
+            Try Again
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-8">
       <div className="text-center space-y-4">
@@ -74,20 +100,30 @@ export function BestSellers() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {products.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
 
-      <div className="text-center">
-        <Button asChild variant="outline" size="lg">
-          <Link href="/products">
-            View All Products
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
-      </div>
+          <div className="text-center">
+            <Button asChild variant="outline" size="lg">
+              <Link href="/products">
+                View All Products
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">
+            No featured products available at the moment.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

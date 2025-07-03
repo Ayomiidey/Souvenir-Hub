@@ -5,7 +5,7 @@ import type React from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { Search, ShoppingCart, Heart, User, Menu } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +16,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetHeader,
+} from "@/components/ui/sheet";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
 import { toggleCart } from "@/store/slices/cartSlice";
 import { toggleWishlist } from "@/store/slices/wishlistSlice";
@@ -33,6 +39,7 @@ export function Header() {
   const searchQuery = useAppSelector((state) => state.filters.search);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +52,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center">
+      <div className="container flex h-16 items-center px-4">
         {/* Mobile Menu Button */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
@@ -55,7 +62,10 @@ export function Header() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-            <nav className="flex flex-col gap-4">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-4 mt-6">
               <Link
                 href="/"
                 className="flex items-center space-x-2"
@@ -66,31 +76,52 @@ export function Header() {
               <div className="flex flex-col space-y-3">
                 <Link
                   href="/products"
-                  className="text-sm font-medium"
+                  className="text-sm font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   All Products
                 </Link>
                 <Link
                   href="/categories/t-shirts-apparel"
-                  className="text-sm font-medium"
+                  className="text-sm font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   T-Shirts & Apparel
                 </Link>
                 <Link
                   href="/categories/mugs-drinkware"
-                  className="text-sm font-medium"
+                  className="text-sm font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Mugs & Drinkware
                 </Link>
                 <Link
                   href="/categories/home-decor"
-                  className="text-sm font-medium"
+                  className="text-sm font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Home Decor
+                </Link>
+                <Link
+                  href="/categories/keychains"
+                  className="text-sm font-medium py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Keychains
+                </Link>
+                <Link
+                  href="/categories/phone-cases"
+                  className="text-sm font-medium py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Phone Cases
+                </Link>
+                <Link
+                  href="/categories/stationery"
+                  className="text-sm font-medium py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Stationery
                 </Link>
               </div>
             </nav>
@@ -98,10 +129,8 @@ export function Header() {
         </Sheet>
 
         {/* Logo */}
-        <Link href="/" className="mr-6 flex items-center space-x-2">
-          <span className="hidden font-bold sm:inline-block text-xl">
-            SouvenirShop
-          </span>
+        <Link href="/" className="mr-4 flex items-center space-x-2 md:mr-6">
+          <span className="font-bold text-lg sm:text-xl">SouvenirShop</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -109,8 +138,8 @@ export function Header() {
           <CategoryMegaMenu />
         </nav>
 
-        {/* Search Bar */}
-        <div className="flex flex-1 items-center justify-end space-x-4">
+        {/* Search Bar - Desktop */}
+        <div className="flex flex-1 items-center justify-end space-x-2 sm:space-x-4">
           <form
             onSubmit={handleSearch}
             className="hidden sm:flex items-center space-x-2"
@@ -126,6 +155,21 @@ export function Header() {
               />
             </div>
           </form>
+
+          {/* Mobile Search Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+          >
+            {isMobileSearchOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Search className="h-5 w-5" />
+            )}
+            <span className="sr-only">Toggle search</span>
+          </Button>
 
           {/* Wishlist */}
           <Button
@@ -219,6 +263,24 @@ export function Header() {
           </DropdownMenu>
         </div>
       </div>
+
+      {/* Mobile Search Bar */}
+      {isMobileSearchOpen && (
+        <div className="border-t bg-background p-4 sm:hidden">
+          <form onSubmit={handleSearch} className="flex items-center space-x-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search products..."
+                className="pl-8 w-full"
+                value={searchQuery}
+                onChange={(e) => dispatch(setSearch(e.target.value))}
+              />
+            </div>
+          </form>
+        </div>
+      )}
     </header>
   );
 }

@@ -21,26 +21,27 @@ interface Product {
   id: string;
   name: string;
   slug: string;
-  price: number | string; // Handle both number and string types
-  comparePrice?: number | string;
-  images: { url: string; altText: string }[];
+  price: number | string;
+  comparePrice?: number | string | null;
+  images: { url: string; altText: string | null }[];
   category: { name: string };
   quantity: number;
   allowCustomPrint: boolean;
-  printPrice?: number | string;
+  printPrice?: number | string | null;
   sku: string;
 }
 
 interface ProductCardProps {
   product: Product;
+  viewMode?: "grid" | "list";
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const wishlistItems = useAppSelector((state) => state.wishlist.items);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  // Convert price to number if it's a string
+  // Convert price to number if it's a string, handle null values
   const price =
     typeof product.price === "string"
       ? Number.parseFloat(product.price)
@@ -90,7 +91,7 @@ export function ProductCard({ product }: ProductCardProps) {
       toast.success("Added to cart!");
     } catch (error) {
       toast.error("Failed to add to cart");
-      console.log("Add to Cart error:", error);
+      console.log(error);
     } finally {
       setIsAddingToCart(false);
     }
@@ -121,11 +122,92 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
-  const handleViewProduct = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    window.location.href = `/products/${product.slug}`;
-  };
+  if (viewMode === "list") {
+    return (
+      <Card className="group overflow-hidden border hover:shadow-md transition-all duration-300">
+        <div className="flex flex-col sm:flex-row">
+          <div className="relative aspect-square sm:aspect-[4/3] sm:w-48 overflow-hidden bg-muted">
+            <Link href={`/products/${product.slug}`}>
+              <Image
+                src={
+                  product.images[0]?.url ||
+                  "/placeholder.svg?height=300&width=300"
+                }
+                alt={product.images[0]?.altText || product.name}
+                fill
+                className="object-cover transition-transform group-hover:scale-105"
+              />
+            </Link>
+
+            {/* Badges */}
+            <div className="absolute top-2 left-2 flex flex-col gap-1">
+              {hasDiscount && (
+                <Badge variant="destructive" className="text-xs">
+                  -{discountPercentage}%
+                </Badge>
+              )}
+              {isOutOfStock && (
+                <Badge variant="secondary" className="text-xs">
+                  Out of Stock
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          <CardContent className="flex-1 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between h-full">
+              <div className="space-y-2 flex-1">
+                <div className="text-xs text-muted-foreground">
+                  {product.category.name}
+                </div>
+                <Link href={`/products/${product.slug}`}>
+                  <h3 className="font-medium text-lg hover:text-primary transition-colors line-clamp-2">
+                    {product.name}
+                  </h3>
+                </Link>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-lg">
+                    ${price.toFixed(2)}
+                  </span>
+                  {hasDiscount && (
+                    <span className="text-sm text-muted-foreground line-through">
+                      ${comparePrice!.toFixed(2)}
+                    </span>
+                  )}
+                </div>
+                {product.allowCustomPrint && printPrice && (
+                  <div className="text-xs text-muted-foreground">
+                    + ${printPrice.toFixed(2)} for custom print
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 mt-4 sm:mt-0">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={handleWishlistToggle}
+                >
+                  <Heart
+                    className={`h-4 w-4 ${
+                      isInWishlist ? "fill-red-500 text-red-500" : ""
+                    }`}
+                  />
+                </Button>
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={isOutOfStock || isAddingToCart}
+                >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  {isAddingToCart ? "Adding..." : "Add to Cart"}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300">
@@ -174,13 +256,10 @@ export function ProductCard({ product }: ProductCardProps) {
               }`}
             />
           </Button>
-          <Button
-            size="icon"
-            variant="secondary"
-            className="h-8 w-8"
-            onClick={handleViewProduct}
-          >
-            <Eye className="h-4 w-4" />
+          <Button size="icon" variant="secondary" className="h-8 w-8" asChild>
+            <Link href={`/products/${product.slug}`}>
+              <Eye className="h-4 w-4" />
+            </Link>
           </Button>
         </div>
 

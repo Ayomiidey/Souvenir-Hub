@@ -67,8 +67,11 @@ export async function GET(request: NextRequest) {
         orderBy = { createdAt: "desc" };
         break;
       default:
-        orderBy = { createdAt: "desc" }; // Default to newest for now
+        orderBy = { createdAt: "desc" };
     }
+
+    // Check if database is connected
+    await prisma.$connect();
 
     const [products, total] = await Promise.all([
       prisma.product.findMany({
@@ -115,9 +118,19 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching products:", error);
+
+    // Return empty array instead of error to prevent client crashes
     return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
+      {
+        products: [],
+        pagination: {
+          page: 1,
+          limit: 12,
+          total: 0,
+          pages: 0,
+        },
+      },
+      { status: 200 }
     );
   }
 }

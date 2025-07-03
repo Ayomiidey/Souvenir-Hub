@@ -28,20 +28,19 @@ import {
 } from "@/store/slices/wishlistSlice";
 import { ProductCard } from "./product-card";
 import { toast } from "react-hot-toast";
-
 interface Product {
   id: string;
   name: string;
   slug: string;
-  description: string;
-  shortDescription: string;
+  description: string | null; // Allow null
+  shortDescription: string | null; // Allow null
   sku: string;
   price: number | string;
-  comparePrice?: number | string;
+  comparePrice?: number | string | null; // Allow null
   quantity: number;
   allowCustomPrint: boolean;
-  printPrice?: number | string;
-  images: { url: string; altText: string }[];
+  printPrice?: number | string | null; // Allow null
+  images: { url: string; altText: string | null }[]; // Allow null altText
   category: { name: string; slug: string };
   priceTiers: Array<{
     minQuantity: number;
@@ -69,7 +68,7 @@ export function ProductDetail({
   const [printText, setPrintText] = useState("");
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  // Convert prices to numbers if they're strings
+  // Convert prices to numbers if they're strings, handle null values
   const price =
     typeof product.price === "string"
       ? Number.parseFloat(product.price)
@@ -215,7 +214,7 @@ export function ProductDetail({
             </div>
             <h1 className="text-3xl font-bold">{product.name}</h1>
             <p className="text-muted-foreground mt-2">
-              {product.shortDescription}
+              {product.shortDescription || ""}
             </p>
           </div>
 
@@ -287,7 +286,7 @@ export function ProductDetail({
                     className="rounded"
                   />
                   <Label htmlFor="customPrint" className="font-medium">
-                    Add Custom Print (+${printPrice?.toFixed(2)})
+                    Add Custom Print (+${printPrice?.toFixed(2) || "0.00"})
                   </Label>
                 </div>
 
@@ -411,6 +410,7 @@ export function ProductDetail({
             </div>
           </div>
 
+          {/* Features */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t">
             <div className="text-center space-y-2">
               <Truck className="h-6 w-6 mx-auto text-primary" />

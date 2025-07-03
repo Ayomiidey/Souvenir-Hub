@@ -1,6 +1,7 @@
 import { CartSidebar } from "@/components/cart/cart-sidebar";
 import { Footer } from "@/components/shared/footer";
 import { Header } from "@/components/shared/header";
+import { WishlistSidebar } from "@/components/wishlist/wishlist-sidebar";
 
 export const metadata = {
   title: "Souvenir Hub",
@@ -18,7 +19,7 @@ export default function RootLayout({
       <main className="flex-1">{children}</main>
       <Footer />
       <CartSidebar />
-      {/* <WishlistSidebar /> */}
+      <WishlistSidebar />
     </div>
   );
 }

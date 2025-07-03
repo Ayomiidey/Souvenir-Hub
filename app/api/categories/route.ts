@@ -3,6 +3,9 @@ import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
+    // Check if database is connected
+    await prisma.$connect();
+
     const categories = await prisma.category.findMany({
       where: {
         isActive: true,
@@ -20,9 +23,8 @@ export async function GET() {
     return NextResponse.json(categories);
   } catch (error) {
     console.error("Error fetching categories:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+
+    // Return empty array instead of error to prevent client crashes
+    return NextResponse.json([]);
   }
 }
