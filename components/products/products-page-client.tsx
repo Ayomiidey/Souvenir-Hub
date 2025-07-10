@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ProductCard } from "./product-card";
 import { ProductFilters } from "./products-filter";
 import { Button } from "@/components/ui/button";
@@ -83,11 +83,7 @@ export function ProductsPageClient({
   );
   const currentInStock = searchParams.inStock === "true";
 
-  useEffect(() => {
-    fetchProducts();
-  }, [searchParams]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -114,7 +110,21 @@ export function ProductsPageClient({
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    currentSearch,
+    currentCategory,
+    currentSortBy,
+    currentMinPrice,
+    currentMaxPrice,
+    currentInStock,
+    currentPage,
+    priceRange.min,
+    priceRange.max,
+  ]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const updateFilters = (
     newFilters: Record<string, string | number | boolean>
@@ -133,14 +143,29 @@ export function ProductsPageClient({
       }
     });
 
-    // Reset to page 1 when filters change
-    params.delete("page");
+    // Reset to page 1 when filters change (except when explicitly setting page)
+    if (!newFilters.page) {
+      params.delete("page");
+    }
 
     router.push(`/products?${params.toString()}`);
   };
 
   const handleSortChange = (sortBy: string) => {
     updateFilters({ sortBy });
+  };
+
+  const handleMobileFilterChange = (
+    filters: Record<string, string | number | boolean>
+  ) => {
+    updateFilters(filters);
+    // Auto-close mobile filter sidebar
+    setIsFilterOpen(false);
+  };
+
+  const resetAllFilters = () => {
+    router.push("/products");
+    setIsFilterOpen(false);
   };
 
   return (
@@ -161,6 +186,15 @@ export function ProductsPageClient({
                 <SheetTitle>Filters</SheetTitle>
               </SheetHeader>
               <div className="mt-6">
+                <div className="mb-4">
+                  <Button
+                    variant="outline"
+                    onClick={resetAllFilters}
+                    className="w-full bg-transparent"
+                  >
+                    Reset All Filters
+                  </Button>
+                </div>
                 <ProductFilters
                   categories={categories}
                   priceRange={priceRange}
@@ -171,7 +205,8 @@ export function ProductsPageClient({
                     maxPrice: currentMaxPrice,
                     inStock: currentInStock,
                   }}
-                  onFiltersChange={updateFilters}
+                  onFiltersChange={handleMobileFilterChange}
+                  isMobile={true}
                 />
               </div>
             </SheetContent>
@@ -193,6 +228,7 @@ export function ProductsPageClient({
                 inStock: currentInStock,
               }}
               onFiltersChange={updateFilters}
+              isMobile={false}
             />
           </div>
         </aside>
@@ -288,6 +324,9 @@ export function ProductsPageClient({
               <p className="text-muted-foreground">
                 Try adjusting your filters or search terms.
               </p>
+              <Button className="mt-4" onClick={resetAllFilters}>
+                Clear All Filters
+              </Button>
             </div>
           )}
 

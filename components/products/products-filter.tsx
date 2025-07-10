@@ -1,8 +1,6 @@
 "use client";
 
-import type React from "react";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +27,7 @@ interface ProductFiltersProps {
     inStock: boolean;
   };
   onFiltersChange: (filters: Record<string, string | number | boolean>) => void;
+  isMobile?: boolean;
 }
 
 export function ProductFilters({
@@ -43,6 +42,10 @@ export function ProductFilters({
   ]);
   const [searchInput, setSearchInput] = useState(currentFilters.search);
 
+  useEffect(() => {
+    setSearchInput(currentFilters.search);
+  }, [currentFilters.search]);
+
   const handlePriceChange = (values: number[]) => {
     setLocalPriceRange(values);
     onFiltersChange({
@@ -51,9 +54,24 @@ export function ProductFilters({
     });
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onFiltersChange({ search: searchInput });
+  const handleSearchInputChange = (value: string) => {
+    setSearchInput(value);
+    // Debounce the search
+    const timeoutId = setTimeout(() => {
+      onFiltersChange({ search: value });
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  };
+
+  const handleCategoryChange = (categorySlug: string) => {
+    const newCategory =
+      currentFilters.category === categorySlug ? "" : categorySlug;
+    onFiltersChange({ category: newCategory });
+  };
+
+  const handleInStockChange = (checked: boolean) => {
+    onFiltersChange({ inStock: checked });
   };
 
   const clearAllFilters = () => {
@@ -94,16 +112,16 @@ export function ProductFilters({
           <CardTitle className="text-base">Search</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearchSubmit} className="space-y-2">
+          <div className="space-y-2">
             <Input
               placeholder="Search products..."
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={(e) => handleSearchInputChange(e.target.value)}
             />
-            <Button type="submit" size="sm" className="w-full">
-              Search
-            </Button>
-          </form>
+            <p className="text-xs text-muted-foreground">
+              Search updates automatically as you type
+            </p>
+          </div>
         </CardContent>
       </Card>
 
@@ -118,7 +136,7 @@ export function ProductFilters({
               <Checkbox
                 id="all-categories"
                 checked={!currentFilters.category}
-                onCheckedChange={() => onFiltersChange({ category: "" })}
+                onCheckedChange={() => handleCategoryChange("")}
               />
               <Label htmlFor="all-categories" className="text-sm font-normal">
                 All Categories
@@ -130,14 +148,7 @@ export function ProductFilters({
                   <Checkbox
                     id={category.slug}
                     checked={currentFilters.category === category.slug}
-                    onCheckedChange={() =>
-                      onFiltersChange({
-                        category:
-                          currentFilters.category === category.slug
-                            ? ""
-                            : category.slug,
-                      })
-                    }
+                    onCheckedChange={() => handleCategoryChange(category.slug)}
                   />
                   <Label
                     htmlFor={category.slug}
@@ -157,12 +168,7 @@ export function ProductFilters({
                           id={child.slug}
                           checked={currentFilters.category === child.slug}
                           onCheckedChange={() =>
-                            onFiltersChange({
-                              category:
-                                currentFilters.category === child.slug
-                                  ? ""
-                                  : child.slug,
-                            })
+                            handleCategoryChange(child.slug)
                           }
                         />
                         <Label
@@ -258,9 +264,7 @@ export function ProductFilters({
             <Checkbox
               id="in-stock"
               checked={currentFilters.inStock}
-              onCheckedChange={(checked) =>
-                onFiltersChange({ inStock: checked as boolean })
-              }
+              onCheckedChange={handleInStockChange}
             />
             <Label htmlFor="in-stock" className="text-sm font-normal">
               In Stock Only

@@ -2,32 +2,33 @@
 
 import type React from "react";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Heart, ShoppingCart, Eye } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { useAppDispatch } from "@/hooks/redux";
 import { addToCart } from "@/store/slices/cartSlice";
 import {
   addToWishlist,
   removeFromWishlist,
 } from "@/store/slices/wishlistSlice";
+import { useAppSelector } from "@/hooks/redux";
 import { toast } from "react-hot-toast";
 
 interface Product {
   id: string;
   name: string;
   slug: string;
-  price: number | string;
-  comparePrice?: number | string | null;
+  price: number;
+  comparePrice?: number | null;
   images: { url: string; altText: string | null }[];
   category: { name: string };
   quantity: number;
   allowCustomPrint: boolean;
-  printPrice?: number | string | null;
+  printPrice?: number | null;
   sku: string;
 }
 
@@ -38,48 +39,31 @@ interface ProductCardProps {
 
 export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   const wishlistItems = useAppSelector((state) => state.wishlist.items);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-
-  // Convert price to number if it's a string, handle null values
-  const price =
-    typeof product.price === "string"
-      ? Number.parseFloat(product.price)
-      : product.price;
-  const comparePrice = product.comparePrice
-    ? typeof product.comparePrice === "string"
-      ? Number.parseFloat(product.comparePrice)
-      : product.comparePrice
-    : undefined;
-  const printPrice = product.printPrice
-    ? typeof product.printPrice === "string"
-      ? Number.parseFloat(product.printPrice)
-      : product.printPrice
-    : undefined;
-
   const isInWishlist = wishlistItems.some(
     (item) => item.productId === product.id
   );
-  const isOutOfStock = product.quantity <= 0;
-  const hasDiscount = comparePrice && comparePrice > price;
-  const discountPercentage = hasDiscount
-    ? Math.round(((comparePrice! - price) / comparePrice!) * 100)
-    : 0;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (isOutOfStock) return;
+    if (product.quantity <= 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
 
-    setIsAddingToCart(true);
+    setIsLoading(true);
     try {
       dispatch(
         addToCart({
           productId: product.id,
           name: product.name,
           slug: product.slug,
-          price: price,
+          price: product.price,
           image:
             product.images[0]?.url || "/placeholder.svg?height=300&width=300",
           quantity: 1,
@@ -89,11 +73,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
         })
       );
       toast.success("Added to cart!");
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
       toast.error("Failed to add to cart");
-      console.log(error);
     } finally {
-      setIsAddingToCart(false);
+      setIsLoading(false);
     }
   };
 
@@ -111,7 +95,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           productId: product.id,
           name: product.name,
           slug: product.slug,
-          price: price,
+          price: product.price,
           image:
             product.images[0]?.url || "/placeholder.svg?height=300&width=300",
           sku: product.sku,
@@ -122,186 +106,196 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     }
   };
 
+  const discountPercentage = product.comparePrice
+    ? Math.round(
+        ((product.comparePrice - product.price) / product.comparePrice) * 100
+      )
+    : 0;
+
   if (viewMode === "list") {
     return (
-      <Card className="group overflow-hidden border hover:shadow-md transition-all duration-300">
-        <div className="flex flex-col sm:flex-row">
-          <div className="relative aspect-square sm:aspect-[4/3] sm:w-48 overflow-hidden bg-muted">
-            <Link href={`/products/${product.slug}`}>
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+        <Link href={`/products/${product.slug}`}>
+          <div className="flex flex-col sm:flex-row">
+            <div className="relative w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
               <Image
                 src={
-                  product.images[0]?.url ||
-                  "/placeholder.svg?height=300&width=300"
+                  imageError
+                    ? "/placeholder.svg?height=300&width=300"
+                    : product.images[0]?.url ||
+                      "/placeholder.svg?height=300&width=300"
                 }
                 alt={product.images[0]?.altText || product.name}
                 fill
-                className="object-cover transition-transform group-hover:scale-105"
+                className="object-cover"
+                onError={() => setImageError(true)}
               />
-            </Link>
-
-            {/* Badges */}
-            <div className="absolute top-2 left-2 flex flex-col gap-1">
-              {hasDiscount && (
-                <Badge variant="destructive" className="text-xs">
+              {product.quantity <= 0 && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <Badge variant="destructive">Out of Stock</Badge>
+                </div>
+              )}
+              {discountPercentage > 0 && (
+                <Badge className="absolute top-2 left-2 bg-red-500">
                   -{discountPercentage}%
                 </Badge>
               )}
-              {isOutOfStock && (
-                <Badge variant="secondary" className="text-xs">
-                  Out of Stock
-                </Badge>
-              )}
             </div>
-          </div>
 
-          <CardContent className="flex-1 p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between h-full">
-              <div className="space-y-2 flex-1">
-                <div className="text-xs text-muted-foreground">
-                  {product.category.name}
-                </div>
-                <Link href={`/products/${product.slug}`}>
-                  <h3 className="font-medium text-lg hover:text-primary transition-colors line-clamp-2">
+            <CardContent className="flex-1 p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between h-full">
+                <div className="flex-1">
+                  <Badge variant="secondary" className="mb-2">
+                    {product.category.name}
+                  </Badge>
+                  <h3 className="font-semibold text-lg mb-2 line-clamp-2">
                     {product.name}
                   </h3>
-                </Link>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-lg">
-                    ${price.toFixed(2)}
-                  </span>
-                  {hasDiscount && (
-                    <span className="text-sm text-muted-foreground line-through">
-                      ${comparePrice!.toFixed(2)}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xl font-bold">
+                      ${product.price.toFixed(2)}
                     </span>
-                  )}
-                </div>
-                {product.allowCustomPrint && printPrice && (
-                  <div className="text-xs text-muted-foreground">
-                    + ${printPrice.toFixed(2)} for custom print
+                    {product.comparePrice && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        ${product.comparePrice.toFixed(2)}
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
+                  <p className="text-sm text-muted-foreground">
+                    {product.quantity > 0
+                      ? `${product.quantity} in stock`
+                      : "Out of stock"}
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-2 mt-4 sm:mt-0">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={handleWishlistToggle}
-                >
-                  <Heart
-                    className={`h-4 w-4 ${
-                      isInWishlist ? "fill-red-500 text-red-500" : ""
-                    }`}
-                  />
-                </Button>
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={isOutOfStock || isAddingToCart}
-                >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  {isAddingToCart ? "Adding..." : "Add to Cart"}
-                </Button>
+                <div className="flex items-center gap-2 mt-4 sm:mt-0">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleWishlistToggle}
+                    className={
+                      isInWishlist ? "text-red-500 border-red-500" : ""
+                    }
+                  >
+                    <Heart
+                      className={`h-4 w-4 ${
+                        isInWishlist ? "fill-current" : ""
+                      }`}
+                    />
+                  </Button>
+                  <Button
+                    onClick={handleAddToCart}
+                    disabled={isLoading || product.quantity <= 0}
+                    className="min-w-[120px]"
+                  >
+                    {isLoading ? (
+                      "Adding..."
+                    ) : (
+                      <>
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Add to Cart
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </div>
+            </CardContent>
+          </div>
+        </Link>
       </Card>
     );
   }
 
   return (
-    <Card className="group overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300">
-      <div className="relative aspect-square overflow-hidden bg-muted cursor-pointer">
-        <Link href={`/products/${product.slug}`}>
+    <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
+      <Link href={`/products/${product.slug}`}>
+        <div className="relative aspect-square overflow-hidden">
           <Image
             src={
-              product.images[0]?.url || "/placeholder.svg?height=300&width=300"
+              imageError
+                ? "/placeholder.svg?height=300&width=300"
+                : product.images[0]?.url ||
+                  "/placeholder.svg?height=300&width=300"
             }
             alt={product.images[0]?.altText || product.name}
             fill
-            className="object-cover transition-transform group-hover:scale-105"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={() => setImageError(true)}
           />
-        </Link>
 
-        {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
-          {hasDiscount && (
-            <Badge variant="destructive" className="text-xs">
-              -{discountPercentage}%
-            </Badge>
-          )}
-          {isOutOfStock && (
-            <Badge variant="secondary" className="text-xs">
+          {/* Overlay buttons */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300">
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Button
+                variant="secondary"
+                size="icon"
+                onClick={handleWishlistToggle}
+                className={`h-8 w-8 ${isInWishlist ? "text-red-500" : ""}`}
+              >
+                <Heart
+                  className={`h-4 w-4 ${isInWishlist ? "fill-current" : ""}`}
+                />
+              </Button>
+            </div>
+
+            <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Button
+                onClick={handleAddToCart}
+                disabled={isLoading || product.quantity <= 0}
+                className="w-full h-8 text-xs"
+                size="sm"
+              >
+                {isLoading ? (
+                  "Adding..."
+                ) : product.quantity <= 0 ? (
+                  "Out of Stock"
+                ) : (
+                  <>
+                    <ShoppingCart className="h-3 w-3 mr-1" />
+                    Add to Cart
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Badges */}
+          {product.quantity <= 0 && (
+            <Badge variant="destructive" className="absolute top-2 left-2">
               Out of Stock
             </Badge>
           )}
-          {product.allowCustomPrint && (
-            <Badge variant="outline" className="text-xs bg-white/90">
-              Custom Print
+          {discountPercentage > 0 && product.quantity > 0 && (
+            <Badge className="absolute top-2 left-2 bg-red-500">
+              -{discountPercentage}%
             </Badge>
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            size="icon"
-            variant="secondary"
-            className="h-8 w-8"
-            onClick={handleWishlistToggle}
-          >
-            <Heart
-              className={`h-4 w-4 ${
-                isInWishlist ? "fill-red-500 text-red-500" : ""
-              }`}
-            />
-          </Button>
-          <Button size="icon" variant="secondary" className="h-8 w-8" asChild>
-            <Link href={`/products/${product.slug}`}>
-              <Eye className="h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-
-        {/* Quick Add to Cart */}
-        <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            className="w-full"
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={isOutOfStock || isAddingToCart}
-          >
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            {isAddingToCart ? "Adding..." : "Add to Cart"}
-          </Button>
-        </div>
-      </div>
-
-      <CardContent className="p-4">
-        <div className="space-y-2">
-          <div className="text-xs text-muted-foreground">
+        <CardContent className="p-4">
+          <Badge variant="secondary" className="mb-2 text-xs">
             {product.category.name}
-          </div>
-          <Link href={`/products/${product.slug}`}>
-            <h3 className="font-medium line-clamp-2 hover:text-primary transition-colors">
-              {product.name}
-            </h3>
-          </Link>
-          <div className="flex items-center gap-2">
-            <span className="font-semibold">${price.toFixed(2)}</span>
-            {hasDiscount && (
-              <span className="text-sm text-muted-foreground line-through">
-                ${comparePrice!.toFixed(2)}
-              </span>
-            )}
-          </div>
-          {product.allowCustomPrint && printPrice && (
-            <div className="text-xs text-muted-foreground">
-              + ${printPrice.toFixed(2)} for custom print
+          </Badge>
+          <h3 className="font-semibold mb-2 line-clamp-2 text-sm">
+            {product.name}
+          </h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="font-bold">${product.price.toFixed(2)}</span>
+              {product.comparePrice && (
+                <span className="text-xs text-muted-foreground line-through">
+                  ${product.comparePrice.toFixed(2)}
+                </span>
+              )}
             </div>
-          )}
-        </div>
-      </CardContent>
+            <span className="text-xs text-muted-foreground">
+              {product.quantity > 0
+                ? `${product.quantity} left`
+                : "Out of stock"}
+            </span>
+          </div>
+        </CardContent>
+      </Link>
     </Card>
   );
 }

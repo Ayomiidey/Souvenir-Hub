@@ -27,13 +27,13 @@ export async function POST(request: NextRequest) {
         userId: session?.user?.id || null,
         customerName: body.customerInfo.name,
         customerEmail: body.customerInfo.email,
-        customerPhone: body.customerInfo.phone,
+        customerPhone: body.customerInfo.phone || null,
         subtotal,
         taxAmount: tax,
         shippingAmount: shipping,
         totalAmount: total,
         paymentMethod: body.paymentMethod,
-        customerNotes: body.customerNotes,
+        customerNotes: body.customerNotes || null,
         status: "PENDING",
         paymentStatus: "AWAITING_PAYMENT",
         shippingAddress: {
@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
             type: "SHIPPING",
             firstName: body.shippingAddress.firstName,
             lastName: body.shippingAddress.lastName,
-            company: body.shippingAddress.company,
+            company: body.shippingAddress.company || null,
             addressLine1: body.shippingAddress.addressLine1,
-            addressLine2: body.shippingAddress.addressLine2,
+            addressLine2: body.shippingAddress.addressLine2 || null,
             city: body.shippingAddress.city,
             state: body.shippingAddress.state,
             postalCode: body.shippingAddress.postalCode,
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
             unitPrice: item.unitPrice,
             totalPrice: item.unitPrice * item.quantity,
             customPrint: item.customPrint || false,
-            printText: item.printText,
+            printText: item.printText || null,
             // We'll need to fetch product details for snapshot
             productName: "", // Will be updated below
             productSku: "", // Will be updated below
@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
             },
           },
         },
+        shippingAddress: true,
       },
     });
 
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
         data: {
           productName: item.product.name,
           productSku: item.product.sku,
-          productImage: item.product.images[0]?.url,
+          productImage: item.product.images[0]?.url || null,
         },
       });
 
