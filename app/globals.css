@@ -200,3 +200,8 @@
   background-size: 200px 100%;
   animation: shimmer 1.5s infinite;
 }
+
+html,
+body {
+  overflow-x: hidden;
+}

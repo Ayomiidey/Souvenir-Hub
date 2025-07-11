@@ -91,7 +91,7 @@ export function Header() {
                     <span className="text-white font-bold text-sm">S</span>
                   </div>
                   <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    SouvenirShop
+                    SouvenirHub
                   </span>
                 </Link>
                 <div className="flex flex-col space-y-1">
@@ -148,7 +148,7 @@ export function Header() {
               <span className="text-white font-bold text-sm">S</span>
             </div>
             <span className="font-bold text-base sm:text-lg lg:text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              SouvenirShop
+              SouvenirHub
             </span>
           </Link>
         </div>
