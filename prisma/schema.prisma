@@ -95,7 +95,7 @@ model UserRole {
 // Address Model
 model Address {
   id           String  @id @default(cuid())
-  userId       String
+  userId       String?
   type         String  @default("SHIPPING") // SHIPPING, BILLING
   firstName    String
   lastName     String
@@ -109,7 +109,7 @@ model Address {
   phone        String?
   isDefault    Boolean @default(false)
 
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders Order[]
 
   createdAt DateTime @default(now())

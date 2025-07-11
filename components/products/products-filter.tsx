@@ -1,33 +1,42 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { X } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown, Search } from "lucide-react";
 
 interface Category {
   id: string;
   name: string;
   slug: string;
-  children?: Category[];
+  _count: {
+    products: number;
+  };
+}
+
+interface FilterState {
+  search: string;
+  category: string;
+  minPrice: number;
+  maxPrice: number;
+  inStock: boolean;
 }
 
 interface ProductFiltersProps {
   categories: Category[];
   priceRange: { min: number; max: number };
-  currentFilters: {
-    search: string;
-    category: string;
-    minPrice: number;
-    maxPrice: number;
-    inStock: boolean;
-  };
+  currentFilters: FilterState;
   onFiltersChange: (filters: Record<string, string | number | boolean>) => void;
-  isMobile?: boolean;
+  isMobile: boolean;
 }
 
 export function ProductFilters({
@@ -36,15 +45,41 @@ export function ProductFilters({
   currentFilters,
   onFiltersChange,
 }: ProductFiltersProps) {
+  const [localSearch, setLocalSearch] = useState(currentFilters.search);
   const [localPriceRange, setLocalPriceRange] = useState([
     currentFilters.minPrice,
     currentFilters.maxPrice,
   ]);
-  const [searchInput, setSearchInput] = useState(currentFilters.search);
+  const [selectedCategory, setSelectedCategory] = useState(
+    currentFilters.category
+  );
+  const [inStockOnly, setInStockOnly] = useState(currentFilters.inStock);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(true);
+  const [isPriceOpen, setIsPriceOpen] = useState(true);
+
+  // Debounced search handler
+  const debouncedSearch = useCallback(
+    (searchTerm: string) => {
+      const timeoutId = setTimeout(() => {
+        onFiltersChange({ search: searchTerm });
+      }, 300);
+      return () => clearTimeout(timeoutId);
+    },
+    [onFiltersChange]
+  );
 
   useEffect(() => {
-    setSearchInput(currentFilters.search);
-  }, [currentFilters.search]);
+    if (localSearch !== currentFilters.search) {
+      const cleanup = debouncedSearch(localSearch);
+      return cleanup;
+    }
+  }, [localSearch, currentFilters.search, debouncedSearch]);
+
+  const handleCategoryChange = (categorySlug: string, checked: boolean) => {
+    const newCategory = checked ? categorySlug : "";
+    setSelectedCategory(newCategory);
+    onFiltersChange({ category: newCategory });
+  };
 
   const handlePriceChange = (values: number[]) => {
     setLocalPriceRange(values);
@@ -54,29 +89,16 @@ export function ProductFilters({
     });
   };
 
-  const handleSearchInputChange = (value: string) => {
-    setSearchInput(value);
-    // Debounce the search
-    const timeoutId = setTimeout(() => {
-      onFiltersChange({ search: value });
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  };
-
-  const handleCategoryChange = (categorySlug: string) => {
-    const newCategory =
-      currentFilters.category === categorySlug ? "" : categorySlug;
-    onFiltersChange({ category: newCategory });
-  };
-
   const handleInStockChange = (checked: boolean) => {
+    setInStockOnly(checked);
     onFiltersChange({ inStock: checked });
   };
 
-  const clearAllFilters = () => {
-    setSearchInput("");
+  const resetFilters = () => {
+    setLocalSearch("");
     setLocalPriceRange([priceRange.min, priceRange.max]);
+    setSelectedCategory("");
+    setInStockOnly(false);
     onFiltersChange({
       search: "",
       category: "",
@@ -86,192 +108,134 @@ export function ProductFilters({
     });
   };
 
-  const hasActiveFilters =
-    currentFilters.search ||
-    currentFilters.category ||
-    currentFilters.minPrice > priceRange.min ||
-    currentFilters.maxPrice < priceRange.max ||
-    currentFilters.inStock;
-
   return (
     <div className="space-y-6">
-      {/* Clear Filters */}
-      {hasActiveFilters && (
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Active filters</span>
-          <Button variant="ghost" size="sm" onClick={clearAllFilters}>
-            <X className="h-4 w-4 mr-1" />
-            Clear all
-          </Button>
-        </div>
-      )}
-
-      {/* Search */}
+      {/* Search Filter */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Search</CardTitle>
+          <CardTitle className="text-base">Search Products</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
+        <CardContent className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
+              type="search"
               placeholder="Search products..."
-              value={searchInput}
-              onChange={(e) => handleSearchInputChange(e.target.value)}
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              className="pl-10"
             />
-            <p className="text-xs text-muted-foreground">
-              Search updates automatically as you type
-            </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Categories */}
+      {/* Categories Filter */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Categories</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="all-categories"
-                checked={!currentFilters.category}
-                onCheckedChange={() => handleCategoryChange("")}
-              />
-              <Label htmlFor="all-categories" className="text-sm font-normal">
-                All Categories
-              </Label>
-            </div>
-            {categories.map((category) => (
-              <div key={category.id} className="space-y-2">
-                <div className="flex items-center space-x-2">
+        <Collapsible open={isCategoriesOpen} onOpenChange={setIsCategoriesOpen}>
+          <CollapsibleTrigger asChild>
+            <CardHeader className="pb-3 cursor-pointer hover:bg-muted/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Categories</CardTitle>
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${
+                    isCategoriesOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="space-y-3">
+              {categories.map((category) => (
+                <div key={category.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={category.slug}
-                    checked={currentFilters.category === category.slug}
-                    onCheckedChange={() => handleCategoryChange(category.slug)}
+                    checked={selectedCategory === category.slug}
+                    onCheckedChange={(checked) =>
+                      handleCategoryChange(category.slug, checked === true)
+                    }
                   />
                   <Label
                     htmlFor={category.slug}
-                    className="text-sm font-normal"
+                    className="text-sm font-normal cursor-pointer flex-1"
                   >
                     {category.name}
                   </Label>
+                  <span className="text-xs text-muted-foreground">
+                    ({category._count.products})
+                  </span>
                 </div>
-                {category.children && category.children.length > 0 && (
-                  <div className="ml-6 space-y-2">
-                    {category.children.map((child) => (
-                      <div
-                        key={child.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={child.slug}
-                          checked={currentFilters.category === child.slug}
-                          onCheckedChange={() =>
-                            handleCategoryChange(child.slug)
-                          }
-                        />
-                        <Label
-                          htmlFor={child.slug}
-                          className="text-sm font-normal text-muted-foreground"
-                        >
-                          {child.name}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              ))}
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+
+      {/* Price Range Filter */}
+      <Card>
+        <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
+          <CollapsibleTrigger asChild>
+            <CardHeader className="pb-3 cursor-pointer hover:bg-muted/50 transition-colors">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Price Range</CardTitle>
+                <ChevronDown
+                  className={`h-4 w-4 transition-transform ${
+                    isPriceOpen ? "rotate-180" : ""
+                  }`}
+                />
               </div>
-            ))}
-          </div>
-        </CardContent>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="space-y-4">
+              <div className="px-2">
+                <Slider
+                  value={localPriceRange}
+                  onValueChange={handlePriceChange}
+                  max={priceRange.max}
+                  min={priceRange.min}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span>${localPriceRange[0]}</span>
+                <span>${localPriceRange[1]}</span>
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
       </Card>
 
-      {/* Price Range */}
+      {/* Stock Filter */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Price Range</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="px-2">
-            <Slider
-              value={localPriceRange}
-              onValueChange={handlePriceChange}
-              max={priceRange.max}
-              min={priceRange.min}
-              step={1}
-              className="w-full"
-            />
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span>${localPriceRange[0]}</span>
-            <span>${localPriceRange[1]}</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label htmlFor="min-price" className="text-xs">
-                Min
-              </Label>
-              <Input
-                id="min-price"
-                type="number"
-                value={localPriceRange[0]}
-                onChange={(e) => {
-                  const value =
-                    Number.parseInt(e.target.value) || priceRange.min;
-                  const newRange = [
-                    Math.max(value, priceRange.min),
-                    localPriceRange[1],
-                  ];
-                  setLocalPriceRange(newRange);
-                  handlePriceChange(newRange);
-                }}
-                className="h-8"
-              />
-            </div>
-            <div>
-              <Label htmlFor="max-price" className="text-xs">
-                Max
-              </Label>
-              <Input
-                id="max-price"
-                type="number"
-                value={localPriceRange[1]}
-                onChange={(e) => {
-                  const value =
-                    Number.parseInt(e.target.value) || priceRange.max;
-                  const newRange = [
-                    localPriceRange[0],
-                    Math.min(value, priceRange.max),
-                  ];
-                  setLocalPriceRange(newRange);
-                  handlePriceChange(newRange);
-                }}
-                className="h-8"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Availability */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Availability</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="flex items-center space-x-2">
             <Checkbox
-              id="in-stock"
-              checked={currentFilters.inStock}
-              onCheckedChange={handleInStockChange}
+              id="inStock"
+              checked={inStockOnly}
+              onCheckedChange={(checked) =>
+                handleInStockChange(checked === true)
+              }
             />
-            <Label htmlFor="in-stock" className="text-sm font-normal">
+            <Label
+              htmlFor="inStock"
+              className="text-sm font-normal cursor-pointer"
+            >
               In Stock Only
             </Label>
           </div>
         </CardContent>
       </Card>
+
+      {/* Reset Filters */}
+      <Button
+        variant="outline"
+        onClick={resetFilters}
+        className="w-full bg-transparent"
+      >
+        Reset All Filters
+      </Button>
     </div>
   );
 }

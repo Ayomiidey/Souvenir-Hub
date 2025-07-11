@@ -91,7 +91,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     } else {
       dispatch(
         addToWishlist({
-          id: product.id,
+          id: product.id, // Add the missing id property
           productId: product.id,
           name: product.name,
           slug: product.slug,
@@ -166,6 +166,13 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                       ? `${product.quantity} in stock`
                       : "Out of stock"}
                   </p>
+                  {product.allowCustomPrint && (
+                    <p className="text-xs text-blue-600 mt-1">
+                      Custom print available{" "}
+                      {product.printPrice &&
+                        `(+$${product.printPrice.toFixed(2)})`}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2 mt-4 sm:mt-0">
@@ -279,7 +286,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           <h3 className="font-semibold mb-2 line-clamp-2 text-sm">
             {product.name}
           </h3>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="font-bold">${product.price.toFixed(2)}</span>
               {product.comparePrice && (
@@ -294,6 +301,12 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                 : "Out of stock"}
             </span>
           </div>
+          {product.allowCustomPrint && (
+            <p className="text-xs text-blue-600">
+              Custom print available{" "}
+              {product.printPrice && `(+$${product.printPrice.toFixed(2)})`}
+            </p>
+          )}
         </CardContent>
       </Link>
     </Card>

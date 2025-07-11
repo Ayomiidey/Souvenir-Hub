@@ -64,8 +64,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/80 dark:bg-slate-900/80 dark:supports-[backdrop-filter]:bg-slate-900/80 shadow-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Mobile Menu Button */}
-        <div className="flex items-center space-x-2 md:space-x-4">
+        {/* Left Section - Mobile Menu + Logo */}
+        <div className="flex items-center space-x-2 md:space-x-3">
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
@@ -124,13 +124,6 @@ export function Header() {
                     Home Decor
                   </Link>
                   <Link
-                    href="/categories/keychains"
-                    className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Keychains
-                  </Link>
-                  <Link
                     href="/categories/phone-cases"
                     className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -154,19 +147,19 @@ export function Header() {
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="font-bold text-base sm:text-lg lg:text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               SouvenirShop
             </span>
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+        {/* Center Section - Desktop Navigation */}
+        <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6 text-sm font-medium">
           <CategoryMegaMenu />
         </nav>
 
-        {/* Search Bar and Actions */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
+        {/* Right Section - Search and Actions */}
+        <div className="flex items-center space-x-1 sm:space-x-2">
           {/* Desktop Search */}
           <form
             onSubmit={handleSearch}
@@ -176,8 +169,8 @@ export function Header() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search products..."
-                className="pl-10 w-[200px] lg:w-[280px] h-9 rounded-full border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Search..."
+                className="pl-10 w-[160px] lg:w-[200px] xl:w-[240px] h-9 rounded-full border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={headerSearchQuery}
                 onChange={(e) => handleSearchInputChange(e.target.value)}
               />
@@ -185,7 +178,7 @@ export function Header() {
             <Button
               type="submit"
               size="sm"
-              className="h-9 px-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+              className="h-9 px-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
             >
               <Search className="h-4 w-4" />
             </Button>

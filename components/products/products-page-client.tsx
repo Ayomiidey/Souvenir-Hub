@@ -39,7 +39,9 @@ interface Category {
   id: string;
   name: string;
   slug: string;
-  children?: Category[];
+  _count: {
+    products: number;
+  };
 }
 
 interface ProductsPageClientProps {
