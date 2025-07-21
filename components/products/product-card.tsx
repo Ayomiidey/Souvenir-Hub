@@ -30,6 +30,11 @@ interface Product {
   allowCustomPrint: boolean;
   printPrice?: number | null;
   sku: string;
+  priceTiers?: Array<{
+    minQuantity: number;
+    discountType: string;
+    discountValue: number;
+  }>;
 }
 
 interface ProductCardProps {
@@ -91,7 +96,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     } else {
       dispatch(
         addToWishlist({
-          id: product.id, // Add the missing id property
+          id: product.id,
           productId: product.id,
           name: product.name,
           slug: product.slug,
@@ -301,12 +306,12 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                 : "Out of stock"}
             </span>
           </div>
-          {product.allowCustomPrint && (
+          {/* {product.allowCustomPrint && (
             <p className="text-xs text-blue-600">
               Custom print available{" "}
               {product.printPrice && `(+$${product.printPrice.toFixed(2)})`}
             </p>
-          )}
+          )} */}
         </CardContent>
       </Link>
     </Card>

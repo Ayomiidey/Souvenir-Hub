@@ -5,19 +5,17 @@ import prisma from "@/lib/prisma";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = Number.parseInt(searchParams.get("page") || "1");
-    const limit = Number.parseInt(searchParams.get("limit") || "12");
+
     const search = searchParams.get("search") || "";
     const category = searchParams.get("category") || "";
-    const sortBy = searchParams.get("sortBy") || "popularity";
-    const featured = searchParams.get("featured") === "true";
-    const inStockOnly = searchParams.get("inStockOnly") === "true";
     const minPrice = Number.parseFloat(searchParams.get("minPrice") || "0");
     const maxPrice = Number.parseFloat(
       searchParams.get("maxPrice") || "999999"
     );
-
-    const skip = (page - 1) * limit;
+    const inStock = searchParams.get("inStock") === "true";
+    const sortBy = searchParams.get("sortBy") || "name";
+    const page = Number.parseInt(searchParams.get("page") || "1");
+    const limit = Number.parseInt(searchParams.get("limit") || "12");
 
     // Build where clause
     const where: any = {
@@ -28,8 +26,9 @@ export async function GET(request: NextRequest) {
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
         { sku: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { shortDescription: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -39,72 +38,83 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    if (featured) {
-      where.isFeatured = true;
-    }
-
-    if (inStockOnly) {
-      where.quantity = { gt: 0 };
-    }
-
+    // Price filtering - ensure we're comparing numbers properly
     if (minPrice > 0 || maxPrice < 999999) {
-      where.price = {
-        gte: minPrice,
-        lte: maxPrice,
+      where.price = {};
+      if (minPrice > 0) {
+        where.price.gte = minPrice;
+      }
+      if (maxPrice < 999999) {
+        where.price.lte = maxPrice;
+      }
+    }
+
+    if (inStock) {
+      where.quantity = {
+        gt: 0,
       };
     }
 
     // Build orderBy clause
-    let orderBy: any = {};
+    let orderBy: any = { name: "asc" };
+
     switch (sortBy) {
-      case "price-asc":
+      case "name_desc":
+        orderBy = { name: "desc" };
+        break;
+      case "price_asc":
         orderBy = { price: "asc" };
         break;
-      case "price-desc":
+      case "price_desc":
         orderBy = { price: "desc" };
         break;
       case "newest":
         orderBy = { createdAt: "desc" };
         break;
+      case "featured":
+        orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
+        break;
       default:
-        orderBy = { createdAt: "desc" };
+        orderBy = { name: "asc" };
     }
 
-    // Check if database is connected
-    await prisma.$connect();
+    // Get total count
+    const totalCount = await prisma.product.count({ where });
 
-    const [products, total] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        include: {
-          images: {
-            orderBy: { sortOrder: "asc" },
+    // Get products
+    const products = await prisma.product.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
+      include: {
+        images: {
+          select: {
+            url: true,
+            altText: true,
           },
-          category: {
-            select: { name: true, slug: true },
+          orderBy: {
+            sortOrder: "asc",
           },
-          priceTiers: {
-            where: { isActive: true },
-            orderBy: { minQuantity: "asc" },
+          take: 1,
+        },
+        category: {
+          select: {
+            name: true,
+            slug: true,
           },
         },
-        orderBy,
-        skip,
-        take: limit,
-      }),
-      prisma.product.count({ where }),
-    ]);
+      },
+    });
 
-    // Convert Decimal prices to numbers
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // Convert Decimal prices to numbers for JSON serialization
     const formattedProducts = products.map((product) => ({
       ...product,
       price: Number(product.price),
       comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
       printPrice: product.printPrice ? Number(product.printPrice) : null,
-      priceTiers: product.priceTiers.map((tier) => ({
-        ...tier,
-        discountValue: Number(tier.discountValue),
-      })),
     }));
 
     return NextResponse.json({
@@ -112,25 +122,17 @@ export async function GET(request: NextRequest) {
       pagination: {
         page,
         limit,
-        total,
-        pages: Math.ceil(total / limit),
+        total: totalCount,
+        pages: totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
       },
     });
   } catch (error) {
     console.error("Error fetching products:", error);
-
-    // Return empty array instead of error to prevent client crashes
     return NextResponse.json(
-      {
-        products: [],
-        pagination: {
-          page: 1,
-          limit: 12,
-          total: 0,
-          pages: 0,
-        },
-      },
-      { status: 200 }
+      { message: "Failed to fetch products" },
+      { status: 500 }
     );
   }
 }
