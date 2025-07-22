@@ -51,10 +51,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
         category: {
           select: { name: true, slug: true },
         },
-        priceTiers: {
-          where: { isActive: true },
-          orderBy: { minQuantity: "asc" },
-        },
       },
       take: 4,
       orderBy: {
@@ -83,10 +79,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
       printPrice: relatedProduct.printPrice
         ? Number(relatedProduct.printPrice)
         : null,
-      priceTiers: relatedProduct.priceTiers.map((tier) => ({
-        ...tier,
-        discountValue: Number(tier.discountValue),
-      })),
     }));
 
     return (

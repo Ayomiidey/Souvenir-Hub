@@ -126,8 +126,8 @@ async function main() {
   });
 
   if (tshirtCategory) {
-    const tshirtProduct = await prisma.product.create({
-      data: {
+    const tshirtProducts = [
+      {
         name: "Custom Print T-Shirt",
         slug: "custom-print-t-shirt",
         description: "High-quality cotton t-shirt perfect for custom printing",
@@ -141,38 +141,188 @@ async function main() {
         status: "ACTIVE",
         isActive: true,
         isFeatured: true,
-        categoryId: tshirtCategory.id,
-        images: {
-          create: [
-            {
-              url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500",
-              altText: "Custom Print T-Shirt",
-              isMain: true,
-              sortOrder: 0,
-            },
-          ],
-        },
-        priceTiers: {
-          create: [
-            {
-              minQuantity: 10,
-              discountType: "PERCENTAGE",
-              discountValue: 10,
-            },
-            {
-              minQuantity: 20,
-              discountType: "PERCENTAGE",
-              discountValue: 15,
-            },
-          ],
-        },
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500",
+            altText: "Custom Print T-Shirt",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 10, discountType: "PERCENTAGE", discountValue: 10 },
+          { minQuantity: 20, discountType: "PERCENTAGE", discountValue: 15 },
+        ],
       },
-    });
+      {
+        name: "Graphic Logo Tee",
+        slug: "graphic-logo-tee",
+        description: "Stylish t-shirt with vibrant graphic logo prints",
+        shortDescription: "Vibrant graphic tee for everyday wear",
+        sku: "TSH-002",
+        price: 22.99,
+        comparePrice: 27.99,
+        quantity: 80,
+        allowCustomPrint: true,
+        printPrice: 4.5,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: false,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500",
+            altText: "Graphic Logo Tee",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 15, discountType: "PERCENTAGE", discountValue: 12 },
+        ],
+      },
+      {
+        name: "V-Neck Custom Tee",
+        slug: "v-neck-custom-tee",
+        description: "Soft V-neck t-shirt ideal for personalized designs",
+        shortDescription: "Comfortable V-neck with custom print",
+        sku: "TSH-003",
+        price: 18.99,
+        comparePrice: 23.99,
+        quantity: 120,
+        allowCustomPrint: true,
+        printPrice: 5.0,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: false,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?w=500",
+            altText: "V-Neck Custom Tee",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 10, discountType: "PERCENTAGE", discountValue: 10 },
+          { minQuantity: 25, discountType: "PERCENTAGE", discountValue: 18 },
+        ],
+      },
+      {
+        name: "Sports Performance Tee",
+        slug: "sports-performance-tee",
+        description:
+          "Breathable t-shirt for active lifestyles with custom prints",
+        shortDescription: "Breathable sports tee with customization",
+        sku: "TSH-004",
+        price: 24.99,
+        comparePrice: 29.99,
+        quantity: 90,
+        allowCustomPrint: true,
+        printPrice: 6.0,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: true,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1551537482-eede9e79587c?w=500",
+            altText: "Sports Performance Tee",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 12, discountType: "PERCENTAGE", discountValue: 10 },
+        ],
+      },
+      {
+        name: "Retro Style T-Shirt",
+        slug: "retro-style-t-shirt",
+        description: "Vintage-inspired t-shirt perfect for retro designs",
+        shortDescription: "Retro t-shirt with custom print options",
+        sku: "TSH-005",
+        price: 21.99,
+        comparePrice: 26.99,
+        quantity: 70,
+        allowCustomPrint: true,
+        printPrice: 5.0,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: false,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=500",
+            altText: "Retro Style T-Shirt",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 10, discountType: "PERCENTAGE", discountValue: 15 },
+        ],
+      },
+      {
+        name: "Eco-Friendly Cotton Tee",
+        slug: "eco-friendly-cotton-tee",
+        description:
+          "Sustainable cotton t-shirt for eco-conscious customization",
+        shortDescription: "Eco-friendly tee with custom prints",
+        sku: "TSH-006",
+        price: 23.99,
+        comparePrice: 28.99,
+        quantity: 85,
+        allowCustomPrint: true,
+        printPrice: 5.5,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: true,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1522202176988-66273c2b6e3c?w=500",
+            altText: "Eco-Friendly Cotton Tee",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 15, discountType: "PERCENTAGE", discountValue: 12 },
+          { minQuantity: 30, discountType: "PERCENTAGE", discountValue: 20 },
+        ],
+      },
+    ];
+
+    for (const product of tshirtProducts) {
+      await prisma.product.upsert({
+        where: { slug: product.slug },
+        update: {},
+        create: {
+          name: product.name,
+          slug: product.slug,
+          description: product.description,
+          shortDescription: product.shortDescription,
+          sku: product.sku,
+          price: product.price,
+          comparePrice: product.comparePrice,
+          quantity: product.quantity,
+          allowCustomPrint: product.allowCustomPrint,
+          printPrice: product.printPrice,
+          status: "ACTIVE",
+          isActive: product.isActive,
+          isFeatured: product.isFeatured,
+          categoryId: tshirtCategory.id,
+          images: {
+            create: product.images,
+          },
+          priceTiers: {
+            create: product.priceTiers,
+          },
+        },
+      });
+    }
   }
 
   if (mugCategory) {
-    await prisma.product.create({
-      data: {
+    const mugProducts = [
+      {
         name: "Custom Photo Mug",
         slug: "custom-photo-mug",
         description: "Ceramic mug perfect for custom photos and designs",
@@ -186,28 +336,179 @@ async function main() {
         status: "ACTIVE",
         isActive: true,
         isFeatured: true,
-        categoryId: mugCategory.id,
-        images: {
-          create: [
-            {
-              url: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500",
-              altText: "Custom Photo Mug",
-              isMain: true,
-              sortOrder: 0,
-            },
-          ],
-        },
-        priceTiers: {
-          create: [
-            {
-              minQuantity: 10,
-              discountType: "PERCENTAGE",
-              discountValue: 12,
-            },
-          ],
-        },
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500",
+            altText: "Custom Photo Mug",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 10, discountType: "PERCENTAGE", discountValue: 12 },
+        ],
       },
-    });
+      {
+        name: "Personalized Name Mug",
+        slug: "personalized-name-mug",
+        description: "Ceramic mug with personalized name printing",
+        shortDescription: "Custom name mug for personal use",
+        sku: "MUG-002",
+        price: 13.99,
+        comparePrice: 17.99,
+        quantity: 60,
+        allowCustomPrint: true,
+        printPrice: 3.5,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: false,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1514228742587-6b93b366f8c6?w=500",
+            altText: "Personalized Name Mug",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 12, discountType: "PERCENTAGE", discountValue: 10 },
+        ],
+      },
+      {
+        name: "Quote Coffee Mug",
+        slug: "quote-coffee-mug",
+        description: "Inspirational quote mug for daily motivation",
+        shortDescription: "Motivational quote mug",
+        sku: "MUG-003",
+        price: 11.99,
+        comparePrice: 15.99,
+        quantity: 70,
+        allowCustomPrint: true,
+        printPrice: 3.0,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: true,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1517412316723-8b2f74d28580?w=500",
+            altText: "Quote Coffee Mug",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 10, discountType: "PERCENTAGE", discountValue: 15 },
+        ],
+      },
+      {
+        name: "Photo Collage Mug",
+        slug: "photo-collage-mug",
+        description: "Ceramic mug with space for multiple photo prints",
+        shortDescription: "Mug with custom photo collage",
+        sku: "MUG-004",
+        price: 14.99,
+        comparePrice: 18.99,
+        quantity: 45,
+        allowCustomPrint: true,
+        printPrice: 4.0,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: false,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=500",
+            altText: "Photo Collage Mug",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 15, discountType: "PERCENTAGE", discountValue: 12 },
+          { minQuantity: 25, discountType: "PERCENTAGE", discountValue: 18 },
+        ],
+      },
+      {
+        name: "Minimalist Design Mug",
+        slug: "minimalist-design-mug",
+        description: "Sleek ceramic mug with minimalist custom designs",
+        shortDescription: "Minimalist custom mug",
+        sku: "MUG-005",
+        price: 12.49,
+        comparePrice: 16.49,
+        quantity: 55,
+        allowCustomPrint: true,
+        printPrice: 3.5,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: false,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1544274411-3a3e06b4a6e9?w=500",
+            altText: "Minimalist Design Mug",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 10, discountType: "PERCENTAGE", discountValue: 10 },
+        ],
+      },
+      {
+        name: "Vintage Style Mug",
+        slug: "vintage-style-mug",
+        description: "Retro-inspired ceramic mug for custom vintage prints",
+        shortDescription: "Vintage mug with custom prints",
+        sku: "MUG-006",
+        price: 13.49,
+        comparePrice: 17.49,
+        quantity: 65,
+        allowCustomPrint: true,
+        printPrice: 3.5,
+        status: "ACTIVE",
+        isActive: true,
+        isFeatured: true,
+        images: [
+          {
+            url: "https://images.unsplash.com/photo-1512438248242-9f8f1a3d8b0e?w=500",
+            altText: "Vintage Style Mug",
+            isMain: true,
+            sortOrder: 0,
+          },
+        ],
+        priceTiers: [
+          { minQuantity: 12, discountType: "PERCENTAGE", discountValue: 12 },
+        ],
+      },
+    ];
+
+    for (const product of mugProducts) {
+      await prisma.product.upsert({
+        where: { slug: product.slug },
+        update: {},
+        create: {
+          name: product.name,
+          slug: product.slug,
+          description: product.description,
+          shortDescription: product.shortDescription,
+          sku: product.sku,
+          price: product.price,
+          comparePrice: product.comparePrice,
+          quantity: product.quantity,
+          allowCustomPrint: product.allowCustomPrint,
+          printPrice: product.printPrice,
+          status: "ACTIVE",
+          isActive: product.isActive,
+          isFeatured: product.isFeatured,
+          categoryId: mugCategory.id,
+          images: {
+            create: product.images,
+          },
+          priceTiers: {
+            create: product.priceTiers,
+          },
+        },
+      });
+    }
   }
 
   // Create system settings

@@ -54,6 +54,12 @@ export function ProductFilters({
     currentFilters.minPrice,
     currentFilters.maxPrice,
   ]);
+  const [minPriceInput, setMinPriceInput] = useState(
+    currentFilters.minPrice.toString()
+  );
+  const [maxPriceInput, setMaxPriceInput] = useState(
+    currentFilters.maxPrice.toString()
+  );
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(true);
   const [isPriceOpen, setIsPriceOpen] = useState(true);
   const [isStockOpen, setIsStockOpen] = useState(true);
@@ -62,6 +68,8 @@ export function ProductFilters({
   useEffect(() => {
     setSearchTerm(currentFilters.search);
     setPriceValues([currentFilters.minPrice, currentFilters.maxPrice]);
+    setMinPriceInput(currentFilters.minPrice.toString());
+    setMaxPriceInput(currentFilters.maxPrice.toString());
   }, [currentFilters.search, currentFilters.minPrice, currentFilters.maxPrice]);
 
   // Debounced search
@@ -75,55 +83,82 @@ export function ProductFilters({
     return () => clearTimeout(timeoutId);
   }, [searchTerm, currentFilters.search, onFiltersChange]);
 
-  // Handle price range changes with debouncing
-  const handlePriceChange = useCallback(
-    (values: number[]) => {
-      onFiltersChange({
-        minPrice: values[0],
-        maxPrice: values[1],
-      });
+  // Debounced price change function
+  const debouncedPriceChange = useCallback(
+    (minPrice: number, maxPrice: number) => {
+      const timeoutId = setTimeout(() => {
+        onFiltersChange({ minPrice, maxPrice });
+      }, 500);
+      return () => clearTimeout(timeoutId);
     },
     [onFiltersChange]
   );
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (
-        priceValues[0] !== currentFilters.minPrice ||
-        priceValues[1] !== currentFilters.maxPrice
-      ) {
-        handlePriceChange(priceValues);
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [
-    priceValues,
-    currentFilters.minPrice,
-    currentFilters.maxPrice,
-    handlePriceChange,
-  ]);
-
+  // Handle slider price changes
   const handlePriceSliderChange = (values: number[]) => {
-    setPriceValues(values);
+    const [min, max] = values;
+    setPriceValues([min, max]);
+    setMinPriceInput(min.toString());
+    setMaxPriceInput(max.toString());
+    debouncedPriceChange(min, max);
   };
 
+  // Handle manual price input changes
   const handleMinPriceInputChange = (value: string) => {
-    const numValue = Number.parseFloat(value) || priceRange.min;
-    const clampedValue = Math.max(
-      priceRange.min,
-      Math.min(numValue, priceValues[1])
-    );
-    setPriceValues([clampedValue, priceValues[1]]);
+    setMinPriceInput(value);
+
+    // Only update if it's a valid number
+    const numValue = Number.parseFloat(value);
+    if (!Number.isNaN(numValue)) {
+      const clampedValue = Math.max(
+        priceRange.min,
+        Math.min(numValue, priceValues[1])
+      );
+      setPriceValues([clampedValue, priceValues[1]]);
+      debouncedPriceChange(clampedValue, priceValues[1]);
+    }
   };
 
   const handleMaxPriceInputChange = (value: string) => {
-    const numValue = Number.parseFloat(value) || priceRange.max;
-    const clampedValue = Math.min(
-      priceRange.max,
-      Math.max(numValue, priceValues[0])
-    );
-    setPriceValues([priceValues[0], clampedValue]);
+    setMaxPriceInput(value);
+
+    // Only update if it's a valid number
+    const numValue = Number.parseFloat(value);
+    if (!Number.isNaN(numValue)) {
+      const clampedValue = Math.min(
+        priceRange.max,
+        Math.max(numValue, priceValues[0])
+      );
+      setPriceValues([priceValues[0], clampedValue]);
+      debouncedPriceChange(priceValues[0], clampedValue);
+    }
+  };
+
+  // Handle input blur to ensure valid values
+  const handleMinPriceBlur = () => {
+    const numValue = Number.parseFloat(minPriceInput);
+    if (Number.isNaN(numValue) || numValue < priceRange.min) {
+      setMinPriceInput(priceRange.min.toString());
+      setPriceValues([priceRange.min, priceValues[1]]);
+      onFiltersChange({ minPrice: priceRange.min });
+    } else if (numValue > priceValues[1]) {
+      setMinPriceInput(priceValues[1].toString());
+      setPriceValues([priceValues[1], priceValues[1]]);
+      onFiltersChange({ minPrice: priceValues[1] });
+    }
+  };
+
+  const handleMaxPriceBlur = () => {
+    const numValue = Number.parseFloat(maxPriceInput);
+    if (Number.isNaN(numValue) || numValue > priceRange.max) {
+      setMaxPriceInput(priceRange.max.toString());
+      setPriceValues([priceValues[0], priceRange.max]);
+      onFiltersChange({ maxPrice: priceRange.max });
+    } else if (numValue < priceValues[0]) {
+      setMaxPriceInput(priceValues[0].toString());
+      setPriceValues([priceValues[0], priceValues[0]]);
+      onFiltersChange({ maxPrice: priceValues[0] });
+    }
   };
 
   const handleCategoryChange = (categorySlug: string, checked: boolean) => {
@@ -139,6 +174,8 @@ export function ProductFilters({
   const clearAllFilters = () => {
     setSearchTerm("");
     setPriceValues([priceRange.min, priceRange.max]);
+    setMinPriceInput(priceRange.min.toString());
+    setMaxPriceInput(priceRange.max.toString());
     onFiltersChange({
       search: "",
       category: "",
@@ -277,7 +314,7 @@ export function ProductFilters({
                   onValueChange={handlePriceSliderChange}
                   max={priceRange.max}
                   min={priceRange.min}
-                  step={1}
+                  step={0.01}
                   className="w-full"
                 />
               </div>
@@ -288,7 +325,7 @@ export function ProductFilters({
                     variant="outline"
                     className="bg-white dark:bg-gray-900"
                   >
-                    ${priceValues[0]}
+                    ${priceValues[0].toFixed(2)}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
@@ -297,7 +334,7 @@ export function ProductFilters({
                     variant="outline"
                     className="bg-white dark:bg-gray-900"
                   >
-                    ${priceValues[1]}
+                    ${priceValues[1].toFixed(2)}
                   </Badge>
                 </div>
               </div>
@@ -307,16 +344,19 @@ export function ProductFilters({
                     htmlFor="min-price"
                     className="text-xs text-muted-foreground"
                   >
-                    Min Price
+                    Min Price ($)
                   </Label>
                   <Input
                     id="min-price"
                     type="number"
-                    value={priceValues[0]}
+                    value={minPriceInput}
                     onChange={(e) => handleMinPriceInputChange(e.target.value)}
+                    onBlur={handleMinPriceBlur}
                     className="h-8 bg-white dark:bg-gray-900"
                     min={priceRange.min}
-                    max={priceValues[1]}
+                    max={priceRange.max}
+                    step="0.01"
+                    placeholder={priceRange.min.toString()}
                   />
                 </div>
                 <div>
@@ -324,18 +364,24 @@ export function ProductFilters({
                     htmlFor="max-price"
                     className="text-xs text-muted-foreground"
                   >
-                    Max Price
+                    Max Price ($)
                   </Label>
                   <Input
                     id="max-price"
                     type="number"
-                    value={priceValues[1]}
+                    value={maxPriceInput}
                     onChange={(e) => handleMaxPriceInputChange(e.target.value)}
+                    onBlur={handleMaxPriceBlur}
                     className="h-8 bg-white dark:bg-gray-900"
-                    min={priceValues[0]}
+                    min={priceRange.min}
                     max={priceRange.max}
+                    step="0.01"
+                    placeholder={priceRange.max.toString()}
                   />
                 </div>
+              </div>
+              <div className="text-xs text-muted-foreground text-center">
+                Range: ${priceRange.min} - ${priceRange.max}
               </div>
             </CardContent>
           </CollapsibleContent>
