@@ -309,10 +309,8 @@ export function ProductsPageClient({
             {loading ? (
               <div
                 className={cn(
-                  "grid gap-6",
-                  viewMode === "grid"
-                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                    : "grid-cols-1"
+                  "grid gap-3",
+                  viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
                 )}
               >
                 {[...Array(12)].map((_, i) => (
@@ -328,10 +326,8 @@ export function ProductsPageClient({
             ) : products.length > 0 ? (
               <div
                 className={cn(
-                  "grid gap-6",
-                  viewMode === "grid"
-                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                    : "grid-cols-1"
+                  "grid gap-3",
+                  viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
                 )}
               >
                 {products.map((product) => (
