@@ -4,6 +4,8 @@ import "./globals.css";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { Toaster } from "sonner";
 import { ReduxProvider } from "@/components/providers/redux-provider";
+import { LoaderProvider } from "@/components/providers/loader-provider";
+import { GlobalLoader } from "@/components/shared/global-loader";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,20 +24,25 @@ export default function RootLayout({
       <body className={inter.className}>
         <SessionProvider>
           <ReduxProvider>
-            {children}
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: "#363636",
-                  color: "#fff",
-                },
-              }}
-            />
+            <LoaderProvider>
+              <GlobalLoader />
+              {children}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: "#363636",
+                    color: "#fff",
+                  },
+                }}
+              />
+            </LoaderProvider>
           </ReduxProvider>
         </SessionProvider>
       </body>
     </html>
   );
 }
+
+// (GlobalLoader is now a client component in components/shared/global-loader.tsx)

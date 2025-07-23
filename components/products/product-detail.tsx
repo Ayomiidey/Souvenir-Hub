@@ -34,7 +34,7 @@ import {
   removeFromWishlist,
 } from "@/store/slices/wishlistSlice";
 import { ProductCard } from "./product-card";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 interface Product {

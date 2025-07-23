@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { WishlistItem } from "./wishlist-item";
 import { Heart, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 export function WishlistSidebar() {
   const dispatch = useAppDispatch();

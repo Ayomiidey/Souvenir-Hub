@@ -3,6 +3,7 @@
 import type React from "react";
 
 import { useState } from "react";
+import { useLoader } from "@/components/providers/loader-provider";
 import { useSession } from "next-auth/react";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
 import { clearCart } from "@/store/slices/cartSlice";
@@ -20,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { CheckoutSummary } from "./checkout-summary";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { MessageSquare, CreditCard } from "lucide-react";
 
@@ -42,6 +43,7 @@ interface FormData {
 }
 
 export function CheckoutForm() {
+  const loader = useLoader();
   const { data: session } = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -127,6 +129,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
   };
 
   const handleWhatsAppOrder = () => {
+    loader.show();
     if (items.length === 0) {
       toast.error("Your cart is empty");
       return;
@@ -163,9 +166,11 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
     window.open(whatsappUrl, "_blank");
     toast.success("Redirecting to WhatsApp...");
     router.push("/");
+    setTimeout(() => loader.hide(), 1000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    loader.show();
     e.preventDefault();
 
     if (items.length === 0) {
@@ -238,6 +243,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
       console.error("Order submission error:", error);
     } finally {
       setLoading(false);
+      loader.hide();
     }
   };
 

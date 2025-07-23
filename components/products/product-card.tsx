@@ -5,7 +5,7 @@ import type React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Heart, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,7 +16,7 @@ import {
   removeFromWishlist,
 } from "@/store/slices/wishlistSlice";
 import { useAppSelector } from "@/hooks/redux";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 interface Product {
   id: string;
@@ -43,6 +43,9 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
+  // Glassmorphism style
+  const glass =
+    "bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-gray-200/60 dark:border-gray-800/60 shadow-lg";
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -119,7 +122,9 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
   if (viewMode === "list") {
     return (
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+      <Card
+        className={`overflow-hidden hover:shadow-2xl transition-shadow duration-300 rounded-2xl ${glass}`}
+      >
         <Link href={`/products/${product.slug}`}>
           <div className="flex flex-col sm:flex-row">
             <div className="relative w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
@@ -132,16 +137,18 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                 }
                 alt={product.images[0]?.altText || product.name}
                 fill
-                className="object-cover"
+                className="object-cover rounded-xl border border-gray-100 dark:border-gray-800"
                 onError={() => setImageError(true)}
               />
               {product.quantity <= 0 && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <Badge variant="destructive">Out of Stock</Badge>
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
+                  <Badge variant="destructive" className="text-xs px-2 py-1">
+                    Out of Stock
+                  </Badge>
                 </div>
               )}
               {discountPercentage > 0 && (
-                <Badge className="absolute top-2 left-2 bg-red-500">
+                <Badge className="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-red-500 text-white shadow px-2 py-1 text-xs">
                   -{discountPercentage}%
                 </Badge>
               )}
@@ -150,14 +157,17 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
             <CardContent className="flex-1 p-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between h-full">
                 <div className="flex-1">
-                  <Badge variant="secondary" className="mb-2">
+                  <Badge
+                    variant="secondary"
+                    className="mb-2 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 text-xs px-2 py-1"
+                  >
                     {product.category.name}
                   </Badge>
                   <h3 className="font-semibold text-lg mb-2 line-clamp-2">
                     {product.name}
                   </h3>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xl font-bold">
+                    <span className="text-xl font-bold text-primary">
                       ${product.price.toFixed(2)}
                     </span>
                     {product.comparePrice && (
@@ -185,23 +195,22 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                     variant="outline"
                     size="icon"
                     onClick={handleWishlistToggle}
-                    className={
-                      isInWishlist ? "text-red-500 border-red-500" : ""
+                    className={`transition-all duration-200 hover:scale-110 ${isInWishlist ? "text-red-500 border-red-500 bg-red-50" : ""}`}
+                    title={
+                      isInWishlist ? "Remove from wishlist" : "Add to wishlist"
                     }
                   >
                     <Heart
-                      className={`h-4 w-4 ${
-                        isInWishlist ? "fill-current" : ""
-                      }`}
+                      className={`h-4 w-4 ${isInWishlist ? "fill-current" : ""}`}
                     />
                   </Button>
                   <Button
                     onClick={handleAddToCart}
                     disabled={isLoading || product.quantity <= 0}
-                    className="min-w-[120px]"
+                    className="min-w-[120px] transition-all duration-200 hover:scale-105"
                   >
                     {isLoading ? (
-                      "Adding..."
+                      <Loader2 className="animate-spin h-4 w-4 mr-2" />
                     ) : (
                       <>
                         <ShoppingCart className="h-4 w-4 mr-2" />
@@ -219,9 +228,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
   }
 
   return (
-    <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 bg-white shadow-sm">
+    <Card
+      className={`group overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl ${glass}`}
+    >
       <Link href={`/products/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden">
+        <div className="relative aspect-square overflow-hidden rounded-2xl">
           <Image
             src={
               imageError
@@ -231,18 +242,21 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
             }
             alt={product.images[0]?.altText || product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover group-hover:scale-105 transition-transform duration-300 rounded-2xl border border-gray-100 dark:border-gray-800"
             onError={() => setImageError(true)}
           />
 
           {/* Overlay buttons */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300">
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl">
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <Button
                 variant="secondary"
                 size="icon"
                 onClick={handleWishlistToggle}
-                className={`h-8 w-8 ${isInWishlist ? "text-red-500" : ""}`}
+                className={`h-8 w-8 transition-all duration-200 hover:scale-110 ${isInWishlist ? "text-red-500 bg-red-50" : ""}`}
+                title={
+                  isInWishlist ? "Remove from wishlist" : "Add to wishlist"
+                }
               >
                 <Heart
                   className={`h-4 w-4 ${isInWishlist ? "fill-current" : ""}`}
@@ -254,11 +268,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               <Button
                 onClick={handleAddToCart}
                 disabled={isLoading || product.quantity <= 0}
-                className="w-full h-8 text-xs"
+                className="w-full h-9 text-xs rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200"
                 size="sm"
               >
                 {isLoading ? (
-                  "Adding..."
+                  <Loader2 className="animate-spin h-4 w-4 mr-2" />
                 ) : product.quantity <= 0 ? (
                   "Out of Stock"
                 ) : (
@@ -273,27 +287,35 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
           {/* Badges */}
           {product.quantity <= 0 && (
-            <Badge variant="destructive" className="absolute top-2 left-2">
+            <Badge
+              variant="destructive"
+              className="absolute top-2 left-2 text-xs px-2 py-1 rounded-full shadow"
+            >
               Out of Stock
             </Badge>
           )}
           {discountPercentage > 0 && product.quantity > 0 && (
-            <Badge className="absolute top-2 left-2 bg-red-500">
+            <Badge className="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-red-500 text-white shadow px-2 py-1 text-xs rounded-full">
               -{discountPercentage}%
             </Badge>
           )}
         </div>
 
         <CardContent className="p-4">
-          <Badge variant="secondary" className="mb-2 text-xs">
+          <Badge
+            variant="secondary"
+            className="mb-2 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-1"
+          >
             {product.category.name}
           </Badge>
-          <h3 className="font-semibold mb-2 line-clamp-2 text-sm">
+          <h3 className="font-semibold mb-2 line-clamp-2 text-base">
             {product.name}
           </h3>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <span className="font-bold">${product.price.toFixed(2)}</span>
+              <span className="font-bold text-lg text-primary">
+                ${product.price.toFixed(2)}
+              </span>
               {product.comparePrice && (
                 <span className="text-xs text-muted-foreground line-through">
                   ${product.comparePrice.toFixed(2)}
@@ -306,12 +328,6 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                 : "Out of stock"}
             </span>
           </div>
-          {/* {product.allowCustomPrint && (
-            <p className="text-xs text-blue-600">
-              Custom print available{" "}
-              {product.printPrice && `(+$${product.printPrice.toFixed(2)})`}
-            </p>
-          )} */}
         </CardContent>
       </Link>
     </Card>
