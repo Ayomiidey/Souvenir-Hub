@@ -15,7 +15,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -227,11 +226,16 @@ export function ProductsPageClient({
                     )}
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-80 overflow-y-auto">
-                  <SheetHeader>
-                    <SheetTitle>Filter Products</SheetTitle>
-                  </SheetHeader>
-                  <div className="mt-6">
+                <SheetContent
+                  side="left"
+                  className="w-80 overflow-y-auto bg-white dark:bg-slate-900 shadow-xl p-0"
+                >
+                  <div className="sticky top-0 z-10 bg-white dark:bg-slate-900 border-b px-6 py-4 flex items-center justify-between rounded-t-lg shadow-sm">
+                    <SheetTitle className="text-lg font-bold">
+                      Filter Products
+                    </SheetTitle>
+                  </div>
+                  <div className="mt-0 p-6">
                     <ProductFilters
                       categories={categories}
                       priceRange={priceRange}

@@ -59,7 +59,7 @@ export function WishlistSidebar() {
 
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent className="flex flex-col w-full sm:max-w-lg bg-background border-l">
+      <SheetContent className="flex flex-col w-full sm:max-w-lg bg-white dark:bg-slate-900 border-l shadow-lg">
         <SheetHeader className="border-b pb-4">
           <SheetTitle className="flex items-center gap-2 text-foreground">
             <Heart className="h-5 w-5" />

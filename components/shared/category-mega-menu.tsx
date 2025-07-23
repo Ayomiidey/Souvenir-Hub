@@ -86,7 +86,7 @@ export function CategoryMegaMenu() {
                 <>
                   <NavigationMenuTrigger>{category.name}</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-white dark:bg-slate-900 shadow-lg rounded-lg">
                       <div className="row-span-3">
                         <NavigationMenuLink asChild>
                           <Link

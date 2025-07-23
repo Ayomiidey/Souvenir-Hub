@@ -77,23 +77,28 @@ export function Header() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+            <SheetContent
+              side="left"
+              className="w-[280px] sm:w-[320px] bg-white dark:bg-slate-900 shadow-xl p-0"
+            >
               <SheetHeader>
-                <SheetTitle className="text-left">Menu</SheetTitle>
+                <SheetTitle className="text-left">
+                  {" "}
+                  <Link
+                    href="/"
+                    className="flex items-center space-x-2 mb-4"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">S</span>
+                    </div>
+                    <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      SouvenirHub
+                    </span>
+                  </Link>
+                </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 mt-6">
-                <Link
-                  href="/"
-                  className="flex items-center space-x-2 mb-4"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">S</span>
-                  </div>
-                  <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    SouvenirHub
-                  </span>
-                </Link>
                 <div className="flex flex-col space-y-1">
                   <Link
                     href="/products"

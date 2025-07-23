@@ -219,7 +219,7 @@ export function ProductFilters({
   ].filter(Boolean).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white dark:bg-slate-900 border border-gray-200 shadow-sm rounded-lg">
       <style jsx global>{`
         .glass {
           background: rgba(255, 255, 255, 0.3);

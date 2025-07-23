@@ -32,7 +32,7 @@ export function CartSidebar() {
 
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent className="flex flex-col w-full sm:max-w-lg bg-white dark:bg-slate-950 border-l border-border shadow-lg">
+      <SheetContent className="flex flex-col w-full sm:max-w-lg bg-white dark:bg-slate-900 border-l border-border shadow-lg">
         <SheetHeader className="border-b pb-4">
           <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
             <ShoppingBag className="h-5 w-5" />
