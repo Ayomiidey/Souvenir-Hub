@@ -22,15 +22,33 @@ import { Badge } from "@/components/ui/badge";
 import { CheckoutSummary } from "./checkout-summary";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { MessageSquare, CreditCard } from "lucide-react";
+
+interface FormData {
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  firstName: string;
+  lastName: string;
+  company: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  paymentMethod: string;
+  customerNotes: string;
+}
 
 export function CheckoutForm() {
   const { data: session } = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { items } = useAppSelector((state) => state.cart);
+  const { items, subtotal } = useAppSelector((state) => state.cart);
 
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     // Customer Info
     customerName: session?.user?.name || "",
     customerEmail: session?.user?.email || "",
@@ -52,8 +70,99 @@ export function CheckoutForm() {
     customerNotes: "",
   });
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const shipping = subtotal >= 50 ? 0 : 5.99;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
+
+  const generateWhatsAppMessage = () => {
+    const orderDetails = `
+🛍️ *NEW ORDER REQUEST*
+
+👤 *Customer Information:*
+Name: ${formData.customerName}
+Email: ${formData.customerEmail}
+Phone: ${formData.customerPhone || "Not provided"}
+
+📦 *Order Items:*
+${items
+  .map(
+    (item, index) =>
+      `${index + 1}. ${item.name}
+   SKU: ${item.sku || "N/A"}
+   Quantity: ${item.quantity}
+   Unit Price: $${item.price.toFixed(2)}
+   ${item.customPrint ? `Custom Print: "${item.printText}"` : ""}
+   Subtotal: $${(item.price * item.quantity).toFixed(2)}`
+  )
+  .join("\n\n")}
+
+📍 *Shipping Address:*
+${formData.firstName} ${formData.lastName}
+${formData.company ? `${formData.company}\n` : ""}${formData.addressLine1}
+${formData.addressLine2 ? `${formData.addressLine2}\n` : ""}${formData.city}, ${
+      formData.state
+    } ${formData.postalCode}
+${formData.country}
+
+💰 *Order Summary:*
+Subtotal: $${subtotal.toFixed(2)}
+Shipping: ${shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+Tax: $${tax.toFixed(2)}
+*Total: $${total.toFixed(2)}*
+
+💳 *Payment Method:* WhatsApp Payment
+
+${
+  formData.customerNotes ? `📝 *Special Notes:*\n${formData.customerNotes}` : ""
+}
+
+Please confirm this order and provide payment instructions. Thank you! 🙏
+    `.trim();
+
+    return encodeURIComponent(orderDetails);
+  };
+
+  const handleWhatsAppOrder = () => {
+    if (items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
+    // Validate required fields
+    const requiredFields: (keyof FormData)[] = [
+      "customerName",
+      "customerEmail",
+      "firstName",
+      "lastName",
+      "addressLine1",
+      "city",
+      "state",
+      "postalCode",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !formData[field]);
+
+    if (missingFields.length > 0) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    const message = generateWhatsAppMessage();
+    const whatsappNumber = "+1234567890"; // Replace with your WhatsApp business number
+    const whatsappUrl = `https://wa.me/${whatsappNumber.replace(
+      "+",
+      ""
+    )}?text=${message}`;
+
+    // Clear cart and redirect
+    dispatch(clearCart());
+    window.open(whatsappUrl, "_blank");
+    toast.success("Redirecting to WhatsApp...");
+    router.push("/");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,6 +170,12 @@ export function CheckoutForm() {
 
     if (items.length === 0) {
       toast.error("Your cart is empty");
+      return;
+    }
+
+    // If WhatsApp payment, handle differently
+    if (formData.paymentMethod === "WHATSAPP") {
+      handleWhatsAppOrder();
       return;
     }
 
@@ -93,6 +208,12 @@ export function CheckoutForm() {
         },
         paymentMethod: formData.paymentMethod,
         customerNotes: formData.customerNotes,
+        totals: {
+          subtotal,
+          shipping,
+          tax,
+          total,
+        },
       };
 
       const response = await fetch("/api/orders", {
@@ -104,7 +225,9 @@ export function CheckoutForm() {
       if (response.ok) {
         const order = await response.json();
         dispatch(clearCart());
-        toast.success("Order placed successfully!");
+        toast.success(
+          "Order placed successfully! Check your email for confirmation."
+        );
         router.push(`/orders/${order.id}/confirmation`);
       } else {
         const error = await response.json();
@@ -112,7 +235,7 @@ export function CheckoutForm() {
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
-      console.log(error);
+      console.error("Order submission error:", error);
     } finally {
       setLoading(false);
     }
@@ -296,8 +419,18 @@ export function CheckoutForm() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="BANK_TRANSFER">Bank Transfer</SelectItem>
-                <SelectItem value="WHATSAPP">WhatsApp Payment</SelectItem>
+                <SelectItem value="BANK_TRANSFER">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    Bank Transfer
+                  </div>
+                </SelectItem>
+                <SelectItem value="WHATSAPP">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4" />
+                    WhatsApp Payment
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
 
@@ -325,12 +458,19 @@ export function CheckoutForm() {
             )}
 
             {formData.paymentMethod === "WHATSAPP" && (
-              <div className="p-4 bg-muted rounded-lg">
-                <h4 className="font-medium mb-2">WhatsApp Payment</h4>
-                <p className="text-sm">
-                  After placing your order, you&apos;ll receive WhatsApp
-                  instructions for payment.
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h4 className="font-medium mb-2 text-green-800">
+                  WhatsApp Payment
+                </h4>
+                <p className="text-sm text-green-700 mb-3">
+                  Click &quot;Place Order on WhatsApp&quot; to send your order
+                  details directly to our WhatsApp for instant processing and
+                  payment instructions.
                 </p>
+                <div className="flex items-center gap-2 text-xs text-green-600">
+                  <MessageSquare className="h-3 w-3" />
+                  <span>Fast • Secure • Personal Service</span>
+                </div>
               </div>
             )}
           </CardContent>
@@ -358,9 +498,21 @@ export function CheckoutForm() {
       <div className="space-y-6">
         <CheckoutSummary />
 
-        <Button type="submit" className="w-full" size="lg" disabled={loading}>
-          {loading ? "Placing Order..." : "Place Order"}
-        </Button>
+        {formData.paymentMethod === "WHATSAPP" ? (
+          <Button
+            type="button"
+            onClick={handleWhatsAppOrder}
+            className="w-full bg-green-600 hover:bg-green-700"
+            size="lg"
+          >
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Place Order on WhatsApp
+          </Button>
+        ) : (
+          <Button type="submit" className="w-full" size="lg" disabled={loading}>
+            {loading ? "Placing Order..." : "Place Order"}
+          </Button>
+        )}
 
         <div className="text-xs text-muted-foreground text-center">
           By placing your order, you agree to our terms and conditions.

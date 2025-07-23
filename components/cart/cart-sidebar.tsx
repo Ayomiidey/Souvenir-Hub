@@ -30,6 +30,11 @@ export function CartSidebar() {
   const handleUpdateQuantity = (id: string, quantity: number) =>
     dispatch(updateQuantity({ id, quantity }));
 
+  // Handler for continue shopping that closes the cart and navigates
+  const handleContinueShopping = () => {
+    handleClose();
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetContent className="flex flex-col w-full sm:max-w-lg bg-white dark:bg-slate-900 border-l border-border shadow-lg">
@@ -55,7 +60,9 @@ export function CartSidebar() {
               asChild
               className="rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
             >
-              <Link href="/products">Continue Shopping</Link>
+              <Link href="/products" onClick={handleContinueShopping}>
+                Continue Shopping
+              </Link>
             </Button>
           </div>
         ) : (
@@ -63,12 +70,16 @@ export function CartSidebar() {
             <ScrollArea className="flex-1 py-6 pr-2">
               <div className="space-y-6">
                 {items.map((item) => (
-                  <CartItem
+                  <div
                     key={item.id}
-                    item={item}
-                    onRemove={handleRemoveItem}
-                    onUpdateQuantity={handleUpdateQuantity}
-                  />
+                    className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 border border-gray-100 dark:border-gray-800"
+                  >
+                    <CartItem
+                      item={item}
+                      onRemove={handleRemoveItem}
+                      onUpdateQuantity={handleUpdateQuantity}
+                    />
+                  </div>
                 ))}
               </div>
             </ScrollArea>
@@ -106,6 +117,15 @@ export function CartSidebar() {
                 >
                   <Link href="/cart" onClick={handleClose}>
                     View Cart
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  asChild
+                  className="w-full h-11 rounded-full text-base"
+                >
+                  <Link href="/products" onClick={handleContinueShopping}>
+                    Continue Shopping
                   </Link>
                 </Button>
               </div>
