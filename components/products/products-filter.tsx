@@ -101,21 +101,17 @@ export function ProductFilters({
 
   // Handle min price input blur
   const handleMinPriceBlur = useCallback(() => {
-    // Allow empty input during editing; only validate on final blur
+    // If input is blank, set filter to undefined (or min) and leave input blank
     if (minPriceInput === "") {
-      setMinPriceInput(currentFilters.minPrice.toFixed(2));
-      return; // Don't update filters until a valid value is entered
-    }
-
-    let numValue = parseFloat(minPriceInput);
-
-    // If invalid number, revert to current minPrice
-    if (isNaN(numValue)) {
-      setMinPriceInput(currentFilters.minPrice.toFixed(2));
+      if (currentFilters.minPrice !== priceRange.min) {
+        onFiltersChange({ minPrice: priceRange.min });
+      }
       return;
     }
-
-    // Clamp value to valid range
+    let numValue = parseFloat(minPriceInput);
+    if (isNaN(numValue)) {
+      return;
+    }
     numValue = Math.max(
       priceRange.min,
       Math.min(currentFilters.maxPrice, numValue)
@@ -135,21 +131,17 @@ export function ProductFilters({
 
   // Handle max price input blur
   const handleMaxPriceBlur = useCallback(() => {
-    // Allow empty input during editing; only validate on final blur
+    // If input is blank, set filter to undefined (or max) and leave input blank
     if (maxPriceInput === "") {
-      setMaxPriceInput(currentFilters.maxPrice.toFixed(2));
-      return; // Don't update filters until a valid value is entered
-    }
-
-    let numValue = parseFloat(maxPriceInput);
-
-    // If invalid number, revert to current maxPrice
-    if (isNaN(numValue)) {
-      setMaxPriceInput(currentFilters.maxPrice.toFixed(2));
+      if (currentFilters.maxPrice !== priceRange.max) {
+        onFiltersChange({ maxPrice: priceRange.max });
+      }
       return;
     }
-
-    // Clamp value to valid range
+    let numValue = parseFloat(maxPriceInput);
+    if (isNaN(numValue)) {
+      return;
+    }
     numValue = Math.min(
       priceRange.max,
       Math.max(currentFilters.minPrice, numValue)
@@ -416,7 +408,9 @@ export function ProductFilters({
                     onChange={(e) => handleMinPriceChange(e.target.value)}
                     onBlur={handleMinPriceBlur}
                     onKeyDown={(e) => handlePriceKeyDown(e, "min")}
-                    className="h-8 bg-white dark:bg-gray-900 glass"
+                    className={`h-8 bg-white dark:bg-gray-900 glass ${
+                      minPriceInput === "" ? "placeholder:text-gray-400" : ""
+                    }`}
                     min={priceRange.min}
                     max={priceRange.max}
                     step="0.01"
@@ -438,7 +432,9 @@ export function ProductFilters({
                     onChange={(e) => handleMaxPriceChange(e.target.value)}
                     onBlur={handleMaxPriceBlur}
                     onKeyDown={(e) => handlePriceKeyDown(e, "max")}
-                    className="h-8 bg-white dark:bg-gray-900 glass"
+                    className={`h-8 bg-white dark:bg-gray-900 glass ${
+                      maxPriceInput === "" ? "placeholder:text-gray-400" : ""
+                    }`}
                     min={priceRange.min}
                     max={priceRange.max}
                     step="0.01"

@@ -2,6 +2,7 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/products/product-card";
+import Link from "next/link";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -89,33 +90,44 @@ export default async function CategoryPage({
     }));
 
     return (
-      <div className="container py-8">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">{category.name}</h1>
-            {category.description && (
-              <p className="text-muted-foreground mt-2">
-                {category.description}
-              </p>
-            )}
+      <section className="bg-white dark:bg-slate-900 min-h-[60vh] border-b mt-8">
+        <div className="container max-w-7xl mx-auto px-4 py-10">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 border-b pb-6">
+            <div>
+              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-2">
+                {category.name}
+              </h1>
+              {category.description && (
+                <p className="text-muted-foreground mt-2 max-w-2xl text-base">
+                  {category.description}
+                </p>
+              )}
+            </div>
+            {/* You can add a sort dropdown or filter here if needed */}
           </div>
 
           {formattedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {formattedProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="flex flex-col items-center justify-center py-16 bg-slate-50 dark:bg-slate-800 rounded-lg border mt-8">
               <h3 className="text-lg font-medium mb-2">No products found</h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground mb-4">
                 Check back later for new products in this category.
               </p>
+              <Link
+                href="/products"
+                className="inline-block px-6 py-2 rounded-md bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow hover:from-blue-600 hover:to-purple-700 transition"
+              >
+                View All Products
+              </Link>
             </div>
           )}
         </div>
-      </div>
+      </section>
     );
   } catch (error) {
     console.error("Error loading category page:", error);
