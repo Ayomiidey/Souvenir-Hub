@@ -310,7 +310,9 @@ export function ProductsPageClient({
               <div
                 className={cn(
                   "grid gap-3",
-                  viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
+                  viewMode === "grid"
+                    ? "grid-cols-2 lg:grid-cols-4"
+                    : "grid-cols-1"
                 )}
               >
                 {[...Array(12)].map((_, i) => (
@@ -327,7 +329,9 @@ export function ProductsPageClient({
               <div
                 className={cn(
                   "grid gap-3",
-                  viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
+                  viewMode === "grid"
+                    ? "grid-cols-2 lg:grid-cols-4"
+                    : "grid-cols-1"
                 )}
               >
                 {products.map((product) => (

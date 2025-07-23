@@ -219,7 +219,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
   }
 
   return (
-    <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
+    <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200 bg-white shadow-sm">
       <Link href={`/products/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden">
           <Image

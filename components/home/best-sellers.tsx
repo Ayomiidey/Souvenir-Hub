@@ -60,7 +60,7 @@ export function BestSellers() {
               Our most popular custom souvenirs
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="space-y-4">
                 <div className="aspect-square bg-muted rounded-lg shimmer"></div>
