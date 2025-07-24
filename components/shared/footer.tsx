@@ -11,8 +11,36 @@ import {
 export function Footer() {
   return (
     <footer className="bg-muted/50 border-t">
-      <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      {/* Mobile Footer */}
+      <div className="md:hidden py-6 px-4 text-center text-sm text-muted-foreground flex flex-col items-center justify-center">
+        <div className="flex flex-wrap justify-center items-center gap-4 mb-2 w-full">
+          <Link
+            href="/products"
+            className="font-medium text-primary hover:underline"
+          >
+            Products
+          </Link>
+          <Link
+            href="/contact"
+            className="font-medium text-primary hover:underline"
+          >
+            Contact Us
+          </Link>
+          <Link
+            href="/faq"
+            className="font-medium text-primary hover:underline"
+          >
+            FAQ
+          </Link>
+        </div>
+        <p className="w-full text-center">
+          &copy; 2024 SouvenirShop. All rights reserved.
+        </p>
+      </div>
+
+      {/* Desktop Footer */}
+      <div className="hidden md:block px-4 py-12 md:py-16">
+        <div className="max-w-screen-xl mx-auto grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">SouvenirShop</h3>
