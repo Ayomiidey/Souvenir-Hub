@@ -308,6 +308,27 @@ model Order {
   @@map("orders")
 }
 
+model Carousel {
+  id          String           @id @default(uuid()) @db.Uuid
+  title       String
+  description String
+  imageUrl    String
+  link        String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean          @default(true)
+  type        CarouselTypeEnum @default(homepage)
+  sortOrder   Int
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+enum CarouselTypeEnum {
+  homepage
+  product
+  category
+}
+
 enum OrderStatus {
   PENDING
   CONFIRMED

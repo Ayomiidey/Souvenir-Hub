@@ -1,16 +1,20 @@
-import { HeroSection } from "@/components/home/hero-section";
+// import { HeroSection } from "@/components/home/hero-section";
 import { BestSellers } from "@/components/home/best-sellers";
 import { NewArrivals } from "@/components/home/new-arrivals";
 import { DealsSection } from "@/components/home/deals-section";
 import { CategoriesGrid } from "@/components/home/categories-grid";
 import { FeaturesSection } from "@/components/home/features-section";
+import Carousel from "@/components/carousel/carousel";
 
 export default function HomePage() {
   return (
-    <div className="space-y-12 pb-12">
-      <div className="container">
-        <HeroSection />
+    <div className="pb-12 mt-16">
+      <div className="mx-auto max-w-7xl px-4">
+        <Carousel type="homepage" />
       </div>
+      {/* <div className="container mx-auto max-w-7xl px-4">
+        <HeroSection />
+      </div> */}
       <div className="container mx-auto max-w-7xl px-4">
         <BestSellers />
       </div>

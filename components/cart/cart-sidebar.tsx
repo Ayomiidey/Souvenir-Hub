@@ -37,7 +37,7 @@ export function CartSidebar() {
 
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent className="flex flex-col w-full sm:max-w-lg bg-white dark:bg-slate-900 border-l border-border shadow-lg">
+      <SheetContent className="flex flex-col w-full sm:max-w-lg bg-white dark:bg-slate-900 border-l border-border shadow-lg min-h-0">
         <SheetHeader className="border-b pb-4">
           <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
             <ShoppingBag className="h-5 w-5" />
@@ -66,8 +66,8 @@ export function CartSidebar() {
             </Button>
           </div>
         ) : (
-          <>
-            <ScrollArea className="flex-1 py-6 pr-2">
+          <div className="flex flex-col flex-1 min-h-0">
+            <ScrollArea className="flex-1 min-h-0 py-6 pr-2">
               <div className="space-y-6">
                 {items.map((item) => (
                   <div
@@ -113,16 +113,7 @@ export function CartSidebar() {
                 <Button
                   variant="outline"
                   asChild
-                  className="w-full h-11 rounded-full border-gray-300 dark:border-gray-700 text-base"
-                >
-                  <Link href="/cart" onClick={handleClose}>
-                    View Cart
-                  </Link>
-                </Button>
-                <Button
-                  variant="ghost"
-                  asChild
-                  className="w-full h-11 rounded-full text-base"
+                  className="w-full h-11 rounded-full border-gray-300 dark:border-gray-700 text-base mb-5"
                 >
                   <Link href="/products" onClick={handleContinueShopping}>
                     Continue Shopping
@@ -130,7 +121,7 @@ export function CartSidebar() {
                 </Button>
               </div>
             </div>
-          </>
+          </div>
         )}
       </SheetContent>
     </Sheet>

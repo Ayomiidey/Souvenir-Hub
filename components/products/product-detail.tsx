@@ -191,28 +191,34 @@ Please let me know about availability and delivery options. Thank you!`;
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Container with proper max-width and centered content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto mt-7 px-4 sm:px-6 lg:px-8 py-6">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-          <Link href="/" className="hover:text-foreground transition-colors">
+          <Link
+            href="/"
+            className="hover:text-primary font-semibold transition-colors"
+          >
             Home
           </Link>
           <span>/</span>
           <Link
             href="/products"
-            className="hover:text-foreground transition-colors"
+            className="hover:text-primary font-semibold transition-colors"
           >
             Products
           </Link>
           <span>/</span>
           <Link
             href={`/categories/${product.category.slug}`}
-            className="hover:text-foreground transition-colors"
+            className="hover:text-primary font-semibold transition-colors px-2 py-1 rounded-lg bg-white/60 dark:bg-slate-800/60 shadow-sm backdrop-blur-md border border-gray-200 dark:border-gray-800"
+            style={{ transition: "all 0.2s" }}
           >
             {product.category.name}
           </Link>
           <span>/</span>
-          <span className="text-foreground font-medium">{product.name}</span>
+          <span className="text-foreground font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text">
+            {product.name}
+          </span>
         </nav>
 
         {/* Main Product Section */}
@@ -227,13 +233,13 @@ Please let me know about availability and delivery options. Thank you!`;
                 }
                 alt={product.images[selectedImage]?.altText || product.name}
                 fill
-                className="object-cover transition-transform duration-300 hover:scale-105"
+                className="object-cover transition-transform duration-300 hover:scale-105 rounded-xl"
                 priority
               />
               {hasDiscount && (
                 <Badge
                   variant="destructive"
-                  className="absolute top-3 left-3 text-xs font-bold shadow-md"
+                  className="absolute top-3 left-3 text-xs font-bold shadow-lg bg-gradient-to-r from-red-500 to-pink-500/80 backdrop-blur-md border border-red-200"
                 >
                   -{discountPercentage}%
                 </Badge>
@@ -241,7 +247,7 @@ Please let me know about availability and delivery options. Thank you!`;
               <Button
                 variant="outline"
                 size="icon"
-                className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm hover:bg-white shadow-md"
+                className="absolute top-3 right-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md hover:bg-white shadow-lg border border-gray-200 dark:border-gray-800"
                 onClick={handleShare}
               >
                 <Share2 className="h-4 w-4" />
@@ -277,14 +283,19 @@ Please let me know about availability and delivery options. Thank you!`;
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Badge variant="secondary" className="text-xs">
-                  {product.category.name}
+                <Badge
+                  variant="secondary"
+                  className="text-xs px-3 py-1 rounded-lg bg-white/70 dark:bg-slate-800/70 shadow border border-gray-200 dark:border-gray-800 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
+                >
+                  <Link href={`/categories/${product.category.slug}`}>
+                    {product.category.name}
+                  </Link>
                 </Badge>
                 <span className="text-xs text-muted-foreground">
                   SKU: {product.sku}
                 </span>
               </div>
-              <h1 className="text-2xl lg:text-3xl font-bold mb-3 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent dark:from-white dark:to-gray-300">
+              <h1 className="text-2xl lg:text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent dark:from-white dark:to-purple-300">
                 {product.name}
               </h1>
               {product.shortDescription && (

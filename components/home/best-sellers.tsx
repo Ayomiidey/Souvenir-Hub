@@ -78,9 +78,9 @@ export function BestSellers() {
 
   if (error) {
     return (
-      <section className="space-y-8">
+      <section className="space-y-8 mt-12">
         <div className="container">
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-4 mb-8">
             <h2 className="text-3xl font-bold">Best Sellers</h2>
             <p className="text-muted-foreground">
               Unable to load products at the moment
@@ -95,9 +95,9 @@ export function BestSellers() {
   }
 
   return (
-    <section className="space-y-8">
+    <section className="space-y-8 mt-12">
       <div className="container">
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 mb-8">
           <h2 className="text-3xl font-bold">Best Sellers</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Discover our most popular custom souvenirs, loved by thousands of
@@ -113,7 +113,7 @@ export function BestSellers() {
               ))}
             </div>
 
-            <div className="text-center">
+            <div className="text-center mb-10">
               <Button asChild variant="outline" size="lg">
                 <Link href="/products">
                   View All Products

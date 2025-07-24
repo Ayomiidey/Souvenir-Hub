@@ -2,6 +2,9 @@
 CREATE TYPE "ProductStatus" AS ENUM ('DRAFT', 'ACTIVE', 'INACTIVE', 'ARCHIVED');
 
 -- CreateEnum
+CREATE TYPE "CarouselTypeEnum" AS ENUM ('homepage', 'product', 'category');
+
+-- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED');
 
 -- CreateEnum
@@ -80,7 +83,7 @@ CREATE TABLE "user_roles" (
 -- CreateTable
 CREATE TABLE "addresses" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
     "type" TEXT NOT NULL DEFAULT 'SHIPPING',
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
@@ -230,6 +233,24 @@ CREATE TABLE "orders" (
     "deliveredAt" TIMESTAMP(3),
 
     CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Carousel" (
+    "id" UUID NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "link" TEXT,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "type" "CarouselTypeEnum" NOT NULL DEFAULT 'homepage',
+    "sortOrder" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Carousel_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable

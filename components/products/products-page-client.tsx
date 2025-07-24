@@ -167,9 +167,10 @@ export function ProductsPageClient({
   };
 
   const activeFiltersCount = [
-    filters.search,
-    filters.category,
-    filters.minPrice > priceRange.min || filters.maxPrice < priceRange.max,
+    filters.search && filters.search.trim() !== "",
+    filters.category && filters.category.trim() !== "",
+    filters.minPrice > priceRange.min,
+    filters.maxPrice < priceRange.max,
     filters.inStock,
   ].filter(Boolean).length;
 
