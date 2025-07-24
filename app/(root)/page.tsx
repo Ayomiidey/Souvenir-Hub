@@ -8,7 +8,7 @@ import Carousel from "@/components/carousel/carousel";
 
 export default function HomePage() {
   return (
-    <div className="pb-12 mt-23">
+    <div className="pb-12 mt-22">
       <div className="mx-auto max-w-7xl px-4">
         <Carousel type="homepage" />
       </div>

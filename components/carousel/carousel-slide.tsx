@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function CarouselSlide({ item, isActive }: CarouselSlideProps) {
   return (
     <div className="w-full flex-shrink-0">
-      <div className="relative h-[300px] sm:h-[400px] md:h-[550px]">
+      <div className="relative h-[300px] sm:h-[400px] md:h-[520px]">
         <Image
           src={item.imageUrl}
           alt={item.title}
