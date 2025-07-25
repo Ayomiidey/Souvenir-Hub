@@ -191,7 +191,7 @@ Please let me know about availability and delivery options. Thank you!`;
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       {/* Container with proper max-width and centered content */}
-      <div className="max-w-7xl mx-auto mt-7 px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto mt-7 px-4 sm:px-6 lg:px-8 py-6 pt-20">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
           <Link
@@ -295,7 +295,7 @@ Please let me know about availability and delivery options. Thank you!`;
                   SKU: {product.sku}
                 </span>
               </div>
-              <h1 className="text-2xl lg:text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent dark:from-white dark:to-purple-300">
+              <h1 className="text-3xl lg:text-4xl font-extrabold mb-3 text-foreground dark:text-white">
                 {product.name}
               </h1>
               {product.shortDescription && (
