@@ -45,7 +45,6 @@ interface OrderRequest {
 
 async function sendOrderEmail(orderData: any, orderNumber: string) {
   try {
-    // Create email content
     const emailContent = {
       to: "your-business-email@example.com", // Replace with your business email
       subject: `New Order Received - ${orderNumber}`,
@@ -54,14 +53,12 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
           <h2 style="color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">
             🛍️ New Order Received
           </h2>
-          
           <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #4CAF50; margin-top: 0;">Order Details</h3>
             <p><strong>Order Number:</strong> ${orderNumber}</p>
             <p><strong>Payment Method:</strong> ${orderData.paymentMethod}</p>
             <p><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
           </div>
-
           <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin-top: 0;">👤 Customer Information</h3>
             <p><strong>Name:</strong> ${orderData.customerInfo.name}</p>
@@ -70,13 +67,12 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
               orderData.customerInfo.phone || "Not provided"
             }</p>
           </div>
-
           <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin-top: 0;">📍 Shipping Address</h3>
             <p>
               ${orderData.shippingAddress.firstName} ${
-        orderData.shippingAddress.lastName
-      }<br>
+                orderData.shippingAddress.lastName
+              }<br>
               ${
                 orderData.shippingAddress.company
                   ? `${orderData.shippingAddress.company}<br>`
@@ -89,12 +85,11 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
                   : ""
               }
               ${orderData.shippingAddress.city}, ${
-        orderData.shippingAddress.state
-      } ${orderData.shippingAddress.postalCode}<br>
+                orderData.shippingAddress.state
+              } ${orderData.shippingAddress.postalCode}<br>
               ${orderData.shippingAddress.country}
             </p>
           </div>
-
           <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin: 20px 0;">
             <h3 style="color: #333; margin-top: 0;">📦 Order Items</h3>
             ${orderData.items
@@ -122,7 +117,6 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
               )
               .join("")}
           </div>
-
           <div style="background: #4CAF50; color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: white;">💰 Order Summary</h3>
             <p>Subtotal: $${orderData.totals.subtotal.toFixed(2)}</p>
@@ -136,7 +130,6 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
               Total: $${orderData.totals.total.toFixed(2)}
             </p>
           </div>
-
           ${
             orderData.customerNotes
               ? `
@@ -147,7 +140,6 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
           `
               : ""
           }
-
           <div style="text-align: center; margin: 30px 0; padding: 20px; background: #f0f0f0; border-radius: 8px;">
             <p style="margin: 0; color: #666;">
               Please process this order and contact the customer for payment confirmation if needed.
@@ -157,7 +149,6 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
       `,
     };
 
-    // Send email using your preferred email service
     const response = await fetch("/api/send-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -176,10 +167,8 @@ export async function POST(request: NextRequest) {
     const session = await auth();
     const body: OrderRequest = await request.json();
 
-    // Generate order number
     const orderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-    // First, create the shipping address
     const shippingAddress = await prisma.address.create({
       data: {
         userId: session?.user?.id || null,
@@ -196,7 +185,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Create the order with the shipping address ID
     const order = await prisma.order.create({
       data: {
         orderNumber,
@@ -216,16 +204,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Create order items and get product details
     const orderItems = [];
     for (const item of body.items) {
-      // Get product details for snapshot
       const product = await prisma.product.findUnique({
         where: { id: item.productId },
         select: { name: true, sku: true, images: { take: 1 } },
       });
 
-      // Create order item
       const orderItem = await prisma.orderItem.create({
         data: {
           orderId: order.id,
@@ -247,7 +232,6 @@ export async function POST(request: NextRequest) {
         productSku: product?.sku || "",
       });
 
-      // Update product quantity
       await prisma.product.update({
         where: { id: item.productId },
         data: {
@@ -258,7 +242,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Get the complete order with all relations
     const completeOrder = await prisma.order.findUnique({
       where: { id: order.id },
       include: {
@@ -273,7 +256,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Send email notification
     const emailData = {
       ...body,
       items: orderItems,

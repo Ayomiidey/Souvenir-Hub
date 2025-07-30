@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { useLoader } from "@/components/providers/loader-provider";
 import { useSession } from "next-auth/react";
@@ -51,12 +50,9 @@ export function CheckoutForm() {
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    // Customer Info
     customerName: session?.user?.name || "",
     customerEmail: session?.user?.email || "",
     customerPhone: "",
-
-    // Shipping Address
     firstName: "",
     lastName: "",
     company: "",
@@ -66,8 +62,6 @@ export function CheckoutForm() {
     state: "",
     postalCode: "",
     country: "US",
-
-    // Payment & Notes
     paymentMethod: "BANK_TRANSFER",
     customerNotes: "",
   });
@@ -80,9 +74,9 @@ export function CheckoutForm() {
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
-  const generateWhatsAppMessage = () => {
+  const generateWhatsAppMessage = (orderNumber: string) => {
     const orderDetails = `
-🛍️ *NEW ORDER REQUEST*
+🛍️ *NEW ORDER REQUEST - ${orderNumber}*
 
 👤 *Customer Information:*
 Name: ${formData.customerName}
@@ -128,14 +122,13 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
     return encodeURIComponent(orderDetails);
   };
 
-  const handleWhatsAppOrder = () => {
+  const handleWhatsAppOrder = async () => {
     loader.show();
     if (items.length === 0) {
       toast.error("Your cart is empty");
       return;
     }
 
-    // Validate required fields
     const requiredFields: (keyof FormData)[] = [
       "customerName",
       "customerEmail",
@@ -148,25 +141,60 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
     ];
 
     const missingFields = requiredFields.filter((field) => !formData[field]);
-
     if (missingFields.length > 0) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    const message = generateWhatsAppMessage();
-    const whatsappNumber = "+1234567890"; // Replace with your WhatsApp business number
-    const whatsappUrl = `https://wa.me/${whatsappNumber.replace(
-      "+",
-      ""
-    )}?text=${message}`;
+    const orderData = {
+      items: items.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        customPrint: item.customPrint,
+        printText: item.printText,
+      })),
+      customerInfo: {
+        name: formData.customerName,
+        email: formData.customerEmail,
+        phone: formData.customerPhone,
+      },
+      shippingAddress: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        company: formData.company,
+        addressLine1: formData.addressLine1,
+        addressLine2: formData.addressLine2,
+        city: formData.city,
+        state: formData.state,
+        postalCode: formData.postalCode,
+        country: formData.country,
+      },
+      paymentMethod: "WHATSAPP",
+      customerNotes: formData.customerNotes,
+      totals: { subtotal, shipping, tax, total },
+    };
 
-    // Clear cart and redirect
-    dispatch(clearCart());
-    window.open(whatsappUrl, "_blank");
-    toast.success("Redirecting to WhatsApp...");
-    router.push("/");
-    setTimeout(() => loader.hide(), 1000);
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+
+    if (response.ok) {
+      const order = await response.json();
+      const message = generateWhatsAppMessage(order.orderNumber);
+      const whatsappNumber = "+1234567890"; // Replace with your WhatsApp number
+      const whatsappUrl = `https://wa.me/${whatsappNumber.replace("+", "")}?text=${message}`;
+      dispatch(clearCart());
+      window.open(whatsappUrl, "_blank");
+      toast.success("Order sent to WhatsApp. Awaiting confirmation.");
+      router.push("/");
+    } else {
+      const error = await response.json();
+      toast.error(error.message || "Failed to create order");
+    }
+    loader.hide();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -178,7 +206,6 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
       return;
     }
 
-    // If WhatsApp payment, handle differently
     if (formData.paymentMethod === "WHATSAPP") {
       handleWhatsAppOrder();
       return;
@@ -213,12 +240,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
         },
         paymentMethod: formData.paymentMethod,
         customerNotes: formData.customerNotes,
-        totals: {
-          subtotal,
-          shipping,
-          tax,
-          total,
-        },
+        totals: { subtotal, shipping, tax, total },
       };
 
       const response = await fetch("/api/orders", {
@@ -500,10 +522,8 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
         </Card>
       </div>
 
-      {/* Order Summary */}
       <div className="space-y-6">
         <CheckoutSummary />
-
         {formData.paymentMethod === "WHATSAPP" ? (
           <Button
             type="button"
@@ -519,7 +539,6 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
             {loading ? "Placing Order..." : "Place Order"}
           </Button>
         )}
-
         <div className="text-xs text-muted-foreground text-center">
           By placing your order, you agree to our terms and conditions.
         </div>
