@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
@@ -30,7 +29,6 @@ export function CategoryMegaMenu() {
   const fetchCategories = async () => {
     try {
       const response = await fetch("/api/categories");
-
       if (response.ok) {
         const data = await response.json();
         setCategories(Array.isArray(data) ? data : []);
@@ -48,43 +46,39 @@ export function CategoryMegaMenu() {
 
   if (loading) {
     return (
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <Link
-                href="/products"
-                className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-              >
-                All Products
-              </Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+      <div className="w-full flex border border-gray-300 dark:border-gray-600">
+        <Link
+          href="/products"
+          className="flex-1 px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors border-r border-gray-300 dark:border-gray-600"
+        >
+          ALL PRODUCTS
+        </Link>
+      </div>
     );
   }
 
-  return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuLink asChild>
-            <Link
-              href="/products"
-              className="group inline-flex whitespace-nowrap h-10 items-center justify-center rounded-md bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-            >
-              All Products
-            </Link>
-          </NavigationMenuLink>
-        </NavigationMenuItem>
+  const allCategories = [
+    { id: "all", name: "ALL PRODUCTS", slug: "products", children: [] },
+    ...categories,
+  ];
 
-        {Array.isArray(categories) &&
-          categories.map((category) => (
-            <NavigationMenuItem key={category.id}>
-              {category.children && category.children.length > 0 ? (
-                <>
-                  <NavigationMenuTrigger>{category.name}</NavigationMenuTrigger>
+  return (
+    <div className="w-full flex border border-gray-300 dark:border-gray-600">
+      {allCategories.map((category, index) => (
+        <div key={category.id} className="flex-1">
+          {category.children && category.children.length > 0 ? (
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger
+                    className={cn(
+                      "w-full h-auto px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors rounded-none border-0",
+                      index < allCategories.length - 1 &&
+                        "border-r border-gray-300 dark:border-gray-600"
+                    )}
+                  >
+                    {category.name}
+                  </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-white dark:bg-slate-900 shadow-lg rounded-lg">
                       <div className="row-span-3">
@@ -111,25 +105,31 @@ export function CategoryMegaMenu() {
                       ))}
                     </div>
                   </NavigationMenuContent>
-                </>
-              ) : (
-                <NavigationMenuLink asChild>
-                  <Link
-                    href={`/categories/${category.slug}`}
-                    className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
-                  >
-                    {category.name}
-                  </Link>
-                </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          ) : (
+            <Link
+              href={
+                category.id === "all"
+                  ? "/products"
+                  : `/categories/${category.slug}`
+              }
+              className={cn(
+                "block w-full px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors",
+                index < allCategories.length - 1 &&
+                  "border-r border-gray-300 dark:border-gray-600"
               )}
-            </NavigationMenuItem>
-          ))}
-      </NavigationMenuList>
-    </NavigationMenu>
+            >
+              {category.name}
+            </Link>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
 
-// Fixed: Remove <li> wrapper to prevent nested <li> elements
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ListItem = ({ className, title, children, href, ...props }: any) => {
   return (

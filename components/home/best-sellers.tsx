@@ -11,23 +11,32 @@ interface Product {
   name: string;
   slug: string;
   price: number;
-  comparePrice?: number;
-  images: { url: string; altText: string }[];
-  category: { name: string };
+  comparePrice?: number | null;
+  images: { url: string; altText: string | null }[];
+  category: { name: string; slug?: string };
   quantity: number;
   allowCustomPrint: boolean;
-  printPrice?: number;
+  printPrice?: number | null;
   sku: string;
+  isFeatured?: boolean;
+  status?: string;
 }
 
-export function BestSellers() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+interface BestSellersProps {
+  products?: Product[];
+}
+
+export function BestSellers({ products: propProducts }: BestSellersProps) {
+  const [products, setProducts] = useState<Product[]>(propProducts || []);
+  const [loading, setLoading] = useState(!propProducts);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchBestSellers();
-  }, []);
+    // Only fetch if no products were provided as props
+    if (!propProducts) {
+      fetchBestSellers();
+    }
+  }, [propProducts]);
 
   const fetchBestSellers = async () => {
     try {
@@ -109,11 +118,15 @@ export function BestSellers() {
           <>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  viewMode="grid"
+                />
               ))}
             </div>
 
-            <div className="text-center mb-10">
+            <div className="text-center mb-10 md:mr-85">
               <Button asChild variant="outline" size="lg">
                 <Link href="/products">
                   View All Products
