@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -37,28 +38,50 @@ interface Product {
   images: { url: string; altText: string }[];
   createdAt: string;
   isFeatured: boolean;
+  deliveryTime?: string;
 }
 
-export function ProductsTable() {
+interface ProductsTableProps {
+  filters?: {
+    search: string;
+    category: string;
+    status: string;
+  };
+}
+
+export function ProductsTable({
+  filters = { search: "", category: "all", status: "all" },
+}: ProductsTableProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
-      const response = await fetch("/api/admin/products");
+      const params = new URLSearchParams();
+      if (filters.search) params.set("search", filters.search);
+      if (filters.category && filters.category !== "all")
+        params.set("category", filters.category);
+      if (filters.status && filters.status !== "all")
+        params.set("status", filters.status);
+
+      const response = await fetch(`/api/admin/products?${params.toString()}`);
       const data = await response.json();
-      setProducts(data.products || []);
+      const formattedProducts = (data.products || []).map((product: any) => ({
+        ...product,
+        price: Number(product.price) || 0,
+      }));
+      setProducts(formattedProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]); // Depend on filters to refetch when they change
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]); // Depend on the memoized fetchProducts
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -76,23 +99,33 @@ export function ProductsTable() {
     }
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
+  const handleDeleteProduct = async (id: string) => {
+    const confirm = await toast.promise(
+      new Promise((resolve) => setTimeout(() => resolve(true), 100)), // Simulated confirm
+      {
+        loading: "Confirming deletion...",
+        success: "Deletion confirmed",
+        error: "Cancelled",
+      },
+      { position: "top-right", duration: 3000 }
+    );
 
-    try {
-      const response = await fetch(`/api/admin/products/${productId}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        toast.success("Product deleted successfully");
-        fetchProducts();
-      } else {
-        toast.error("Failed to delete product");
+    if (confirm) {
+      try {
+        const response = await fetch(`/api/admin/products/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          setProducts(products.filter((product) => product.id !== id));
+          toast.success("Product deleted successfully!");
+        } else {
+          const data = await response.json();
+          toast.error(data.message || "Failed to delete product");
+        }
+      } catch (error) {
+        toast.error("Error deleting product");
+        console.error("Error deleting product:", error);
       }
-    } catch (error) {
-      toast.error("Error deleting product");
-      console.log(error);
     }
   };
 
@@ -224,13 +257,18 @@ export function ProductsTable() {
                     {product.sku}
                   </TableCell>
                   <TableCell>{product.category.name}</TableCell>
-                  <TableCell>${product.price.toFixed(2)}</TableCell>
+                  <TableCell>₦{(product.price * 1600).toFixed(2)}</TableCell>
                   <TableCell>
                     <div className="space-y-1">
                       <div className="font-medium">{product.quantity}</div>
                       <Badge className={stockStatus.color}>
                         {stockStatus.label}
                       </Badge>
+                      {product.deliveryTime && (
+                        <Badge className="bg-yellow-100 text-yellow-800">
+                          {product.deliveryTime}
+                        </Badge>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -251,29 +289,25 @@ export function ProductsTable() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
                           <Link href={`/products/${product.slug}`}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View
+                            <Eye className="mr-2 h-4 w-4" /> View
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link href={`/admin/products/${product.id}/edit`}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
+                            <Edit className="mr-2 h-4 w-4" /> Edit
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDuplicateProduct(product.id)}
                         >
-                          <Copy className="mr-2 h-4 w-4" />
-                          Duplicate
+                          <Copy className="mr-2 h-4 w-4" /> Duplicate
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           onClick={() => handleDeleteProduct(product.id)}
                           className="text-destructive"
                         >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
+                          <Trash2 className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

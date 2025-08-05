@@ -154,6 +154,7 @@ model Product {
   trackQuantity     Boolean  @default(true)
   quantity          Int      @default(0)
   lowStockThreshold Int      @default(5)
+  deliveryTime      String?
   weight            Decimal? @db.Decimal(8, 2)
   dimensions        String? // JSON string: {"length": 10, "width": 5, "height": 3}
 

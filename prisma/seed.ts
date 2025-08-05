@@ -6,6 +6,10 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 Starting database seed...");
 
+  await prisma.orderItem.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.category.deleteMany();
+
   // Create roles
   const adminRole = await prisma.role.upsert({
     where: { name: "ADMIN" },
@@ -103,10 +107,8 @@ async function main() {
 
     if (children) {
       for (const childData of children) {
-        await prisma.category.upsert({
-          where: { slug: childData.slug },
-          update: {},
-          create: {
+        await prisma.category.create({
+          data: {
             ...childData,
             parentId: parentCategory.id,
             isActive: true,

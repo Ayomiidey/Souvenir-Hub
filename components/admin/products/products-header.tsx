@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,8 +12,25 @@ import {
 } from "@/components/ui/select";
 import { Plus, Upload, Download, Filter } from "lucide-react";
 import Link from "next/link";
+import { Filters } from "@/app/admin/products/page";
 
-export function ProductsHeader() {
+export function ProductsHeader({
+  onFilterChange,
+}: {
+  onFilterChange?: (filters: Filters) => void;
+}) {
+  const [filters, setFilters] = useState<Filters>({
+    search: "",
+    category: "all",
+    status: "all",
+  });
+
+  const handleFilterChange = (field: string, value: string) => {
+    const newFilters = { ...filters, [field]: value };
+    setFilters(newFilters);
+    onFilterChange?.(newFilters);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -44,9 +62,17 @@ export function ProductsHeader() {
 
       <div className="flex items-center space-x-4">
         <div className="flex-1 max-w-sm">
-          <Input placeholder="Search products..." className="w-full" />
+          <Input
+            placeholder="Search products..."
+            className="w-full"
+            value={filters.search}
+            onChange={(e) => handleFilterChange("search", e.target.value)}
+          />
         </div>
-        <Select>
+        <Select
+          value={filters.category}
+          onValueChange={(value) => handleFilterChange("category", value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
@@ -57,7 +83,10 @@ export function ProductsHeader() {
             <SelectItem value="home-decor">Home Decor</SelectItem>
           </SelectContent>
         </Select>
-        <Select>
+        <Select
+          value={filters.status}
+          onValueChange={(value) => handleFilterChange("status", value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>

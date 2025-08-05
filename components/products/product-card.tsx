@@ -17,6 +17,7 @@ import {
 } from "@/store/slices/wishlistSlice";
 import { useAppSelector } from "@/hooks/redux";
 import { toast } from "sonner";
+import { formatPrice } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -168,11 +169,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                   </h3>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xl font-bold text-primary">
-                      ${product.price.toFixed(2)}
+                      {formatPrice(product.price)}
                     </span>
                     {product.comparePrice && (
                       <span className="text-sm text-muted-foreground line-through">
-                        ${product.comparePrice.toFixed(2)}
+                        {formatPrice(product.comparePrice)}
                       </span>
                     )}
                   </div>
@@ -185,7 +186,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                     <p className="text-xs text-blue-600 mt-1">
                       Custom print available{" "}
                       {product.printPrice &&
-                        `(+$${product.printPrice.toFixed(2)})`}
+                        `(+${formatPrice(product.printPrice)})`}
                     </p>
                   )}
                 </div>
@@ -314,11 +315,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="font-bold text-lg text-primary">
-                ${product.price.toFixed(2)}
+                {formatPrice(product.price)}
               </span>
               {product.comparePrice && (
                 <span className="text-xs text-muted-foreground line-through">
-                  ${product.comparePrice.toFixed(2)}
+                  {formatPrice(product.comparePrice)}
                 </span>
               )}
             </div>
