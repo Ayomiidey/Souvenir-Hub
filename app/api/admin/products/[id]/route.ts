@@ -131,6 +131,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+    if (!id) {
+      return NextResponse.json(
+        { message: "Product ID is required" },
+        { status: 400 }
+      );
+    }
     const product = await prisma.product.delete({
       where: { id },
     });

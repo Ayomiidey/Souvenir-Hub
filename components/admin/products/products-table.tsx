@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import { MoreHorizontal, Edit, Eye, Trash2, Copy } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 interface Product {
   id: string;
@@ -99,34 +99,44 @@ export function ProductsTable({
     }
   };
 
-  const handleDeleteProduct = async (id: string) => {
-    const confirm = await toast.promise(
-      new Promise((resolve) => setTimeout(() => resolve(true), 100)), // Simulated confirm
-      {
-        loading: "Confirming deletion...",
-        success: "Deletion confirmed",
-        error: "Cancelled",
-      },
-      { position: "top-right", duration: 3000 }
-    );
-
-    if (confirm) {
-      try {
-        const response = await fetch(`/api/admin/products/${id}`, {
-          method: "DELETE",
-        });
-        if (response.ok) {
-          setProducts(products.filter((product) => product.id !== id));
-          toast.success("Product deleted successfully!");
-        } else {
-          const data = await response.json();
-          toast.error(data.message || "Failed to delete product");
-        }
-      } catch (error) {
-        toast.error("Error deleting product");
-        console.error("Error deleting product:", error);
-      }
-    }
+  const handleDeleteProduct = (id: string) => {
+    toast.custom((t) => (
+      <div className="bg-white dark:bg-zinc-950 rounded-md shadow p-4 flex items-center gap-4 text-black">
+        <span>Are you sure you want to delete this product?</span>
+        <div className="ml-auto flex gap-2">
+          <Button variant="ghost" onClick={() => toast.dismiss(t)}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={async () => {
+              toast.dismiss(t);
+              try {
+                const response = await fetch(`/api/admin/products/${id}`, {
+                  method: "DELETE",
+                });
+                console.log("Delete response status:", response.status); // Debug
+                console.log("Delete response text:", await response.text()); // Debug
+                if (response.ok) {
+                  setProducts((prev) =>
+                    prev.filter((product) => product.id !== id)
+                  );
+                  toast.success("Product deleted successfully!");
+                } else {
+                  const data = await response.json();
+                  toast.error(data.message || "Failed to delete product");
+                }
+              } catch (error) {
+                console.error("Error deleting product:", error);
+                toast.error("Error deleting product");
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </div>
+    ));
   };
 
   const handleDuplicateProduct = async (productId: string) => {
@@ -257,7 +267,7 @@ export function ProductsTable({
                     {product.sku}
                   </TableCell>
                   <TableCell>{product.category.name}</TableCell>
-                  <TableCell>₦{(product.price * 1600).toFixed(2)}</TableCell>
+                  <TableCell>₦{product.price.toFixed(2)}</TableCell>
                   <TableCell>
                     <div className="space-y-1">
                       <div className="font-medium">{product.quantity}</div>

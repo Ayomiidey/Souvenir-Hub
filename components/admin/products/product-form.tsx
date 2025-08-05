@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import Image from "next/image";
 
 interface Category {
@@ -76,7 +76,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       try {
         const response = await fetch("/api/admin/categories");
         const data = await response.json();
-        console.log("Raw categories data:", data.categories); // Debug to identify duplicates
+        console.log("Raw categories data:", data.categories);
         setCategories(data.categories || []);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -137,7 +137,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await fetch("/api/upload", {
+        const response = await fetch("/api/admin/upload", {
           method: "POST",
           body: formData,
         });
@@ -173,7 +173,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
     }
 
     setLoading(true);
-    setErrors({});
+    setErrors({}); // Clear all errors on successful validation
 
     const imageFiles = formData.images
       .filter((img) => img.file)
@@ -184,7 +184,8 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
 
     if (imageFiles.length > 0) {
       const newUploadedImages = await uploadImagesToBlob(imageFiles);
-      uploadedImages = [...uploadedImages, ...newUploadedImages];
+      uploadedImages = [...uploadedImages, ...newUploadedImages]; // Update locally first
+      setFormData((prev) => ({ ...prev, images: uploadedImages })); // Controlled update
     }
 
     const formDataToSend = {
@@ -195,6 +196,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       printPrice: formData.printPrice,
       images: uploadedImages,
     };
+    console.log("Sending price:", formDataToSend.price);
 
     const url = productId
       ? `/api/admin/products/${productId}`
@@ -227,7 +229,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
 
   const updateFormData = (field: keyof ProductFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+    // Do not clear errors here; handle in handleSubmit
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,7 +239,10 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       altText: file.name,
       file,
     }));
-    updateFormData("images", [...formData.images, ...newImages]);
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...newImages],
+    }));
   };
 
   const allCategories = Array.from(
@@ -377,11 +382,11 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                     id="price"
                     type="number"
                     step="0.01"
-                    value={formData.price === 0 ? "" : formData.price} // Show empty string when 0
+                    value={formData.price === 0 ? "" : formData.price}
                     onChange={(e) => {
                       const value = e.target.value;
                       if (value === "") {
-                        updateFormData("price", ""); // Allow clearing
+                        updateFormData("price", "");
                       } else {
                         const parsedValue = Number.parseFloat(value);
                         if (!isNaN(parsedValue) && parsedValue >= 0) {
