@@ -1,20 +1,5 @@
 import prisma from "@/lib/prisma";
-
-export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number | null;
-  printPrice?: number | null;
-  images: { url: string; altText: string | null }[];
-  category: { name: string; slug: string };
-  quantity: number;
-  sku: string;
-  allowCustomPrint: boolean;
-  isFeatured: boolean;
-  status: string;
-}
+import { Product } from "@/types/product";
 
 export interface Category {
   id: string;
@@ -86,7 +71,6 @@ async function getPriceRange(): Promise<{ min: number; max: number }> {
     return { min: 0, max: 1000 };
   }
 }
-
 async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const products = await prisma.product.findMany({
@@ -112,6 +96,16 @@ async function getFeaturedProducts(): Promise<Product[]> {
             slug: true,
           },
         },
+        priceTiers: {
+          select: {
+            id: true,
+            minQuantity: true,
+            discountType: true,
+            discountValue: true,
+            isActive: true,
+            productId: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -119,12 +113,25 @@ async function getFeaturedProducts(): Promise<Product[]> {
       take: 8,
     });
 
-    // Convert Decimal to number for JSON serialization
+    // Convert Decimal to number for JSON serialization and ensure all fields
     return products.map((product) => ({
       ...product,
       price: Number(product.price),
       comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
       printPrice: product.printPrice ? Number(product.printPrice) : null,
+      description: product.description || null, // Ensure inclusion
+      shortDescription: product.shortDescription || null, // Ensure inclusion
+      sku: product.sku || "", // Default value
+      allowCustomPrint: product.allowCustomPrint || false, // Default value
+      status: product.status || "ACTIVE", // Default value
+      deliveryTime: product.deliveryTime || null, // Default value
+      isActive: product.isActive || true, // Default value
+      priceTiers:
+        product.priceTiers?.map((tier) => ({
+          minQuantity: tier.minQuantity,
+          discountType: tier.discountType,
+          discountValue: Number(tier.discountValue),
+        })) || [], // Map and convert discountValue
     }));
   } catch (error) {
     console.error("Error fetching featured products:", error);

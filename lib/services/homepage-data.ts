@@ -1,20 +1,5 @@
 import prisma from "@/lib/prisma";
-
-export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number | null;
-  printPrice?: number | null;
-  images: { url: string; altText: string | null }[];
-  category: { name: string; slug: string };
-  quantity: number;
-  sku: string;
-  allowCustomPrint: boolean;
-  isFeatured: boolean;
-  status: string;
-}
+import { Product } from "@/types/product";
 
 export interface Category {
   id: string;
@@ -84,27 +69,16 @@ export async function getHomePageData(): Promise<HomePageData> {
         isActive: true,
         isFeatured: true,
       },
-      // Select only the fields required by the Product interface
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        price: true,
-        comparePrice: true,
-        printPrice: true,
-        quantity: true,
-        sku: true,
-        allowCustomPrint: true,
-        isFeatured: true,
-        status: true,
+      include: {
         images: {
           select: {
             url: true,
             altText: true,
           },
           orderBy: {
-            sortOrder: "asc", // Corrected from 'order' to 'sortOrder'
+            sortOrder: "asc",
           },
+          take: 1,
         },
         category: {
           select: {
@@ -121,10 +95,12 @@ export async function getHomePageData(): Promise<HomePageData> {
 
     // Convert Decimal to number for JSON serialization
     const featuredProducts: Product[] = featuredProductsRaw.map((product) => ({
-      ...product, // Spread all selected properties, including images and category
+      ...product, // Spread all scalar fields, including description and shortDescription
       price: Number(product.price),
       comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
       printPrice: product.printPrice ? Number(product.printPrice) : null,
+      images: product.images, // Ensure images are correctly typed
+      category: product.category, // Ensure category is correctly typed
     }));
 
     return {
