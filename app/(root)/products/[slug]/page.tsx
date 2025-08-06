@@ -68,6 +68,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         ...tier,
         discountValue: Number(tier.discountValue),
       })),
+      deliveryTime: product.deliveryTime,
     };
 
     const formattedRelatedProducts = relatedProducts.map((relatedProduct) => ({
@@ -79,6 +80,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       printPrice: relatedProduct.printPrice
         ? Number(relatedProduct.printPrice)
         : null,
+      deliveryTime: relatedProduct.deliveryTime,
     }));
 
     return (

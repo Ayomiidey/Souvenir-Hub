@@ -36,27 +36,7 @@ import {
 import { ProductCard } from "./product-card";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  shortDescription: string | null;
-  sku: string;
-  price: number;
-  comparePrice?: number | null;
-  quantity: number;
-  allowCustomPrint: boolean;
-  printPrice?: number | null;
-  images: { url: string; altText: string | null }[];
-  category: { name: string; slug: string };
-  priceTiers?: Array<{
-    minQuantity: number;
-    discountType: string;
-    discountValue: number;
-  }>;
-}
+import { Product } from "@/types/product";
 
 interface ProductDetailProps {
   product: Product;
@@ -304,7 +284,6 @@ Please let me know about availability and delivery options. Thank you!`;
                 </p>
               )}
             </div>
-
             {/* Price */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
@@ -327,8 +306,8 @@ Please let me know about availability and delivery options. Thank you!`;
                 </div>
               )}
             </div>
-
             {/* Stock Status */}
+
             <div className="flex items-center gap-2">
               {isOutOfStock ? (
                 <Badge variant="destructive" className="text-xs">
@@ -349,8 +328,12 @@ Please let me know about availability and delivery options. Thank you!`;
                   In Stock ({product.quantity} available)
                 </Badge>
               )}
+              {product.deliveryTime && (
+                <Badge className="bg-yellow-100 text-yellow-800 text-xs">
+                  {product.deliveryTime}
+                </Badge>
+              )}
             </div>
-
             {/* Quantity & Add to Cart */}
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
@@ -464,7 +447,6 @@ Please let me know about availability and delivery options. Thank you!`;
                 Order via WhatsApp
               </Button>
             </div>
-
             {/* Features */}
             <div className="grid grid-cols-3 gap-3 pt-4 border-t">
               <div className="text-center space-y-2">

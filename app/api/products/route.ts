@@ -115,8 +115,8 @@ export async function GET(request: NextRequest) {
       price: Number(product.price),
       comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
       printPrice: product.printPrice ? Number(product.printPrice) : null,
+      deliveryTime: product.deliveryTime || null, // Add this line
     }));
-
     return NextResponse.json({
       products: formattedProducts,
       pagination: {

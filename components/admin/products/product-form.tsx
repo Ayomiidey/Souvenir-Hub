@@ -40,6 +40,7 @@ interface ProductFormData {
   printPrice?: number;
   images: { url: string; altText: string; file?: File }[];
   deliveryTime?: string;
+  isActive: boolean;
 }
 
 interface ProductFormProps {
@@ -66,6 +67,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       printPrice: 0,
       images: [],
       deliveryTime: "",
+      isActive: true,
     }
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -103,6 +105,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
               printPrice: data.printPrice || 0,
               images: data.images || [],
               deliveryTime: data.deliveryTime || "",
+              isActive: data.isActive || true,
             });
           }
         } catch (error) {
@@ -195,6 +198,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       quantity: Number(formData.quantity),
       printPrice: formData.printPrice,
       images: uploadedImages,
+      isActive: true,
     };
     console.log("Sending price:", formDataToSend.price);
 

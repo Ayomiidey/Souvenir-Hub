@@ -5,20 +5,7 @@ import { ProductCard } from "../products/product-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number;
-  images: { url: string; altText: string }[];
-  category: { name: string };
-  quantity: number;
-  allowCustomPrint: boolean;
-  printPrice?: number;
-  sku: string;
-}
+import { Product } from "@/types/product";
 
 export function NewArrivals() {
   const [products, setProducts] = useState<Product[]>([]);

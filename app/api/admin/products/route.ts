@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
         seoDescription: body.seoDescription,
         metaKeywords: body.metaKeywords,
         status: body.status || "DRAFT",
-        isActive: body.isActive || false,
+        isActive: body.isActive || true,
         isFeatured: body.isFeatured || false,
         categoryId: body.categoryId,
         deliveryTime: body.deliveryTime || null,

@@ -74,7 +74,7 @@ export default async function CategoryPage({
           orderBy: { sortOrder: "asc" },
         },
         category: {
-          select: { name: true },
+          select: { name: true, slug: true },
         },
       },
       orderBy,

@@ -16,22 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Filter } from "lucide-react";
 import { useHomePageFilters } from "@/hooks/use-homepage-filters";
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number | null;
-  printPrice?: number | null;
-  images: { url: string; altText: string | null }[];
-  category: { name: string; slug: string };
-  quantity: number;
-  sku: string;
-  allowCustomPrint: boolean;
-  isFeatured: boolean;
-  status: string;
-}
+import { Product } from "@/types/product";
 
 interface Category {
   id: string;

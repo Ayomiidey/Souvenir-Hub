@@ -5,22 +5,7 @@ import { ProductCard } from "../products/product-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number | null;
-  images: { url: string; altText: string | null }[];
-  category: { name: string; slug?: string };
-  quantity: number;
-  allowCustomPrint: boolean;
-  printPrice?: number | null;
-  sku: string;
-  isFeatured?: boolean;
-  status?: string;
-}
+import { Product } from "@/types/product";
 
 interface BestSellersProps {
   products?: Product[];

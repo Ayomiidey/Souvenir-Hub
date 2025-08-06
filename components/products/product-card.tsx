@@ -18,25 +18,7 @@ import {
 import { useAppSelector } from "@/hooks/redux";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/utils";
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number | null;
-  images: { url: string; altText: string | null }[];
-  category: { name: string };
-  quantity: number;
-  allowCustomPrint: boolean;
-  printPrice?: number | null;
-  sku: string;
-  priceTiers?: Array<{
-    minQuantity: number;
-    discountType: string;
-    discountValue: number;
-  }>;
-}
+import { Product } from "@/types/product";
 
 interface ProductCardProps {
   product: Product;
@@ -181,6 +163,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                     {product.quantity > 0
                       ? `${product.quantity} in stock`
                       : "Out of stock"}
+                    {product.deliveryTime && (
+                      <span className="text-xs text-yellow-600 ml-1">
+                        ({product.deliveryTime})
+                      </span>
+                    )}
                   </p>
                   {product.allowCustomPrint && (
                     <p className="text-xs text-blue-600 mt-1">
@@ -327,6 +314,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               {product.quantity > 0
                 ? `${product.quantity} left`
                 : "Out of stock"}
+              {product.deliveryTime && (
+                <span className="block text-yellow-600">
+                  ({product.deliveryTime})
+                </span>
+              )}
             </span>
           </div>
         </CardContent>

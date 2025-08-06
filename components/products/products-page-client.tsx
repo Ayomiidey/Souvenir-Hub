@@ -21,22 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Grid, List, Filter, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number | null;
-  images: { url: string; altText: string | null }[];
-  category: { name: string; slug: string };
-  quantity: number;
-  sku: string;
-  allowCustomPrint: boolean;
-  printPrice?: number | null;
-  isFeatured: boolean;
-  status: string;
-}
+import { Product } from "@/types/product";
 
 interface Category {
   id: string;
