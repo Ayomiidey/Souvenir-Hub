@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import { MoreHorizontal, Eye, Edit, Truck, Package } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 interface Order {
   id: string;
@@ -31,7 +31,7 @@ interface Order {
   customerEmail: string;
   status: string;
   paymentStatus: string;
-  totalAmount: number;
+  totalAmount: number | string | undefined; // Allow flexibility in type
   createdAt: string;
   items: Array<{
     quantity: number;
@@ -205,7 +205,12 @@ export function OrdersTable() {
                 </TableCell>
                 <TableCell>
                   <div className="font-medium">
-                    ${order.totalAmount.toFixed(2)}
+                    $
+                    {typeof order.totalAmount === "number"
+                      ? order.totalAmount.toFixed(2)
+                      : typeof order.totalAmount === "string"
+                        ? parseFloat(order.totalAmount).toFixed(2)
+                        : "0.00"}
                   </div>
                 </TableCell>
                 <TableCell>
