@@ -12,9 +12,9 @@ import {
   FolderTree,
   ShoppingCart,
   Users,
-  BarChart3,
   Settings,
-  FileText,
+  // BarChart3,
+  // FileText,
   ChevronLeft,
   ChevronRight,
   Store,
@@ -33,8 +33,8 @@ const navigation = [
     children: [
       { name: "All Products", href: "/admin/products" },
       { name: "Add Product", href: "/admin/products/new" },
-      { name: "Import Products", href: "/admin/products/import" },
-      { name: "Export Products", href: "/admin/products/export" },
+      // { name: "Import Products", href: "/admin/products/import" },
+      // { name: "Export Products", href: "/admin/products/export" },
     ],
   },
   {
@@ -62,26 +62,26 @@ const navigation = [
     href: "/admin/customers",
     icon: Users,
   },
-  {
-    name: "Analytics",
-    href: "/admin/analytics",
-    icon: BarChart3,
-    children: [
-      { name: "Sales Report", href: "/admin/analytics/sales" },
-      { name: "Product Performance", href: "/admin/analytics/products" },
-      { name: "Customer Insights", href: "/admin/analytics/customers" },
-    ],
-  },
-  {
-    name: "Reports",
-    href: "/admin/reports",
-    icon: FileText,
-    children: [
-      { name: "Sales Reports", href: "/admin/reports/sales" },
-      { name: "Inventory Reports", href: "/admin/reports/inventory" },
-      { name: "Customer Reports", href: "/admin/reports/customers" },
-    ],
-  },
+  // {
+  //   name: "Analytics",
+  //   href: "/admin/analytics",
+  //   icon: BarChart3,
+  //   children: [
+  //     { name: "Sales Report", href: "/admin/analytics/sales" },
+  //     { name: "Product Performance", href: "/admin/analytics/products" },
+  //     { name: "Customer Insights", href: "/admin/analytics/customers" },
+  //   ],
+  // },
+  // {
+  //   name: "Reports",
+  //   href: "/admin/reports",
+  //   icon: FileText,
+  //   children: [
+  //     { name: "Sales Reports", href: "/admin/reports/sales" },
+  //     { name: "Inventory Reports", href: "/admin/reports/inventory" },
+  //     { name: "Customer Reports", href: "/admin/reports/customers" },
+  //   ],
+  // },
   {
     name: "Settings",
     href: "/admin/settings",

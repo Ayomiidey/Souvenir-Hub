@@ -1,22 +1,14 @@
 import prisma from "@/lib/prisma";
 import { Product } from "@/types/product";
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  _count: {
-    products: number;
-  };
-}
+import { CategoryWithCount, PriceRange } from "@/types/category";
 
 export interface HomePageData {
-  categories: Category[];
-  priceRange: { min: number; max: number };
+  categories: CategoryWithCount[]; // Updated from Category to CategoryWithCount
+  priceRange: PriceRange; // Updated from { min: number; max: number } to PriceRange
   featuredProducts: Product[];
 }
 
-async function getCategories(): Promise<Category[]> {
+async function getCategories(): Promise<CategoryWithCount[]> {
   try {
     return await prisma.category.findMany({
       where: {
@@ -47,7 +39,7 @@ async function getCategories(): Promise<Category[]> {
   }
 }
 
-async function getPriceRange(): Promise<{ min: number; max: number }> {
+async function getPriceRange(): Promise<PriceRange> {
   try {
     const result = await prisma.product.aggregate({
       where: {
@@ -71,6 +63,7 @@ async function getPriceRange(): Promise<{ min: number; max: number }> {
     return { min: 0, max: 1000 };
   }
 }
+
 async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const products = await prisma.product.findMany({
@@ -119,19 +112,19 @@ async function getFeaturedProducts(): Promise<Product[]> {
       price: Number(product.price),
       comparePrice: product.comparePrice ? Number(product.comparePrice) : null,
       printPrice: product.printPrice ? Number(product.printPrice) : null,
-      description: product.description || null, // Ensure inclusion
-      shortDescription: product.shortDescription || null, // Ensure inclusion
-      sku: product.sku || "", // Default value
-      allowCustomPrint: product.allowCustomPrint || false, // Default value
-      status: product.status || "ACTIVE", // Default value
-      deliveryTime: product.deliveryTime || null, // Default value
-      isActive: product.isActive || true, // Default value
+      description: product.description || null,
+      shortDescription: product.shortDescription || null,
+      sku: product.sku || "",
+      allowCustomPrint: product.allowCustomPrint || false,
+      status: product.status || "ACTIVE",
+      deliveryTime: product.deliveryTime || null,
+      isActive: product.isActive || true,
       priceTiers:
         product.priceTiers?.map((tier) => ({
           minQuantity: tier.minQuantity,
           discountType: tier.discountType,
           discountValue: Number(tier.discountValue),
-        })) || [], // Map and convert discountValue
+        })) || [],
     }));
   } catch (error) {
     console.error("Error fetching featured products:", error);

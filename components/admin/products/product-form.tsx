@@ -18,13 +18,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import Image from "next/image";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  children?: Category[];
-}
+import { CategoryWithChildren } from "@/types/category";
 
 interface ProductFormData {
   name: string;
@@ -50,7 +44,7 @@ interface ProductFormProps {
 
 export function ProductForm({ productId, initialData }: ProductFormProps) {
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryWithChildren[]>([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<ProductFormData>(
     initialData || {
@@ -187,8 +181,8 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
 
     if (imageFiles.length > 0) {
       const newUploadedImages = await uploadImagesToBlob(imageFiles);
-      uploadedImages = [...uploadedImages, ...newUploadedImages]; // Update locally first
-      setFormData((prev) => ({ ...prev, images: uploadedImages })); // Controlled update
+      uploadedImages = [...uploadedImages, ...newUploadedImages];
+      setFormData((prev) => ({ ...prev, images: uploadedImages }));
     }
 
     const formDataToSend = {
@@ -233,7 +227,6 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
 
   const updateFormData = (field: keyof ProductFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Do not clear errors here; handle in handleSubmit
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

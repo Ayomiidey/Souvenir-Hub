@@ -22,18 +22,10 @@ import { Badge } from "@/components/ui/badge";
 import { Grid, List, Filter, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Product } from "@/types/product";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  _count: {
-    products: number;
-  };
-}
+import { CategoryWithCount } from "@/types/category";
 
 interface ProductsPageClientProps {
-  categories: Category[];
+  categories: CategoryWithCount[];
   priceRange: { min: number; max: number };
   searchParams: Record<string, string | undefined>;
 }
@@ -119,9 +111,8 @@ export function ProductsPageClient({
   const handleFiltersChange = useCallback(
     (newFilters: Partial<FilterState>) => {
       setFilters((prev) => ({ ...prev, ...newFilters }));
-      setCurrentPage(1); // Reset to first page when filters change
+      setCurrentPage(1);
 
-      // Update URL
       const params = new URLSearchParams();
       const updatedFilters = { ...filters, ...newFilters };
 
@@ -162,7 +153,6 @@ export function ProductsPageClient({
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent dark:from-white dark:to-gray-300">
             Our Products
@@ -173,7 +163,6 @@ export function ProductsPageClient({
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Desktop Filters Sidebar */}
           <div className="hidden lg:block w-80 flex-shrink-0">
             <div className="sticky top-4">
               <ProductFilters
@@ -186,11 +175,8 @@ export function ProductsPageClient({
             </div>
           </div>
 
-          {/* Main Content */}
           <div className="flex-1">
-            {/* Mobile Filters & Controls */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              {/* Mobile Filter Button */}
               <Sheet
                 open={isMobileFiltersOpen}
                 onOpenChange={setIsMobileFiltersOpen}
@@ -234,7 +220,6 @@ export function ProductsPageClient({
                 </SheetContent>
               </Sheet>
 
-              {/* Sort & View Controls */}
               <div className="flex items-center gap-4 flex-1">
                 <Select value={filters.sortBy} onValueChange={handleSortChange}>
                   <SelectTrigger className="w-48 bg-white dark:bg-gray-900 shadow-sm">
@@ -276,7 +261,6 @@ export function ProductsPageClient({
               </div>
             </div>
 
-            {/* Results Summary */}
             <div className="flex items-center justify-between mb-6 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-sm border">
               <div className="text-sm text-muted-foreground">
                 Showing {products.length} of {totalProducts} products
@@ -295,7 +279,6 @@ export function ProductsPageClient({
               )}
             </div>
 
-            {/* Products Grid/List */}
             {loading ? (
               <div
                 className={cn(
@@ -360,7 +343,6 @@ export function ProductsPageClient({
               </div>
             )}
 
-            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center items-center gap-2 mt-12">
                 <Button

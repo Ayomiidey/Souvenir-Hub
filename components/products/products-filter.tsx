@@ -14,15 +14,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Search, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  _count: {
-    products: number;
-  };
-}
+import { CategoryWithCount } from "@/types/category";
 
 interface FilterState {
   search: string;
@@ -34,7 +26,7 @@ interface FilterState {
 }
 
 interface ProductFiltersProps {
-  categories: Category[];
+  categories: CategoryWithCount[];
   priceRange: { min: number; max: number };
   currentFilters: FilterState;
   onFiltersChange: (filters: Partial<FilterState>) => void;
@@ -60,14 +52,12 @@ export function ProductFilters({
   const [isPriceOpen, setIsPriceOpen] = useState(true);
   const [isStockOpen, setIsStockOpen] = useState(true);
 
-  // Update local state when currentFilters change
   useEffect(() => {
     setSearchTerm(currentFilters.search);
     setMinPriceInput(currentFilters.minPrice.toFixed(2));
     setMaxPriceInput(currentFilters.maxPrice.toFixed(2));
   }, [currentFilters.search, currentFilters.minPrice, currentFilters.maxPrice]);
 
-  // Debounced search
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchTerm !== currentFilters.search) {
@@ -78,7 +68,6 @@ export function ProductFilters({
     return () => clearTimeout(timeoutId);
   }, [searchTerm, currentFilters.search, onFiltersChange]);
 
-  // Handle slider price changes
   const handlePriceSliderChange = useCallback(
     (values: number[]) => {
       const [min, max] = values;
@@ -89,19 +78,15 @@ export function ProductFilters({
     [onFiltersChange]
   );
 
-  // Handle min price input change
   const handleMinPriceChange = useCallback((value: string) => {
     setMinPriceInput(value);
   }, []);
 
-  // Handle max price input change
   const handleMaxPriceChange = useCallback((value: string) => {
     setMaxPriceInput(value);
   }, []);
 
-  // Handle min price input blur
   const handleMinPriceBlur = useCallback(() => {
-    // If input is blank, set filter to undefined (or min) and leave input blank
     if (minPriceInput === "") {
       if (currentFilters.minPrice !== priceRange.min) {
         onFiltersChange({ minPrice: priceRange.min });
@@ -109,9 +94,7 @@ export function ProductFilters({
       return;
     }
     let numValue = parseFloat(minPriceInput);
-    if (isNaN(numValue)) {
-      return;
-    }
+    if (isNaN(numValue)) return;
     numValue = Math.max(
       priceRange.min,
       Math.min(currentFilters.maxPrice, numValue)
@@ -129,9 +112,7 @@ export function ProductFilters({
     onFiltersChange,
   ]);
 
-  // Handle max price input blur
   const handleMaxPriceBlur = useCallback(() => {
-    // If input is blank, set filter to undefined (or max) and leave input blank
     if (maxPriceInput === "") {
       if (currentFilters.maxPrice !== priceRange.max) {
         onFiltersChange({ maxPrice: priceRange.max });
@@ -139,9 +120,7 @@ export function ProductFilters({
       return;
     }
     let numValue = parseFloat(maxPriceInput);
-    if (isNaN(numValue)) {
-      return;
-    }
+    if (isNaN(numValue)) return;
     numValue = Math.min(
       priceRange.max,
       Math.max(currentFilters.minPrice, numValue)
@@ -159,15 +138,11 @@ export function ProductFilters({
     onFiltersChange,
   ]);
 
-  // Handle Enter key press in price inputs
   const handlePriceKeyDown = useCallback(
     (e: React.KeyboardEvent, type: "min" | "max") => {
       if (e.key === "Enter") {
-        if (type === "min") {
-          handleMinPriceBlur();
-        } else {
-          handleMaxPriceBlur();
-        }
+        if (type === "min") handleMinPriceBlur();
+        else handleMaxPriceBlur();
       }
     },
     [handleMinPriceBlur, handleMaxPriceBlur]
@@ -175,9 +150,7 @@ export function ProductFilters({
 
   const handleCategoryChange = useCallback(
     (categorySlug: string, checked: boolean) => {
-      onFiltersChange({
-        category: checked ? categorySlug : "",
-      });
+      onFiltersChange({ category: checked ? categorySlug : "" });
     },
     [onFiltersChange]
   );
@@ -235,7 +208,6 @@ export function ProductFilters({
         }
       `}</style>
 
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Filter className="h-5 w-5 text-primary" />
@@ -265,7 +237,6 @@ export function ProductFilters({
         )}
       </div>
 
-      {/* Search */}
       <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800 glass">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
@@ -288,7 +259,6 @@ export function ProductFilters({
         </CardContent>
       </Card>
 
-      {/* Categories */}
       <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800 glass">
         <Collapsible open={isCategoriesOpen} onOpenChange={setIsCategoriesOpen}>
           <CollapsibleTrigger asChild>
@@ -345,7 +315,6 @@ export function ProductFilters({
         </Collapsible>
       </Card>
 
-      {/* Price Range */}
       <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 border-purple-200 dark:border-purple-800 glass">
         <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
           <CollapsibleTrigger asChild>
@@ -452,7 +421,6 @@ export function ProductFilters({
         </Collapsible>
       </Card>
 
-      {/* Stock Status */}
       <Card className="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-950 dark:to-yellow-950 border-orange-200 dark:border-orange-800 glass">
         <Collapsible open={isStockOpen} onOpenChange={setIsStockOpen}>
           <CollapsibleTrigger asChild>
@@ -488,7 +456,6 @@ export function ProductFilters({
         </Collapsible>
       </Card>
 
-      {/* Results Summary */}
       <Card className="bg-gradient-to-br from-gray-50 to-slate-50 dark:from-gray-950 dark:to-slate-950 border-gray-200 dark:border-gray-800 glass">
         <CardContent className="p-4">
           <div className="text-center">

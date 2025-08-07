@@ -1,22 +1,9 @@
 import prisma from "@/lib/prisma";
 import { Product } from "@/types/product";
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  _count: {
-    products: number;
-  };
-}
-
-export interface PriceRange {
-  min: number;
-  max: number;
-}
+import { CategoryWithCount, PriceRange } from "@/types/category";
 
 export interface HomePageData {
-  categories: Category[];
+  categories: CategoryWithCount[]; // Updated from Category to CategoryWithCount
   priceRange: PriceRange;
   featuredProducts: Product[];
 }

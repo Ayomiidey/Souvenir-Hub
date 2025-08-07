@@ -17,19 +17,11 @@ import { Badge } from "@/components/ui/badge";
 import { Filter } from "lucide-react";
 import { useHomePageFilters } from "@/hooks/use-homepage-filters";
 import { Product } from "@/types/product";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  _count: {
-    products: number;
-  };
-}
+import { CategoryWithCount } from "@/types/category";
 
 interface HomePageClientProps {
   data: {
-    categories: Category[];
+    categories: CategoryWithCount[];
     priceRange: { min: number; max: number };
     featuredProducts: Product[];
   };
@@ -49,7 +41,6 @@ export function HomePageClient({ data }: HomePageClientProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left Sidebar - Filters (Desktop) */}
         <div className="hidden lg:block w-80 flex-shrink-0">
           <div className="sticky top-4">
             <ProductFilters
@@ -61,10 +52,7 @@ export function HomePageClient({ data }: HomePageClientProps) {
             />
           </div>
         </div>
-
-        {/* Right Content Area */}
         <div className="flex-1">
-          {/* Mobile Filter Button */}
           <div className="lg:hidden mb-6">
             <Sheet
               open={isMobileFiltersOpen}
@@ -109,25 +97,18 @@ export function HomePageClient({ data }: HomePageClientProps) {
               </SheetContent>
             </Sheet>
           </div>
-
-          {/* Hero Carousel */}
           <div className="mb-12">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl overflow-hidden shadow-2xl">
               <Carousel type="homepage" />
             </div>
           </div>
-
-          {/* Best Sellers Section - Right after carousel */}
           <BestSellers products={featuredProducts} />
         </div>
       </div>
-
       <div className="mx-auto max-w-7xl px-4">
         <div className="mt-16">
           <NewArrivals />
         </div>
-
-        {/* Features Section - Full width */}
         <div className="mt-12 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl p-8">
           <FeaturesSection />
         </div>
