@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ProductFilters } from "@/components/products/products-filter";
 import { BestSellers } from "@/components/home/best-sellers";
 import { NewArrivals } from "@/components/home/new-arrivals";
-import { FeaturesSection } from "@/components/home/features-section";
 import Carousel from "@/components/carousel/carousel";
 import { Button } from "@/components/ui/button";
 import {
@@ -106,11 +105,8 @@ export function HomePageClient({ data }: HomePageClientProps) {
         </div>
       </div>
       <div className="mx-auto max-w-7xl px-4">
-        <div className="mt-16">
+        <div>
           <NewArrivals />
-        </div>
-        <div className="mt-12 bg-gradient-to-br from-muted/30 to-muted/10 rounded-2xl p-8">
-          <FeaturesSection />
         </div>
       </div>
     </div>

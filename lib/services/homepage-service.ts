@@ -103,7 +103,7 @@ async function getFeaturedProducts(): Promise<Product[]> {
       orderBy: {
         createdAt: "desc",
       },
-      take: 8,
+      take: 3,
     });
 
     // Convert Decimal to number for JSON serialization and ensure all fields

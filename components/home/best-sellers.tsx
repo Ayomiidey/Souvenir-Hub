@@ -25,7 +25,7 @@ export function BestSellers({ products: propProducts }: BestSellersProps) {
 
   const fetchBestSellers = async () => {
     try {
-      const response = await fetch("/api/products?featured=true&limit=8");
+      const response = await fetch("/api/products?featured=true&limit=3");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,7 +54,7 @@ export function BestSellers({ products: propProducts }: BestSellersProps) {
               Our most popular custom souvenirs
             </p>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="space-y-4">
                 <div className="aspect-square bg-muted rounded-lg shimmer"></div>
@@ -101,7 +101,7 @@ export function BestSellers({ products: propProducts }: BestSellersProps) {
 
         {products.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-8">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -111,7 +111,7 @@ export function BestSellers({ products: propProducts }: BestSellersProps) {
               ))}
             </div>
 
-            <div className="text-center mb-10 md:mr-85">
+            <div className="text-center mb-10 ">
               <Button asChild variant="outline" size="lg">
                 <Link href="/products">
                   View All Products
