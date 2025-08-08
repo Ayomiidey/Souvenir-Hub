@@ -236,7 +236,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
           {/* Overlay buttons */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl">
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
               <Button
                 variant="secondary"
                 size="icon"
@@ -252,7 +252,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               </Button>
             </div>
 
-            <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute bottom-2 left-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
               <Button
                 onClick={handleAddToCart}
                 disabled={isLoading || product.quantity <= 0}

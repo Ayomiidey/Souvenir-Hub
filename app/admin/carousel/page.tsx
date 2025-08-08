@@ -1,4 +1,4 @@
-import CarouselManager from "@/components/carousel-manager/carousel-manager";
+import CarouselManager from "@/components/admin/carousel/carousel-manager";
 
 export default function ManageCarousel() {
   return (

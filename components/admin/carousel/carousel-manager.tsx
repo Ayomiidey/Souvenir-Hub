@@ -7,7 +7,7 @@ import { z } from "zod";
 import axios from "axios";
 import CarouselForm from "./carousel-form";
 import CarouselTable from "./carousel-table";
-import { CarouselItem } from "../../types/carousel";
+import { CarouselItem } from "../../../types/carousel";
 import { carouselSchema } from "@/lib/validations/carousel-schema";
 
 type FormData = z.infer<typeof carouselSchema>;

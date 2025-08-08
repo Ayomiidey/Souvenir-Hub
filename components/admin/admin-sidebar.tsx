@@ -18,6 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Store,
+  ImagePlus,
 } from "lucide-react";
 
 const navigation = [
@@ -56,6 +57,11 @@ const navigation = [
       { name: "Processing", href: "/admin/orders?status=processing" },
       { name: "Shipped", href: "/admin/orders?status=shipped" },
     ],
+  },
+  {
+    name: "Carousel",
+    href: "/admin/carousel",
+    icon: ImagePlus,
   },
   {
     name: "Customers",
