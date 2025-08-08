@@ -65,3 +65,30 @@ export async function PUT(
     );
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    if (!id) {
+      return NextResponse.json(
+        { message: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+    const order = await prisma.order.delete({
+      where: { id },
+    });
+    return NextResponse.json({
+      message: `${order.id} deleted successfully`,
+    });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    return NextResponse.json(
+      { message: "Failed to delete order" },
+      { status: 500 }
+    );
+  }
+}

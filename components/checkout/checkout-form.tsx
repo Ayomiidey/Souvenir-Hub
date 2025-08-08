@@ -184,7 +184,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
     if (response.ok) {
       const order = await response.json();
       const message = generateWhatsAppMessage(order.orderNumber);
-      const whatsappNumber = "+2348068005956";
+      const whatsappNumber = "+2349095040197";
       const whatsappUrl = `https://wa.me/${whatsappNumber.replace("+", "")}?text=${message}`;
       dispatch(clearCart());
       window.open(whatsappUrl, "_blank");

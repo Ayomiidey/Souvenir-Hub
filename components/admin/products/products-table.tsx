@@ -115,8 +115,6 @@ export function ProductsTable({
                 const response = await fetch(`/api/admin/products/${id}`, {
                   method: "DELETE",
                 });
-                console.log("Delete response status:", response.status); // Debug
-                console.log("Delete response text:", await response.text()); // Debug
                 if (response.ok) {
                   setProducts((prev) =>
                     prev.filter((product) => product.id !== id)

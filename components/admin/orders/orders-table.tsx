@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
-import { MoreHorizontal, Eye, Truck, Package } from "lucide-react";
+import { MoreHorizontal, Eye, Truck, Package, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Order {
@@ -115,6 +115,42 @@ export function OrdersTable({
       toast.error("Error updating order status");
       console.error("Error updating order status:", error);
     }
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    toast.custom((t) => (
+      <div className="bg-white dark:bg-zinc-950 rounded-md shadow p-4 flex items-center gap-4 text-black">
+        <span>Are you sure you want to delete this order?</span>
+        <div className="ml-auto flex gap-2">
+          <Button variant="ghost" onClick={() => toast.dismiss(t)}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={async () => {
+              toast.dismiss(t);
+              try {
+                const response = await fetch(`/api/admin/orders/${id}`, {
+                  method: "DELETE",
+                });
+                if (response.ok) {
+                  setOrders((prev) => prev.filter((order) => order.id !== id));
+                  toast.success("Order deleted successfully!");
+                } else {
+                  const data = await response.json();
+                  toast.error(data.message || "Failed to delete order");
+                }
+              } catch (error) {
+                console.error("Error deleting order:", error);
+                toast.error("Error deleting order");
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </div>
+      </div>
+    ));
   };
 
   const getStatusColor = (status: string) => {
@@ -313,6 +349,12 @@ export function OrdersTable({
                       >
                         <Package className="mr-2 h-4 w-4" />
                         Mark as Cancelled
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteProduct(order.id)}
+                        className="text-destructive"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
