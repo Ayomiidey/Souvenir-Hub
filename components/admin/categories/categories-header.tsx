@@ -79,7 +79,7 @@ export function CategoriesHeader({
           </SelectContent>
         </Select>
         <Button variant="outline">
-          <Filter className="h-4 w-4 mr-2" /> More Filters
+          <Filter className="h-4 w-4 mr-2" /> Apply Filters
         </Button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,7 +12,27 @@ import {
 } from "@/components/ui/select";
 import { Download, Filter, RefreshCw } from "lucide-react";
 
-export function OrdersHeader() {
+interface OrdersHeaderProps {
+  onFilterChange: (filters: {
+    search?: string;
+    status?: string;
+    paymentStatus?: string;
+  }) => void;
+}
+
+export function OrdersHeader({ onFilterChange }: OrdersHeaderProps) {
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+  const [paymentStatus, setPaymentStatus] = useState("all");
+
+  const handleFilter = () => {
+    onFilterChange({
+      search: search || undefined,
+      status: status !== "all" ? status : undefined,
+      paymentStatus: paymentStatus !== "all" ? paymentStatus : undefined,
+    });
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -35,9 +56,15 @@ export function OrdersHeader() {
 
       <div className="flex items-center space-x-4">
         <div className="flex-1 max-w-sm">
-          <Input placeholder="Search orders..." className="w-full" />
+          <Input
+            placeholder="Search orders..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleFilter()}
+            className="w-full"
+          />
         </div>
-        <Select>
+        <Select value={status} onValueChange={setStatus}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
@@ -51,7 +78,7 @@ export function OrdersHeader() {
             <SelectItem value="cancelled">Cancelled</SelectItem>
           </SelectContent>
         </Select>
-        <Select>
+        <Select value={paymentStatus} onValueChange={setPaymentStatus}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Payment Status" />
           </SelectTrigger>
@@ -63,9 +90,9 @@ export function OrdersHeader() {
             <SelectItem value="refunded">Refunded</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline">
+        <Button variant="outline" onClick={handleFilter}>
           <Filter className="h-4 w-4 mr-2" />
-          More Filters
+          Apply Filters
         </Button>
       </div>
     </div>

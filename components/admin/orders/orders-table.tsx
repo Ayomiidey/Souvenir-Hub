@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
-import { MoreHorizontal, Eye, Edit, Truck, Package } from "lucide-react";
+import { MoreHorizontal, Eye, Truck, Package } from "lucide-react";
 import { toast } from "sonner";
 
 interface Order {
@@ -31,7 +31,7 @@ interface Order {
   customerEmail: string;
   status: string;
   paymentStatus: string;
-  totalAmount: number | string | undefined; // Allow flexibility
+  totalAmount: number | string | undefined;
   createdAt: string;
   items: Array<{
     quantity: number;
@@ -39,18 +39,35 @@ interface Order {
   }>;
 }
 
-export function OrdersTable() {
+export function OrdersTable({
+  filters,
+}: {
+  filters: {
+    search?: string;
+    status?: string;
+    paymentStatus?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  };
+}) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
-      const response = await fetch("/api/admin/orders");
+      const url = new URL("/api/admin/orders", window.location.origin);
+      if (filters.search) url.searchParams.set("search", filters.search);
+      if (filters.status) url.searchParams.set("status", filters.status);
+      if (filters.paymentStatus)
+        url.searchParams.set("paymentStatus", filters.paymentStatus);
+      if (filters.sortBy) url.searchParams.set("sortBy", filters.sortBy);
+      if (filters.sortOrder)
+        url.searchParams.set("sortOrder", filters.sortOrder);
+      url.searchParams.set("page", "1");
+      url.searchParams.set("limit", "20");
+
+      const response = await fetch(url.toString());
       const data = await response.json();
       setOrders(data.orders || []);
     } catch (error) {
@@ -58,7 +75,11 @@ export function OrdersTable() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]); // Now safe to include fetchOrders due to useCallback
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -243,12 +264,6 @@ export function OrdersTable() {
                         <Link href={`/admin/orders/${order.id}`}>
                           <Eye className="mr-2 h-4 w-4" />
                           View Details
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/orders/${order.id}/edit`}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit Order
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
