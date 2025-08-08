@@ -153,9 +153,9 @@ export function ProductDetail({
 
 *${product.name}*
 SKU: ${product.sku}
-Price: $${finalPrice.toFixed(2)}
+Price: ₦${finalPrice.toFixed(2)}
 Quantity: ${quantity}
-Total: $${finalTotal.toFixed(2)}
+Total: ₦${finalTotal.toFixed(2)}
 
 Product Link: ${window.location.href}
 
@@ -399,7 +399,7 @@ Please let me know about availability and delivery options. Thank you!`;
                           {tier.minQuantity}+ items:{" "}
                           {tier.discountType === "PERCENTAGE"
                             ? `${tier.discountValue}% off`
-                            : `$${tier.discountValue} off each`}
+                            : `₦${tier.discountValue} off each`}
                         </div>
                       ))}
                     </div>

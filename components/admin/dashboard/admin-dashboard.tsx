@@ -83,7 +83,7 @@ export function AdminDashboard() {
   const statCards = [
     {
       title: "Total Revenue",
-      value: `$${stats.totalRevenue.toLocaleString()}`,
+      value: `₦${stats.totalRevenue.toLocaleString()}`,
       change: stats.revenueChange,
       icon: DollarSign,
       description: "from last month",

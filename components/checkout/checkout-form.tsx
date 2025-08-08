@@ -90,9 +90,9 @@ ${items
       `${index + 1}. ${item.name}
    SKU: ${item.sku || "N/A"}
    Quantity: ${item.quantity}
-   Unit Price: $${item.price.toFixed(2)}
+   Unit Price: ₦${item.price.toFixed(2)}
    ${item.customPrint ? `Custom Print: "${item.printText}"` : ""}
-   Subtotal: $${(item.price * item.quantity).toFixed(2)}`
+   Subtotal: ₦${(item.price * item.quantity).toFixed(2)}`
   )
   .join("\n\n")}
 
@@ -105,10 +105,10 @@ ${formData.addressLine2 ? `${formData.addressLine2}\n` : ""}${formData.city}, ${
 ${formData.country}
 
 💰 *Order Summary:*
-Subtotal: $${subtotal.toFixed(2)}
-Shipping: ${shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
-Tax: $${tax.toFixed(2)}
-*Total: $${total.toFixed(2)}*
+Subtotal: ₦${subtotal.toFixed(2)}
+Shipping: ${shipping === 0 ? "FREE" : `₦${shipping.toFixed(2)}`}
+Tax: ₦${tax.toFixed(2)}
+*Total: ₦${total.toFixed(2)}*
 
 💳 *Payment Method:* WhatsApp Payment
 
@@ -184,7 +184,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
     if (response.ok) {
       const order = await response.json();
       const message = generateWhatsAppMessage(order.orderNumber);
-      const whatsappNumber = "+1234567890"; // Replace with your WhatsApp number
+      const whatsappNumber = "+2348068005956";
       const whatsappUrl = `https://wa.me/${whatsappNumber.replace("+", "")}?text=${message}`;
       dispatch(clearCart());
       window.open(whatsappUrl, "_blank");

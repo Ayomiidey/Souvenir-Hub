@@ -31,7 +31,7 @@ interface Order {
   customerEmail: string;
   status: string;
   paymentStatus: string;
-  totalAmount: number | string | undefined; // Allow flexibility in type
+  totalAmount: number | string | undefined; // Allow flexibility
   createdAt: string;
   items: Array<{
     quantity: number;
@@ -81,7 +81,7 @@ export function OrdersTable() {
       const response = await fetch(`/api/admin/orders/${orderId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: status.toUpperCase() }),
       });
 
       if (response.ok) {
@@ -199,13 +199,18 @@ export function OrdersTable() {
                 </TableCell>
                 <TableCell>
                   <div className="text-sm">
-                    {order.items.reduce((sum, item) => sum + item.quantity, 0)}{" "}
+                    {order.items && order.items.length > 0
+                      ? order.items.reduce(
+                          (sum, item) => sum + item.quantity,
+                          0
+                        )
+                      : 0}{" "}
                     items
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="font-medium">
-                    $
+                    ₦
                     {typeof order.totalAmount === "number"
                       ? order.totalAmount.toFixed(2)
                       : typeof order.totalAmount === "string"
@@ -258,14 +263,41 @@ export function OrdersTable() {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
+                          handleUpdateOrderStatus(order.id, "PROCESSING")
+                        }
+                        disabled={order.status !== "CONFIRMED"}
+                      >
+                        <Package className="mr-2 h-4 w-4" />
+                        Mark as Processing
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
                           handleUpdateOrderStatus(order.id, "SHIPPED")
                         }
-                        disabled={
-                          !["CONFIRMED", "PROCESSING"].includes(order.status)
-                        }
+                        disabled={order.status !== "PROCESSING"}
                       >
                         <Truck className="mr-2 h-4 w-4" />
                         Mark as Shipped
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleUpdateOrderStatus(order.id, "DELIVERED")
+                        }
+                        disabled={order.status !== "SHIPPED"}
+                      >
+                        <Truck className="mr-2 h-4 w-4" />
+                        Mark as Delivered
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          handleUpdateOrderStatus(order.id, "CANCELLED")
+                        }
+                        disabled={["DELIVERED", "CANCELLED"].includes(
+                          order.status
+                        )}
+                      >
+                        <Package className="mr-2 h-4 w-4" />
+                        Mark as Cancelled
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

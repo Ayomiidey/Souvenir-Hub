@@ -103,13 +103,13 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
                 <p><strong>${item.productName || "Product"}</strong></p>
                 <p>SKU: ${item.productSku || "N/A"}</p>
                 <p>Quantity: ${item.quantity}</p>
-                <p>Unit Price: $${item.unitPrice.toFixed(2)}</p>
+                <p>Unit Price: ₦${item.unitPrice.toFixed(2)}</p>
                 ${
                   item.customPrint
                     ? `<p>Custom Print: "${item.printText}"</p>`
                     : ""
                 }
-                <p><strong>Subtotal: $${(
+                <p><strong>Subtotal: ₦${(
                   item.unitPrice * item.quantity
                 ).toFixed(2)}</strong></p>
               </div>
@@ -119,15 +119,15 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
           </div>
           <div style="background: #4CAF50; color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: white;">💰 Order Summary</h3>
-            <p>Subtotal: $${orderData.totals.subtotal.toFixed(2)}</p>
+            <p>Subtotal: ₦${orderData.totals.subtotal.toFixed(2)}</p>
             <p>Shipping: ${
               orderData.totals.shipping === 0
                 ? "FREE"
-                : `$${orderData.totals.shipping.toFixed(2)}`
+                : `₦${orderData.totals.shipping.toFixed(2)}`
             }</p>
-            <p>Tax: $${orderData.totals.tax.toFixed(2)}</p>
+            <p>Tax: ₦${orderData.totals.tax.toFixed(2)}</p>
             <p style="font-size: 18px; font-weight: bold; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 10px; margin-top: 10px;">
-              Total: $${orderData.totals.total.toFixed(2)}
+              Total: ₦${orderData.totals.total.toFixed(2)}
             </p>
           </div>
           ${

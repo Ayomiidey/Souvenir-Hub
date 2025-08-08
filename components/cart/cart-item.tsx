@@ -49,7 +49,7 @@ export function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
         {item.customPrint && (
           <div className="text-xs text-muted-foreground">
             Custom Print {item.printText && `"${item.printText}"`}
-            {item.printPrice && ` (+$${item.printPrice.toFixed(2)})`}
+            {item.printPrice && ` (+₦${item.printPrice.toFixed(2)})`}
           </div>
         )}
 
