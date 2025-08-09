@@ -97,13 +97,13 @@ export function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
 
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">
-            $
+            ₦
             {(
               item.price + (item.customPrint ? item.printPrice || 0 : 0)
             ).toFixed(2)}{" "}
             each
           </span>
-          <span className="font-medium">${itemTotal.toFixed(2)}</span>
+          <span className="font-medium">₦{itemTotal.toFixed(2)}</span>
         </div>
       </div>
     </div>

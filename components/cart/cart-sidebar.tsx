@@ -88,7 +88,7 @@ export function CartSidebar() {
               <div className="space-y-2 text-sm text-foreground">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>₦{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Shipping</span>
@@ -97,7 +97,7 @@ export function CartSidebar() {
                 <Separator />
                 <div className="flex justify-between font-semibold text-base">
                   <span>Total</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>₦{subtotal.toFixed(2)}</span>
                 </div>
               </div>
 

@@ -42,7 +42,7 @@ export function WishlistItem({
 
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="font-medium">${item.price.toFixed(2)}</span>
+            <span className="font-medium">₦{item.price.toFixed(2)}</span>
             {!item.inStock && (
               <Badge variant="destructive" className="text-xs">
                 Out of Stock

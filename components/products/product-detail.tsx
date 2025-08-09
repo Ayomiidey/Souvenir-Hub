@@ -288,11 +288,11 @@ Please let me know about availability and delivery options. Thank you!`;
             <div className="space-y-2">
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-bold text-primary">
-                  ${finalPrice.toFixed(2)}
+                  ₦{finalPrice.toFixed(2)}
                 </span>
                 {hasDiscount && (
                   <span className="text-xl text-muted-foreground line-through">
-                    ${product.comparePrice!.toFixed(2)}
+                    ₦{product.comparePrice!.toFixed(2)}
                   </span>
                 )}
               </div>
@@ -409,7 +409,7 @@ Please let me know about availability and delivery options. Thank you!`;
 
               <div className="text-xl font-bold">
                 Total:{" "}
-                <span className="text-primary">${finalTotal.toFixed(2)}</span>
+                <span className="text-primary">₦{finalTotal.toFixed(2)}</span>
               </div>
 
               <div className="flex gap-3">
