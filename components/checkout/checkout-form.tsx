@@ -186,9 +186,11 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
       const message = generateWhatsAppMessage(order.orderNumber);
       const whatsappNumber = "+2349095040197";
       const whatsappUrl = `https://wa.me/${whatsappNumber.replace("+", "")}?text=${message}`;
+      window.location.href = whatsappUrl;
       dispatch(clearCart());
-      window.open(whatsappUrl, "_blank");
-      toast.success("Order sent to WhatsApp. Awaiting confirmation.");
+      toast.success(
+        "Proceed to send order on WhatsApp. Redirecting to WhatsApp..."
+      );
       router.push("/");
     } else {
       const error = await response.json();

@@ -349,7 +349,7 @@ export function ProductFilters({
                     variant="outline"
                     className="bg-white dark:bg-gray-900 glass"
                   >
-                    ${currentFilters.minPrice.toFixed(2)}
+                    ₦{currentFilters.minPrice.toFixed(2)}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
@@ -358,7 +358,7 @@ export function ProductFilters({
                     variant="outline"
                     className="bg-white dark:bg-gray-900 glass"
                   >
-                    ${currentFilters.maxPrice.toFixed(2)}
+                    ₦{currentFilters.maxPrice.toFixed(2)}
                   </Badge>
                 </div>
               </div>
@@ -368,7 +368,7 @@ export function ProductFilters({
                     htmlFor="min-price"
                     className="text-xs text-muted-foreground"
                   >
-                    Min Price ($)
+                    Min Price (₦)
                   </Label>
                   <Input
                     id="min-price"
@@ -392,7 +392,7 @@ export function ProductFilters({
                     htmlFor="max-price"
                     className="text-xs text-muted-foreground"
                   >
-                    Max Price ($)
+                    Max Price (₦)
                   </Label>
                   <Input
                     id="max-price"
@@ -413,7 +413,7 @@ export function ProductFilters({
                 </div>
               </div>
               <div className="text-xs text-muted-foreground text-center">
-                Range: ${priceRange.min.toFixed(2)} - $
+                Range: ₦{priceRange.min.toFixed(2)} - ₦
                 {priceRange.max.toFixed(2)}
               </div>
             </CardContent>
