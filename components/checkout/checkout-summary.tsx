@@ -38,7 +38,7 @@ export function CheckoutSummary() {
                 </div>
               </div>
               <div className="text-sm font-medium">
-                ${(item.price * item.quantity).toFixed(2)}
+                ₦{(item.price * item.quantity).toFixed(2)}
               </div>
             </div>
           ))}
@@ -50,7 +50,7 @@ export function CheckoutSummary() {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>₦{subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span>Shipping</span>
@@ -58,12 +58,12 @@ export function CheckoutSummary() {
           </div>
           <div className="flex justify-between text-sm">
             <span>Tax</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>₦{tax.toFixed(2)}</span>
           </div>
           <Separator />
           <div className="flex justify-between font-medium">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>₦{total.toFixed(2)}</span>
           </div>
         </div>
 
