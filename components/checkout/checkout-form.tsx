@@ -253,6 +253,16 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
 
       if (response.ok) {
         const order = await response.json();
+
+        // 📩 Send email only for BANK_TRANSFER
+        if (formData.paymentMethod === "BANK_TRANSFER") {
+          await fetch("/api/send-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData),
+          });
+        }
+
         dispatch(clearCart());
         toast.success(
           "Order placed successfully! Check your email for confirmation."
