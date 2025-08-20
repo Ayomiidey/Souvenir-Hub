@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         (i: any, idx: number) => `
           <tr>
             <td style="padding: 8px; border: 1px solid #ddd;">${idx + 1}</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">${i.name}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${i.productName}</td>
             <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${i.quantity}</td>
             <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">₦${i.unitPrice}</td>
             <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">₦${i.quantity * i.unitPrice}</td>
