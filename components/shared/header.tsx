@@ -26,6 +26,7 @@ import { useAppSelector, useAppDispatch } from "@/hooks/redux";
 import { toggleCart } from "@/store/slices/cartSlice";
 import { toggleWishlist } from "@/store/slices/wishlistSlice";
 import { CategoryMegaMenu } from "./category-mega-menu";
+import { toast } from "sonner";
 
 export function Header() {
   const { data: session } = useSession();
@@ -38,6 +39,7 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,10 +56,39 @@ export function Header() {
     setHeaderSearchQuery(value);
   };
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: "/" });
-  };
+  const handleSignOut = async () => {
+    if (isSigningOut) return;
 
+    setIsSigningOut(true);
+
+    const loadingToast = toast.loading("Signing you out...", {
+      description: "Please wait while we sign you out",
+    });
+
+    try {
+      await signOut({
+        redirect: false,
+        callbackUrl: "/",
+      });
+
+      toast.dismiss(loadingToast);
+      toast.success("Signed out successfully", {
+        description: "You have been signed out of your account",
+        duration: 3000,
+      });
+
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Sign out error:", error);
+      toast.dismiss(loadingToast);
+      toast.error("Sign out failed", {
+        description: "Unable to sign out. Please try again.",
+      });
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
   return (
     <header className="fixed top-0 z-50 w-full border-b bg-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-white/95 dark:bg-slate-900/95 dark:supports-[backdrop-filter]:bg-slate-900/95 shadow-sm">
       {/* Top Row - Logo and Action Icons */}
@@ -239,16 +270,6 @@ export function Header() {
                       </div>
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile" className="cursor-pointer">
-                        Profile
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/orders" className="cursor-pointer">
-                        My Orders
-                      </Link>
-                    </DropdownMenuItem>
                     {session.user?.roles?.includes("ADMIN") && (
                       <DropdownMenuItem asChild>
                         <Link href="/admin" className="cursor-pointer">
@@ -267,12 +288,12 @@ export function Header() {
                 ) : (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link href="/auth/signin" className="cursor-pointer">
+                      <Link href="/sign-in" className="cursor-pointer">
                         Sign in
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/auth/signup" className="cursor-pointer">
+                      <Link href="/sign-up" className="cursor-pointer">
                         Sign up
                       </Link>
                     </DropdownMenuItem>

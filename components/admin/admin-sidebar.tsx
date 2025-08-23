@@ -12,7 +12,7 @@ import {
   FolderTree,
   ShoppingCart,
   Users,
-  Settings,
+  // Settings,
   // BarChart3,
   // FileText,
   ChevronLeft,
@@ -88,17 +88,17 @@ const navigation = [
   //     { name: "Customer Reports", href: "/admin/reports/customers" },
   //   ],
   // },
-  {
-    name: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
-    children: [
-      { name: "General", href: "/admin/settings" },
-      { name: "Payment", href: "/admin/settings/payment" },
-      { name: "Shipping", href: "/admin/settings/shipping" },
-      { name: "Email", href: "/admin/settings/email" },
-    ],
-  },
+  // {
+  //   name: "Settings",
+  //   href: "/admin/settings",
+  //   icon: Settings,
+  //   children: [
+  //     { name: "General", href: "/admin/settings" },
+  //     { name: "Payment", href: "/admin/settings/payment" },
+  //     { name: "Shipping", href: "/admin/settings/shipping" },
+  //     { name: "Email", href: "/admin/settings/email" },
+  //   ],
+  // },
 ];
 
 export function AdminSidebar() {

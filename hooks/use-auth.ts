@@ -16,10 +16,7 @@ export function useAuth() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const signInWithCredentials = async (
-    data: SignInData,
-    redirectTo = "/dashboard"
-  ) => {
+  const signInWithCredentials = async (data: SignInData, redirectTo = "/") => {
     setIsLoading(true);
     setError("");
 
@@ -71,7 +68,7 @@ export function useAuth() {
     }
   };
 
-  const signInWithGoogle = async (redirectTo = "/dashboard") => {
+  const signInWithGoogle = async (redirectTo = "/") => {
     setIsGoogleLoading(true);
 
     const loadingToast = toast.loading("Connecting to Google...", {
@@ -162,7 +159,7 @@ export function useAuth() {
           duration: 3000,
         });
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push("/");
           router.refresh();
         }, 500);
         return true;

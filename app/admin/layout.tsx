@@ -1,12 +1,19 @@
 import type React from "react";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminHeader } from "@/components/admin/admin-header";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+  const isAdmin = session?.user?.roles?.includes("ADMIN");
+  if (!isAdmin) {
+    redirect("/sign-in");
+  }
   return (
     <div className="flex h-screen bg-muted/10">
       <AdminSidebar />
