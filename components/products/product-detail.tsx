@@ -414,23 +414,23 @@ Please let me know about availability and delivery options. Thank you!`;
 
               <div className="flex gap-3">
                 <Button
-                  className="flex-1 h-11 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  className="flex-1 h-9 rounded-sm text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4"
                   onClick={handleAddToCart}
                   disabled={isOutOfStock || isAddingToCart}
                 >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  <ShoppingCart className="mr-2 h-5 w-5" />
                   {isAddingToCart ? "Adding..." : "Add to Cart"}
                 </Button>
 
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-11 w-11"
+                  className="h-9 w-9 rounded-md"
                   onClick={handleWishlistToggle}
                 >
                   <Heart
                     className={cn(
-                      "h-4 w-4",
+                      "h-5 w-5",
                       isInWishlist && "fill-red-500 text-red-500"
                     )}
                   />
@@ -440,11 +440,11 @@ Please let me know about availability and delivery options. Thank you!`;
               {/* WhatsApp Order Button */}
               <Button
                 onClick={handleWhatsAppOrder}
-                className="w-full h-11 text-sm font-medium bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+                className="w-full h-9 rounded-sm text-lg font-bold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2 mt-2"
                 disabled={isOutOfStock}
               >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Order via WhatsApp
+                <MessageCircle className="h-5 w-5" />
+                <span>Order on WhatsApp</span>
               </Button>
             </div>
             {/* Features */}
