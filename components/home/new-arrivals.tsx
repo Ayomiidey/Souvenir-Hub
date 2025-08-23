@@ -17,7 +17,7 @@ export function NewArrivals() {
 
   const fetchNewArrivals = async () => {
     try {
-      const response = await fetch("/api/products?sortBy=newest&limit=3");
+      const response = await fetch("/api/products?sortBy=newest&limit=4");
       const data = await response.json();
       setProducts(data.products || []);
     } catch (error) {
@@ -29,12 +29,12 @@ export function NewArrivals() {
 
   if (loading) {
     return (
-      <section className="space-y-8">
+      <section className="space-y-8 max-w-7xl mx-auto px-4">
         <div className="text-center space-y-4">
           <h2 className="text-3xl font-bold">New Arrivals</h2>
           <p className="text-muted-foreground">Fresh designs just added</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="space-y-4">
               <div className="aspect-square bg-muted rounded-lg shimmer"></div>
@@ -58,8 +58,8 @@ export function NewArrivals() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {products.slice(0, 4).map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

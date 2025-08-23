@@ -148,7 +148,7 @@ export function ProductDetail({
   };
 
   const handleWhatsAppOrder = () => {
-    const whatsappNumber = "+1234567890"; // Replace with your actual WhatsApp business number
+    const whatsappNumber = "+2348068005956"; // Replace with your actual WhatsApp business number
     const message = `Hi! I'm interested in ordering this product:
 
 *${product.name}*

@@ -184,14 +184,14 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
     if (response.ok) {
       const order = await response.json();
       const message = generateWhatsAppMessage(order.orderNumber);
-      const whatsappNumber = "+2349095040197";
+      const whatsappNumber = "+2348068005956";
       const whatsappUrl = `https://wa.me/${whatsappNumber.replace("+", "")}?text=${message}`;
       window.location.href = whatsappUrl;
       dispatch(clearCart());
       toast.success(
         "Proceed to send order on WhatsApp. Redirecting to WhatsApp..."
       );
-      router.push("/");
+      router.push(`/orders/${order.id}/confirmation`);
     } else {
       const error = await response.json();
       toast.error(error.message || "Failed to create order");

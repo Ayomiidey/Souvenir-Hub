@@ -57,9 +57,12 @@ export function CategoryMegaMenu() {
   ];
 
   return (
-    <div className="w-full flex border border-gray-300 dark:border-gray-600">
+    <div className="w-full flex border border-gray-300 dark:border-gray-600 text-center items-center justify-center">
       {allCategories.map((category, index) => (
-        <div key={category.id} className="flex-1">
+        <div
+          key={category.id}
+          className="flex-1 flex items-center justify-center min-w-[140px]"
+        >
           {category.children && category.children.length > 0 ? (
             <NavigationMenu>
               <NavigationMenuList>

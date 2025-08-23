@@ -104,10 +104,8 @@ export function HomePageClient({ data }: HomePageClientProps) {
           <BestSellers products={featuredProducts} />
         </div>
       </div>
-      <div className="mx-auto max-w-7xl px-4">
-        <div>
-          <NewArrivals />
-        </div>
+      <div>
+        <NewArrivals />
       </div>
     </div>
   );
