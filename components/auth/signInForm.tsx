@@ -121,7 +121,7 @@ export function SignInForm({
 
         <Button
           type="submit"
-          className="w-full bg-emerald-600 hover:bg-emerald-700 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={!isFormValid || isLoading || isGoogleLoading}
         >
           {isLoading ? (
