@@ -1,6 +1,9 @@
 "use client";
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
+import { CategoryWithChildren } from "@/types/category";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -40,6 +43,29 @@ export function Header() {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  // Category fetching for mobile menu
+  const [categories, setCategories] = useState<CategoryWithChildren[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        if (response.ok) {
+          const data = await response.json();
+          setCategories(Array.isArray(data) ? data : []);
+        } else {
+          setCategories([]);
+        }
+      } catch {
+        setCategories([]);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,41 +162,51 @@ export function Header() {
                     >
                       All Products
                     </Link>
-                    <Link
-                      href="/categories/t-shirts-apparel"
-                      className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      T-Shirts & Apparel
-                    </Link>
-                    <Link
-                      href="/categories/mugs-drinkware"
-                      className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Mugs & Drinkware
-                    </Link>
-                    <Link
-                      href="/categories/home-decor"
-                      className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Home Decor
-                    </Link>
-                    <Link
-                      href="/categories/phone-cases"
-                      className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Phone Cases
-                    </Link>
-                    <Link
-                      href="/categories/stationery"
-                      className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Stationery
-                    </Link>
+                    {loadingCategories ? (
+                      <span className="text-xs text-muted-foreground px-2 py-2">
+                        Loading categories...
+                      </span>
+                    ) : (
+                      categories.map((category) => (
+                        <div key={category.id} className="mb-2 last:mb-0">
+                          {category.children && category.children.length > 0 ? (
+                            <details className="group">
+                              <summary className="flex items-center justify-between cursor-pointer py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm font-medium">
+                                <span>{category.name}</span>
+                                <ChevronDown className="h-4 w-4 ml-2 group-open:rotate-180 transition-transform" />
+                              </summary>
+                              <div className="ml-4 flex flex-col">
+                                <Link
+                                  href={`/categories/${category.slug}`}
+                                  className="py-2 px-2 text-xs font-medium rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                  Browse all {category.name.toLowerCase()}
+                                </Link>
+                                {category.children.map((sub) => (
+                                  <Link
+                                    key={sub.id}
+                                    href={`/categories/${sub.slug}`}
+                                    className="py-2 px-2 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                  >
+                                    {sub.name}
+                                  </Link>
+                                ))}
+                              </div>
+                            </details>
+                          ) : (
+                            <Link
+                              href={`/categories/${category.slug}`}
+                              className="text-sm font-medium py-3 px-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors block"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              {category.name}
+                            </Link>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </div>
                 </nav>
               </SheetContent>
