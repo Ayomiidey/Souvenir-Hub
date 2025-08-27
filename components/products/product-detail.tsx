@@ -412,9 +412,9 @@ Please let me know about availability and delivery options. Thank you!`;
                 <span className="text-primary">₦{finalTotal.toFixed(2)}</span>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <Button
-                  className="flex-1 h-9 rounded-sm text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4"
+                  className="flex-1 h-10 rounded-sm text-lg font-bold cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4"
                   onClick={handleAddToCart}
                   disabled={isOutOfStock || isAddingToCart}
                 >
@@ -423,28 +423,29 @@ Please let me know about availability and delivery options. Thank you!`;
                 </Button>
 
                 <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-9 w-9 rounded-md"
-                  onClick={handleWishlistToggle}
+                  className="flex-1 h-10 rounded-sm text-lg font-bold cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2"
+                  onClick={handleWhatsAppOrder}
+                  disabled={isOutOfStock}
                 >
-                  <Heart
-                    className={cn(
-                      "h-5 w-5",
-                      isInWishlist && "fill-red-500 text-red-500"
-                    )}
-                  />
+                  <MessageCircle className="h-5 w-5" />
+                  <span>Order on WhatsApp</span>
                 </Button>
               </div>
 
-              {/* WhatsApp Order Button */}
               <Button
-                onClick={handleWhatsAppOrder}
-                className="w-full h-9 rounded-sm text-lg font-bold bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2 mt-2"
-                disabled={isOutOfStock}
+                variant="outline"
+                className="w-full h-10 rounded-md cursor-pointer flex items-center justify-center gap-2 mt-2"
+                onClick={handleWishlistToggle}
               >
-                <MessageCircle className="h-5 w-5" />
-                <span>Order on WhatsApp</span>
+                <Heart
+                  className={cn(
+                    "h-5 w-5",
+                    isInWishlist && "fill-red-500 text-red-500"
+                  )}
+                />
+                <span>
+                  {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+                </span>
               </Button>
             </div>
             {/* Features */}
