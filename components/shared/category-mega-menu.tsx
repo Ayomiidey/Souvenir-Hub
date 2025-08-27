@@ -51,9 +51,10 @@ export function CategoryMegaMenu() {
     );
   }
 
+  const visibleCategories = categories.slice(0, 7);
   const allCategories = [
     { id: "all", name: "ALL CATEGORIES", slug: "categories" },
-    ...categories,
+    ...visibleCategories,
   ];
 
   return (

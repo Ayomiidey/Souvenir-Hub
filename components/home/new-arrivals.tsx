@@ -59,8 +59,11 @@ export function NewArrivals() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.slice(0, 4).map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {/* Only show 2 on mobile, 4 on desktop */}
+        {products.slice(0, 4).map((product, idx) => (
+          <div key={product.id} className={idx > 1 ? "hidden lg:block" : ""}>
+            <ProductCard product={product} />
+          </div>
         ))}
       </div>
 

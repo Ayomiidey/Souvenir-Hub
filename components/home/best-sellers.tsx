@@ -101,14 +101,19 @@ export function BestSellers({ products: propProducts }: BestSellersProps) {
 
         {products.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-8">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  viewMode="grid"
-                />
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+              {/* Show only 2 on mobile, all on desktop */}
+              {products
+                .slice(0, 3) // always max 3 for desktop, but only 2 for mobile
+                .map((product, idx) => (
+                  // Only render first 2 on mobile, all 3 on lg+
+                  <div
+                    key={product.id}
+                    className={idx > 1 ? "hidden lg:block" : ""}
+                  >
+                    <ProductCard product={product} viewMode="grid" />
+                  </div>
+                ))}
             </div>
 
             <div className="text-center mb-10 ">
