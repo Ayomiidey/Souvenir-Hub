@@ -8,7 +8,7 @@ import { useAppSelector } from "@/hooks/redux";
 export function CheckoutSummary() {
   const { items, subtotal } = useAppSelector((state) => state.cart);
 
-  const shipping = subtotal >= 50 ? 0 : 5.99;
+  const shipping = subtotal >= 200000 ? 0 : 5.99;
   const tax = subtotal * 0.08; // 8% tax
   const total = subtotal + shipping + tax;
 
@@ -67,7 +67,7 @@ export function CheckoutSummary() {
           </div>
         </div>
 
-        {subtotal >= 50 && (
+        {subtotal >= 200000 && (
           <div className="text-xs text-green-600 text-center">
             🎉 You qualify for free shipping!
           </div>

@@ -45,14 +45,14 @@ export function CategoryMegaMenu() {
           href="/products"
           className="flex-1 px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors border-r border-gray-300 dark:border-gray-600"
         >
-          ALL PRODUCTS
+          ALL CATEGORIES
         </Link>
       </div>
     );
   }
 
   const allCategories = [
-    { id: "all", name: "ALL PRODUCTS", slug: "products", children: [] },
+    { id: "all", name: "ALL CATEGORIES", slug: "categories" },
     ...categories,
   ];
 
@@ -63,7 +63,48 @@ export function CategoryMegaMenu() {
           key={category.id}
           className="flex-1 flex items-center justify-center min-w-[140px]"
         >
-          {category.children && category.children.length > 0 ? (
+          {category.id === "all" ? (
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger
+                    className={cn(
+                      "w-full h-auto px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors rounded-none border-0",
+                      index < allCategories.length - 1 &&
+                        "border-r border-gray-300 dark:border-gray-600"
+                    )}
+                  >
+                    {category.name}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="min-w-[220px] bg-white dark:bg-slate-900 shadow-lg rounded-lg p-2 flex flex-col">
+                      <NavigationMenuLink asChild>
+                        <Link
+                          className="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium"
+                          href="/products"
+                        >
+                          All Products
+                        </Link>
+                      </NavigationMenuLink>
+                      {categories.map((cat) => (
+                        <NavigationMenuLink asChild key={cat.id}>
+                          <Link
+                            className="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800 text-sm"
+                            href={`/categories/${cat.slug}`}
+                          >
+                            {cat.name}
+                          </Link>
+                        </NavigationMenuLink>
+                      ))}
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          ) : // Only show dropdown for categories that have children
+          "children" in category &&
+            Array.isArray(category.children) &&
+            category.children.length > 0 ? (
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
@@ -107,11 +148,7 @@ export function CategoryMegaMenu() {
             </NavigationMenu>
           ) : (
             <Link
-              href={
-                category.id === "all"
-                  ? "/products"
-                  : `/categories/${category.slug}`
-              }
+              href={`/categories/${category.slug}`}
               className={cn(
                 "block w-full px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors",
                 index < allCategories.length - 1 &&
