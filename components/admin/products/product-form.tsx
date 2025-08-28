@@ -35,6 +35,11 @@ interface ProductFormData {
   images: { url: string; altText: string; file?: File }[];
   deliveryTime?: string;
   isActive: boolean;
+  priceTiers?: Array<{
+    minQuantity: number;
+    discountType: string;
+    discountValue: number;
+  }>;
 }
 
 interface ProductFormProps {
@@ -363,6 +368,102 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                   </div>
                 )}
               </div>
+            </CardContent>
+          </Card>
+          {/* Price Tiers Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg md:text-xl">
+                Price Tiers (Bulk Discount)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {(formData.priceTiers || []).map((tier, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col sm:flex-row gap-2 items-end border p-3 rounded-md bg-gray-50 dark:bg-slate-900/30"
+                >
+                  <div className="flex-1">
+                    <Label>Min Quantity</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={tier.minQuantity}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        const newTiers = [...(formData.priceTiers || [])];
+                        newTiers[idx].minQuantity = val;
+                        updateFormData("priceTiers", newTiers);
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label>Discount Type</Label>
+                    <Select
+                      value={tier.discountType}
+                      onValueChange={(val) => {
+                        const newTiers = [...(formData.priceTiers || [])];
+                        newTiers[idx].discountType = val;
+                        updateFormData("priceTiers", newTiers);
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PERCENTAGE">
+                          Percentage (%)
+                        </SelectItem>
+                        <SelectItem value="FIXED_AMOUNT">
+                          Fixed Amount (NGN)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex-1">
+                    <Label>Discount Value</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={tier.discountValue}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        const newTiers = [...(formData.priceTiers || [])];
+                        newTiers[idx].discountValue = val;
+                        updateFormData("priceTiers", newTiers);
+                      }}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="mt-2 sm:mt-0"
+                    onClick={() => {
+                      const newTiers = [...(formData.priceTiers || [])];
+                      newTiers.splice(idx, 1);
+                      updateFormData("priceTiers", newTiers);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  const newTiers = [...(formData.priceTiers || [])];
+                  newTiers.push({
+                    minQuantity: 1,
+                    discountType: "PERCENTAGE",
+                    discountValue: 0,
+                  });
+                  updateFormData("priceTiers", newTiers);
+                }}
+              >
+                Add Price Tier
+              </Button>
             </CardContent>
           </Card>
           <Card>
