@@ -43,7 +43,7 @@ interface ProductFormData {
 }
 
 interface ProductFormProps {
-  productId?: string; // Undefined for create, defined for edit
+  productId?: string;
   initialData?: ProductFormData;
 }
 
@@ -67,6 +67,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       images: [],
       deliveryTime: "",
       isActive: true,
+      priceTiers: [], // Add default empty array
     }
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -105,6 +106,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
               images: data.images || [],
               deliveryTime: data.deliveryTime || "",
               isActive: data.isActive || true,
+              priceTiers: data.priceTiers || [], // Include priceTiers
             });
           }
         } catch (error) {
@@ -127,6 +129,21 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
     if (isNaN(formData.quantity) || formData.quantity < 0)
       newErrors.quantity = "Quantity must be a non-negative number";
     if (!formData.categoryId) newErrors.categoryId = "Category is required";
+
+    // Validate price tiers
+    if (formData.priceTiers) {
+      formData.priceTiers.forEach((tier, idx) => {
+        if (tier.minQuantity < 1) {
+          newErrors[`priceTiers[${idx}].minQuantity`] =
+            "Minimum quantity must be at least 1";
+        }
+        if (tier.discountValue < 0) {
+          newErrors[`priceTiers[${idx}].discountValue`] =
+            "Discount value cannot be negative";
+        }
+      });
+    }
+
     return newErrors;
   };
 
@@ -175,7 +192,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
     }
 
     setLoading(true);
-    setErrors({}); // Clear all errors on successful validation
+    setErrors({});
 
     const imageFiles = formData.images
       .filter((img) => img.file)
@@ -198,8 +215,9 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       printPrice: formData.printPrice,
       images: uploadedImages,
       isActive: true,
+      priceTiers: formData.priceTiers, // Ensure priceTiers is included
     };
-    console.log("Sending price:", formDataToSend.price);
+    console.log("Sending formData:", formDataToSend);
 
     const url = productId
       ? `/api/admin/products/${productId}`
@@ -370,7 +388,6 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
               </div>
             </CardContent>
           </Card>
-          {/* Price Tiers Section */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg md:text-xl">
@@ -388,14 +405,21 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                     <Input
                       type="number"
                       min={1}
-                      value={tier.minQuantity}
+                      value={tier.minQuantity === 0 ? "" : tier.minQuantity}
                       onChange={(e) => {
-                        const val = Number(e.target.value);
+                        const value = e.target.value;
                         const newTiers = [...(formData.priceTiers || [])];
-                        newTiers[idx].minQuantity = val;
+                        newTiers[idx].minQuantity =
+                          value === "" ? 0 : parseInt(value) || 0;
                         updateFormData("priceTiers", newTiers);
                       }}
+                      className="w-full"
                     />
+                    {errors[`priceTiers[${idx}].minQuantity`] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[`priceTiers[${idx}].minQuantity`]}
+                      </p>
+                    )}
                   </div>
                   <div className="flex-1">
                     <Label>Discount Type</Label>
@@ -425,14 +449,22 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                     <Input
                       type="number"
                       min={0}
-                      value={tier.discountValue}
+                      step="0.01"
+                      value={tier.discountValue === 0 ? "" : tier.discountValue}
                       onChange={(e) => {
-                        const val = Number(e.target.value);
+                        const value = e.target.value;
                         const newTiers = [...(formData.priceTiers || [])];
-                        newTiers[idx].discountValue = val;
+                        newTiers[idx].discountValue =
+                          value === "" ? 0 : parseFloat(value) || 0;
                         updateFormData("priceTiers", newTiers);
                       }}
+                      className="w-full"
                     />
+                    {errors[`priceTiers[${idx}].discountValue`] && (
+                      <p className="text-red-500 text-sm">
+                        {errors[`priceTiers[${idx}].discountValue`]}
+                      </p>
+                    )}
                   </div>
                   <Button
                     type="button"
