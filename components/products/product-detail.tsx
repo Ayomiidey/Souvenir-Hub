@@ -408,7 +408,120 @@ Please let me know about availability and delivery options. Thank you!`;
             </div>
             {/* Quantity & Add to Cart */}
             <div className="space-y-4">
-              {/* Print Service Workflow */}
+              <div className="flex items-center space-x-3">
+                <Label className="text-sm font-medium">Quantity:</Label>
+                <div className="flex items-center border rounded-md">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                    className="h-9 w-9"
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  <Input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) =>
+                      setQuantity(
+                        Math.max(
+                          1,
+                          Math.min(
+                            product.quantity,
+                            Number.parseInt(e.target.value) || 1
+                          )
+                        )
+                      )
+                    }
+                    className="w-14 text-center border-0 focus-visible:ring-0 text-sm"
+                    min={1}
+                    max={product.quantity}
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() =>
+                      setQuantity(Math.min(product.quantity, quantity + 1))
+                    }
+                    disabled={quantity >= product.quantity}
+                    className="h-9 w-9"
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Price Tiers */}
+              {product.priceTiers && product.priceTiers.length > 0 && (
+                <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+                  <CardContent className="p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Info className="h-4 w-4 text-blue-600" />
+                      <span className="font-medium text-blue-900 dark:text-blue-100 text-sm">
+                        Bulk Pricing Available
+                      </span>
+                    </div>
+                    <div className="space-y-1">
+                      {product.priceTiers.map((tier, index) => (
+                        <div
+                          key={index}
+                          className="text-xs text-blue-700 dark:text-blue-300"
+                        >
+                          {tier.minQuantity}+ items:{" "}
+                          {tier.discountType === "PERCENTAGE"
+                            ? `${tier.discountValue}% off`
+                            : `₦${tier.discountValue} off each`}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              <div className="text-xl font-bold">
+                Total:{" "}
+                <span className="text-primary">₦{finalTotal.toFixed(2)}</span>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button
+                  className="flex-1 h-10 rounded-sm text-lg font-bold cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4"
+                  onClick={handleAddToCart}
+                  disabled={isOutOfStock || isAddingToCart}
+                >
+                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  {isAddingToCart ? "Adding..." : "Add to Cart"}
+                </Button>
+
+                <Button
+                  className="flex-1 h-10 rounded-sm text-lg font-bold cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2"
+                  onClick={handleWhatsAppOrder}
+                  disabled={isOutOfStock}
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  <span>Order on WhatsApp</span>
+                </Button>
+              </div>
+
+              <Button
+                variant="outline"
+                className="w-full h-10 rounded-md cursor-pointer flex items-center justify-center gap-2 mt-2"
+                onClick={handleWishlistToggle}
+              >
+                <Heart
+                  className={cn(
+                    "h-5 w-5",
+                    isInWishlist && "fill-red-500 text-red-500"
+                  )}
+                />
+                <span>
+                  {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+                </span>
+              </Button>
+            </div>
+            {/* Print Service Workflow */}
+            <div className="pt-4 border-t">
               {product.allowCustomPrint && (
                 <Card className="bg-orange-50 dark:bg-orange-950 border-orange-200 dark:border-orange-800 mb-4">
                   <CardContent className="p-4">
@@ -557,203 +670,9 @@ Please let me know about availability and delivery options. Thank you!`;
                   </CardContent>
                 </Card>
               )}
-              <div className="flex items-center space-x-3">
-                <Label className="text-sm font-medium">Quantity:</Label>
-                <div className="flex items-center border rounded-md">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
-                    className="h-9 w-9"
-                  >
-                    <Minus className="h-3 w-3" />
-                  </Button>
-                  <Input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) =>
-                      setQuantity(
-                        Math.max(
-                          1,
-                          Math.min(
-                            product.quantity,
-                            Number.parseInt(e.target.value) || 1
-                          )
-                        )
-                      )
-                    }
-                    className="w-14 text-center border-0 focus-visible:ring-0 text-sm"
-                    min={1}
-                    max={product.quantity}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() =>
-                      setQuantity(Math.min(product.quantity, quantity + 1))
-                    }
-                    disabled={quantity >= product.quantity}
-                    className="h-9 w-9"
-                  >
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Price Tiers */}
-              {product.priceTiers && product.priceTiers.length > 0 && (
-                <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-                  <CardContent className="p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Info className="h-4 w-4 text-blue-600" />
-                      <span className="font-medium text-blue-900 dark:text-blue-100 text-sm">
-                        Bulk Pricing Available
-                      </span>
-                    </div>
-                    <div className="space-y-1">
-                      {product.priceTiers.map((tier, index) => (
-                        <div
-                          key={index}
-                          className="text-xs text-blue-700 dark:text-blue-300"
-                        >
-                          {tier.minQuantity}+ items:{" "}
-                          {tier.discountType === "PERCENTAGE"
-                            ? `${tier.discountValue}% off`
-                            : `₦${tier.discountValue} off each`}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              <div className="text-xl font-bold">
-                Total:{" "}
-                <span className="text-primary">₦{finalTotal.toFixed(2)}</span>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button
-                  className="flex-1 h-10 rounded-sm text-lg font-bold cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 px-4"
-                  onClick={handleAddToCart}
-                  disabled={isOutOfStock || isAddingToCart}
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  {isAddingToCart ? "Adding..." : "Add to Cart"}
-                </Button>
-
-                <Button
-                  className="flex-1 h-10 rounded-sm text-lg font-bold cursor-pointer bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white flex items-center justify-center gap-2"
-                  onClick={handleWhatsAppOrder}
-                  disabled={isOutOfStock}
-                >
-                  <MessageCircle className="h-5 w-5" />
-                  <span>Order on WhatsApp</span>
-                </Button>
-              </div>
-
-              <Button
-                variant="outline"
-                className="w-full h-10 rounded-md cursor-pointer flex items-center justify-center gap-2 mt-2"
-                onClick={handleWishlistToggle}
-              >
-                <Heart
-                  className={cn(
-                    "h-5 w-5",
-                    isInWishlist && "fill-red-500 text-red-500"
-                  )}
-                />
-                <span>
-                  {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-                </span>
-              </Button>
-            </div>
-            {/* Features */}
-            <div className="grid grid-cols-3 gap-3 pt-4 border-t">
-              <div className="text-center space-y-2">
-                <div className="w-10 h-10 mx-auto bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                  <Truck className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="text-xs font-medium">Free Shipping</div>
-                <div className="text-xs text-muted-foreground">
-                  On orders $50+
-                </div>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="w-10 h-10 mx-auto bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                  <Shield className="h-5 w-5 text-green-600" />
-                </div>
-                <div className="text-xs font-medium">Quality Guarantee</div>
-                <div className="text-xs text-muted-foreground">
-                  100% satisfaction
-                </div>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="w-10 h-10 mx-auto bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
-                  <RotateCcw className="h-5 w-5 text-purple-600" />
-                </div>
-                <div className="text-xs font-medium">Easy Returns</div>
-                <div className="text-xs text-muted-foreground">
-                  30-day policy
-                </div>
-              </div>
             </div>
           </div>
         </div>
-
-        {/* Custom Print Section */}
-        {product.allowCustomPrint && (
-          <Card className="mb-10 bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-950 dark:to-yellow-950 border-orange-200 dark:border-orange-800">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Printer className="h-6 w-6 text-orange-600" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-2 text-orange-900 dark:text-orange-100">
-                    Custom Printing Available
-                  </h3>
-                  <p className="text-orange-700 dark:text-orange-300 mb-4 text-sm leading-relaxed">
-                    Want to personalize this product with your own design, logo,
-                    or text? Our professional printing partners can help you
-                    create the perfect custom souvenir.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white hover:bg-orange-50 border-orange-300 text-orange-700"
-                      asChild
-                    >
-                      <Link
-                        href="/contact?service=printing"
-                        className="flex items-center gap-2"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        Contact Printing Service
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white hover:bg-orange-50 border-orange-300 text-orange-700"
-                      asChild
-                    >
-                      <Link
-                        href="/printing-guide"
-                        className="flex items-center gap-2"
-                      >
-                        <Info className="h-3 w-3" />
-                        Printing Guidelines
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Product Details Tabs */}
         <Card className="mb-10">
