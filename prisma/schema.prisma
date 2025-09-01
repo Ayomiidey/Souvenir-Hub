@@ -1,3 +1,40 @@
+// Print Service Models
+model State {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  locations Location[]
+  printers  Printer[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Location {
+  id        String    @id @default(cuid())
+  name      String
+  stateId   String
+  state     State     @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  printers  Printer[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Printer {
+  id          String   @id @default(cuid())
+  name        String
+  contact     String
+  email       String?
+  phone       String?
+  address     String?
+  stateId     String
+  locationId  String
+  state       State    @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  location    Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]

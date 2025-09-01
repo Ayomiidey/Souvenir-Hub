@@ -106,7 +106,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
               images: data.images || [],
               deliveryTime: data.deliveryTime || "",
               isActive: data.isActive || true,
-              priceTiers: data.priceTiers || [], // Include priceTiers
+              priceTiers: data.priceTiers || [],
             });
           }
         } catch (error) {

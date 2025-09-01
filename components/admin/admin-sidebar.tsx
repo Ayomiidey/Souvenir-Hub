@@ -23,6 +23,11 @@ import {
 
 const navigation = [
   {
+    name: "Printers",
+    href: "/admin/printers",
+    icon: Package, // You can use a more printer-specific icon if available
+  },
+  {
     name: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,

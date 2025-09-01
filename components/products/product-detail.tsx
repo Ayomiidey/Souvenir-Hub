@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+// Types for state/location/printer
+type State = { id: string; name: string };
+type Location = { id: string; name: string; stateId: string; state: State };
+type Printer = {
+  id: string;
+  name: string;
+  stateId: string;
+  locationId: string;
+  state: State;
+  location: Location;
+};
 import {
   Heart,
   ShoppingCart,
@@ -53,6 +71,60 @@ export function ProductDetail({
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  // Print service workflow state
+  const [wantsPrint, setWantsPrint] = useState<null | boolean>(null);
+  const [states, setStates] = useState<State[]>([]);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [printers, setPrinters] = useState<Printer[]>([]);
+  const [loadingStates, setLoadingStates] = useState(false);
+  const [loadingLocations, setLoadingLocations] = useState(false);
+  const [loadingPrinters, setLoadingPrinters] = useState(false);
+  // Fetch states when print is enabled
+  useEffect(() => {
+    if (wantsPrint) {
+      setLoadingStates(true);
+      fetch("/api/states")
+        .then((res) => res.json())
+        .then((data) => setStates(data))
+        .catch(() => setStates([]))
+        .finally(() => setLoadingStates(false));
+    }
+  }, [wantsPrint]);
+
+  // Fetch locations when state is selected
+  useEffect(() => {
+    if (wantsPrint && selectedState) {
+      setLoadingLocations(true);
+      fetch(`/api/locations`)
+        .then((res) => res.json())
+        .then((data) =>
+          setLocations(
+            data.filter((loc: Location) => loc.stateId === selectedState)
+          )
+        )
+        .catch(() => setLocations([]))
+        .finally(() => setLoadingLocations(false));
+    } else {
+      setLocations([]);
+      setSelectedLocation("");
+    }
+  }, [wantsPrint, selectedState]);
+
+  // Fetch printers when state/location is selected
+  const handleViewPrinters = () => {
+    if (!selectedState || !selectedLocation) return;
+    setLoadingPrinters(true);
+    fetch(
+      `/api/printers?stateId=${selectedState}&locationId=${selectedLocation}`
+    )
+      .then((res) => res.json())
+      .then((data) => setPrinters(data))
+      .catch(() => setPrinters([]))
+      .finally(() => setLoadingPrinters(false));
+  };
 
   const isInWishlist = wishlistItems.some(
     (item) => item.productId === product.id
@@ -336,6 +408,155 @@ Please let me know about availability and delivery options. Thank you!`;
             </div>
             {/* Quantity & Add to Cart */}
             <div className="space-y-4">
+              {/* Print Service Workflow */}
+              {product.allowCustomPrint && (
+                <Card className="bg-orange-50 dark:bg-orange-950 border-orange-200 dark:border-orange-800 mb-4">
+                  <CardContent className="p-4">
+                    <div className="mb-2 font-semibold text-orange-900 dark:text-orange-100 flex items-center gap-2">
+                      <Printer className="h-5 w-5 text-orange-600" />
+                      Print Service
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-4">
+                        <Label className="text-sm">
+                          Do you want to print this product?
+                        </Label>
+                        <div className="flex gap-3">
+                          <label className="flex items-center gap-1 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="wantsPrint"
+                              checked={wantsPrint === true}
+                              onChange={() => setWantsPrint(true)}
+                            />
+                            <span>Yes</span>
+                          </label>
+                          <label className="flex items-center gap-1 cursor-pointer">
+                            <input
+                              type="radio"
+                              name="wantsPrint"
+                              checked={wantsPrint === false}
+                              onChange={() => setWantsPrint(false)}
+                            />
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+                      {wantsPrint && (
+                        <div className="flex flex-col gap-3 mt-2">
+                          <div>
+                            <Label className="text-sm mb-1">Select State</Label>
+                            <Select
+                              value={selectedState}
+                              onValueChange={(val) => {
+                                setSelectedState(val);
+                                setSelectedLocation("");
+                                setPrinters([]);
+                              }}
+                              disabled={loadingStates || states.length === 0}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue
+                                  placeholder={
+                                    loadingStates
+                                      ? "Loading states..."
+                                      : "Choose a state"
+                                  }
+                                />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {states.map((state) => (
+                                  <SelectItem key={state.id} value={state.id}>
+                                    {state.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          {selectedState && (
+                            <div>
+                              <Label className="text-sm mb-1">
+                                Select Location
+                              </Label>
+                              <Select
+                                value={selectedLocation}
+                                onValueChange={(val) => {
+                                  setSelectedLocation(val);
+                                  setPrinters([]);
+                                }}
+                                disabled={
+                                  loadingLocations || locations.length === 0
+                                }
+                              >
+                                <SelectTrigger className="w-full">
+                                  <SelectValue
+                                    placeholder={
+                                      loadingLocations
+                                        ? "Loading locations..."
+                                        : "Choose a location"
+                                    }
+                                  />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {locations.map((loc) => (
+                                    <SelectItem key={loc.id} value={loc.id}>
+                                      {loc.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          )}
+                          {selectedState && selectedLocation && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="bg-orange-600 hover:bg-orange-700 text-white"
+                                onClick={handleViewPrinters}
+                                disabled={loadingPrinters}
+                              >
+                                {loadingPrinters
+                                  ? "Loading printers..."
+                                  : "View Available Printers"}
+                              </Button>
+                            </div>
+                          )}
+                          {printers.length > 0 && (
+                            <div className="mt-3">
+                              <Label className="text-sm mb-1">
+                                Available Printers:
+                              </Label>
+                              <ul className="list-disc pl-5 text-sm">
+                                {printers.map((printer) => (
+                                  <li key={printer.id} className="mb-1">
+                                    <span className="font-semibold text-orange-800 dark:text-orange-200">
+                                      {printer.name}
+                                    </span>
+                                    {printer.location?.name ? (
+                                      <span className="ml-2 text-muted-foreground">
+                                        ({printer.location.name})
+                                      </span>
+                                    ) : null}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {printers.length === 0 &&
+                            loadingPrinters === false &&
+                            selectedState &&
+                            selectedLocation && (
+                              <div className="text-xs text-muted-foreground mt-2">
+                                No printers found for this location.
+                              </div>
+                            )}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
               <div className="flex items-center space-x-3">
                 <Label className="text-sm font-medium">Quantity:</Label>
                 <div className="flex items-center border rounded-md">
