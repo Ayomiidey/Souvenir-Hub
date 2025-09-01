@@ -73,7 +73,8 @@ export function ProductDetail({
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   // Print service workflow state
-  const [wantsPrint, setWantsPrint] = useState<null | boolean>(null);
+  // Print service workflow state
+  const [wantsPrint, setWantsPrint] = useState(false);
   const [states, setStates] = useState<State[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedState, setSelectedState] = useState<string>("");
@@ -82,6 +83,7 @@ export function ProductDetail({
   const [loadingStates, setLoadingStates] = useState(false);
   const [loadingLocations, setLoadingLocations] = useState(false);
   const [loadingPrinters, setLoadingPrinters] = useState(false);
+  const [hasViewedPrinters, setHasViewedPrinters] = useState(false);
   // Fetch states when print is enabled
   useEffect(() => {
     if (wantsPrint) {
@@ -91,6 +93,13 @@ export function ProductDetail({
         .then((data) => setStates(data))
         .catch(() => setStates([]))
         .finally(() => setLoadingStates(false));
+    } else {
+      setStates([]);
+      setSelectedState("");
+      setLocations([]);
+      setSelectedLocation("");
+      setPrinters([]);
+      setHasViewedPrinters(false);
     }
   }, [wantsPrint]);
 
@@ -113,10 +122,11 @@ export function ProductDetail({
     }
   }, [wantsPrint, selectedState]);
 
-  // Fetch printers when state/location is selected
+  // Fetch printers when state/location is selected and user clicks button
   const handleViewPrinters = () => {
     if (!selectedState || !selectedLocation) return;
     setLoadingPrinters(true);
+    setHasViewedPrinters(true);
     fetch(
       `/api/printers?stateId=${selectedState}&locationId=${selectedLocation}`
     )
@@ -635,35 +645,41 @@ Please let me know about availability and delivery options. Thank you!`;
                               </Button>
                             </div>
                           )}
-                          {printers.length > 0 && (
-                            <div className="mt-3">
-                              <Label className="text-sm mb-1">
-                                Available Printers:
-                              </Label>
-                              <ul className="list-disc pl-5 text-sm">
-                                {printers.map((printer) => (
-                                  <li key={printer.id} className="mb-1">
-                                    <span className="font-semibold text-orange-800 dark:text-orange-200">
-                                      {printer.name}
-                                    </span>
-                                    {printer.location?.name ? (
-                                      <span className="ml-2 text-muted-foreground">
-                                        ({printer.location.name})
-                                      </span>
-                                    ) : null}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
+                          {/* Only show printers or no-printers message after user clicks view */}
+                          {hasViewedPrinters && (
+                            <>
+                              {printers.length > 0 ? (
+                                <div className="mt-3">
+                                  <Label className="text-sm mb-1">
+                                    Available Printers:
+                                  </Label>
+                                  <ul className="list-disc pl-5 text-sm">
+                                    {printers.map((printer) => (
+                                      <li key={printer.id} className="mb-1">
+                                        <Link
+                                          href={`/printers/${printer.id}`}
+                                          className="font-semibold text-orange-800 dark:text-orange-200 hover:underline hover:text-orange-600"
+                                        >
+                                          {printer.name}
+                                        </Link>
+                                        {printer.location?.name ? (
+                                          <span className="ml-2 text-muted-foreground">
+                                            ({printer.location.name})
+                                          </span>
+                                        ) : null}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ) : (
+                                !loadingPrinters && (
+                                  <div className="text-xs text-muted-foreground mt-2">
+                                    No printers found for this location.
+                                  </div>
+                                )
+                              )}
+                            </>
                           )}
-                          {printers.length === 0 &&
-                            loadingPrinters === false &&
-                            selectedState &&
-                            selectedLocation && (
-                              <div className="text-xs text-muted-foreground mt-2">
-                                No printers found for this location.
-                              </div>
-                            )}
                         </div>
                       )}
                     </div>
