@@ -11,7 +11,10 @@ export async function GET(req: Request) {
     });
     return NextResponse.json({ locations });
   } catch {
-    return NextResponse.json({ error: "Failed to fetch locations" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch locations" },
+      { status: 500 }
+    );
   }
 }
 
@@ -21,6 +24,9 @@ export async function POST(req: Request) {
     const location = await prisma.location.create({ data: { name, stateId } });
     return NextResponse.json(location);
   } catch {
-    return NextResponse.json({ error: "Failed to create location" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create location" },
+      { status: 500 }
+    );
   }
 }
