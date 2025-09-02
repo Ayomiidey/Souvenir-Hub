@@ -542,7 +542,7 @@ Please let me know about availability and delivery options. Thank you!`;
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-4">
                         <Label className="text-sm">
-                          Do you want to print this product?
+                          Do you want to print on this product?
                         </Label>
                         <div className="flex gap-3">
                           <label className="flex items-center gap-1 cursor-pointer">
@@ -567,6 +567,10 @@ Please let me know about availability and delivery options. Thank you!`;
                       </div>
                       {wantsPrint && (
                         <div className="flex flex-col gap-3 mt-2">
+                          <h1>
+                            NOTE: We are not affiliated with any of the printing
+                            service.
+                          </h1>
                           <div>
                             <Label className="text-sm mb-1">Select State</Label>
                             <Select
