@@ -9,13 +9,14 @@ model State {
 }
 
 model Location {
-  id        String    @id @default(cuid())
-  name      String
-  stateId   String
-  state     State     @relation(fields: [stateId], references: [id], onDelete: Cascade)
-  printers  Printer[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String    @id @default(cuid())
+  name        String
+  stateId     String
+  state       State     @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  printers    Printer[]
+  shippingFee Decimal?  @db.Decimal(10, 2)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Printer {
