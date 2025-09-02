@@ -27,9 +27,9 @@ async function getPrinter(id: string) {
 export default async function PrinterDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const printer = await getPrinter(params.id);
+  const printer = await getPrinter((await params).id);
   if (!printer) return notFound();
 
   return (
