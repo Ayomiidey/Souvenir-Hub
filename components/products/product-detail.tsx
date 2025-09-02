@@ -383,7 +383,7 @@ Please let me know about availability and delivery options. Thank you!`;
                 <div className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-950 rounded-md border border-green-200 dark:border-green-800">
                   <Check className="h-4 w-4 text-green-600" />
                   <span className="text-sm text-green-700 dark:text-green-300 font-medium">
-                    Bulk discount: Save ${tierDiscount.toFixed(2)} per item
+                    Bulk discount: Save ₦{tierDiscount.toFixed(2)} per item
                   </span>
                 </div>
               )}
