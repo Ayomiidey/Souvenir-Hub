@@ -12,6 +12,8 @@ import {
   FolderTree,
   ShoppingCart,
   Users,
+  ShipWheel,
+  Printer,
   // Settings,
   // BarChart3,
   // FileText,
@@ -66,13 +68,19 @@ const navigation = [
   {
     name: "Printers",
     href: "/admin/printers",
-    icon: Package,
+    icon: Printer,
+  },
+  {
+    name: "Shipping-fee",
+    href: "/admin/shipping-fee",
+    icon: ShipWheel,
   },
   {
     name: "Customers",
     href: "/admin/customers",
     icon: Users,
   },
+
   // {
   //   name: "Analytics",
   //   href: "/admin/analytics",

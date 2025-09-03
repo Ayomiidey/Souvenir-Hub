@@ -1,3 +1,35 @@
+// import prisma from "@/lib/prisma";
+
+// export async function GET(req: Request) {
+//   const { searchParams } = new URL(req.url);
+//   const stateId = searchParams.get("stateId");
+//   try {
+//     const locations = await prisma.location.findMany({
+//       where: stateId ? { stateId } : {},
+//       orderBy: { name: "asc" },
+//     });
+//     return NextResponse.json({ locations });
+//   } catch {
+//     return NextResponse.json(
+//       { error: "Failed to fetch locations" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
+// export async function POST(req: Request) {
+//   const { name, stateId } = await req.json();
+//   try {
+//     const location = await prisma.location.create({ data: { name, stateId } });
+//     return NextResponse.json(location);
+//   } catch {
+//     return NextResponse.json(
+//       { error: "Failed to create location" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
@@ -8,6 +40,12 @@ export async function GET(req: Request) {
     const locations = await prisma.location.findMany({
       where: stateId ? { stateId } : {},
       orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        stateId: true,
+        shippingFee: true,
+      },
     });
     return NextResponse.json({ locations });
   } catch {
@@ -19,13 +57,24 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const { name, stateId } = await req.json();
+  const { name, stateId, shippingFee } = await req.json();
   try {
-    const location = await prisma.location.create({ data: { name, stateId } });
+    const data: { name: string; stateId: string; shippingFee?: number } = {
+      name,
+      stateId,
+    };
+    if (shippingFee !== undefined && shippingFee !== null) {
+      data.shippingFee = shippingFee;
+    }
+    const location = await prisma.location.create({ data });
     return NextResponse.json(location);
-  } catch {
+  } catch (error) {
+    console.error("Failed to create location:", error);
     return NextResponse.json(
-      { error: "Failed to create location" },
+      {
+        error: "Failed to create location",
+        details: error instanceof Error ? error.message : error,
+      },
       { status: 500 }
     );
   }
