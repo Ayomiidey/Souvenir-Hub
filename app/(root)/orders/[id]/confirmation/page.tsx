@@ -69,7 +69,7 @@ export default async function OrderConfirmationPage({
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Total:</span>
                 <span className="font-medium">
-                  ${Number(order.totalAmount).toFixed(2)}
+                  ₦{Number(order.totalAmount).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -129,7 +129,7 @@ export default async function OrderConfirmationPage({
                   <div>
                     <h4 className="font-medium">{item.productName}</h4>
                     <p className="text-sm text-muted-foreground">
-                      Quantity: {item.quantity} × $
+                      Quantity: {item.quantity} × ₦
                       {Number(item.unitPrice).toFixed(2)}
                     </p>
                     {item.customPrint && item.printText && (
@@ -139,7 +139,7 @@ export default async function OrderConfirmationPage({
                     )}
                   </div>
                   <span className="font-medium">
-                    ${Number(item.totalPrice).toFixed(2)}
+                    ₦{Number(item.totalPrice).toFixed(2)}
                   </span>
                 </div>
               ))}

@@ -78,7 +78,7 @@ export function CheckoutForm() {
     city: "",
     state: "",
     postalCode: "",
-    country: "US",
+    country: "NG", // Set default country to Nigeria
     paymentMethod: "BANK_TRANSFER",
     customerNotes: "",
   });
@@ -288,6 +288,9 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
           unitPrice: item.price,
           customPrint: item.customPrint,
           printText: item.printText,
+          // Add productName and productSku for email reliability
+          productName: item.name,
+          productSku: item.sku,
         })),
         customerInfo: {
           name: formData.customerName,
