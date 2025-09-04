@@ -15,7 +15,6 @@ interface OrderConfirmationProps {
 export default async function OrderConfirmationPage({
   params,
 }: OrderConfirmationProps) {
-  // Await params in Next.js 15
   const { id } = await params;
 
   try {
