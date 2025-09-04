@@ -1,7 +1,18 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+// Types for state/location
+interface StateOption {
+  id: string;
+  name: string;
+}
+interface LocationOption {
+  id: string;
+  name: string;
+  stateId: string;
+  shippingFee: number | null;
+}
 import { useLoader } from "@/components/providers/loader-provider";
 import { useSession } from "next-auth/react";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
@@ -42,6 +53,12 @@ interface FormData {
 }
 
 export function CheckoutForm() {
+  // State/location data
+  const [statesList, setStatesList] = useState<StateOption[]>([]);
+  const [locationsList, setLocationsList] = useState<LocationOption[]>([]);
+  const [selectedStateId, setSelectedStateId] = useState<string>("");
+  const [selectedLocationId, setSelectedLocationId] = useState<string>("");
+  const [locationShippingFee, setLocationShippingFee] = useState<number>(0);
   const loader = useLoader();
   const { data: session } = useSession();
   const router = useRouter();
@@ -70,9 +87,57 @@ export function CheckoutForm() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const shipping = subtotal >= 50 ? 0 : 5.99;
+  // Calculate totals
+  const isFreeShipping = subtotal >= 200000 && selectedLocationId !== "";
+  const shipping = isFreeShipping ? 0 : locationShippingFee;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
+
+  // Fetch states and locations on mount
+  useEffect(() => {
+    fetch("/api/admin/states")
+      .then((res) => res.json())
+      .then((data) =>
+        setStatesList(Array.isArray(data) ? data : data.states || [])
+      )
+      .catch(() => toast.error("Failed to load states"));
+    fetch("/api/admin/locations")
+      .then((res) => res.json())
+      .then((data) =>
+        setLocationsList(Array.isArray(data) ? data : data.locations || [])
+      )
+      .catch(() => toast.error("Failed to load locations"));
+  }, []);
+
+  // When state changes, reset location
+  useEffect(() => {
+    setSelectedLocationId("");
+    setLocationShippingFee(0);
+    setFormData((prev) => ({
+      ...prev,
+      state: statesList.find((s) => s.id === selectedStateId)?.name || "",
+    }));
+  }, [selectedStateId, statesList]);
+
+  // When location changes, update shipping fee and formData
+  useEffect(() => {
+    if (!selectedLocationId) {
+      setLocationShippingFee(0);
+      setFormData((prev) => ({ ...prev, city: "" }));
+      return;
+    }
+    const loc = locationsList.find((l) => l.id === selectedLocationId);
+    if (!loc) {
+      toast.error("Selected location not found");
+      setLocationShippingFee(0);
+      setFormData((prev) => ({ ...prev, city: "" }));
+      return;
+    }
+    // Convert shippingFee to number safely
+    const fee = typeof loc.shippingFee === "string" ? parseFloat(loc.shippingFee) : loc.shippingFee || 0;
+    setLocationShippingFee(isNaN(fee) ? 0 : fee);
+    setFormData((prev) => ({ ...prev, city: loc.name || "" }));
+  }, [selectedLocationId, locationsList]);
 
   const generateWhatsAppMessage = (orderNumber: string) => {
     const orderDetails = `
@@ -106,7 +171,7 @@ ${formData.country}
 
 💰 *Order Summary:*
 Subtotal: ₦${subtotal.toFixed(2)}
-Shipping: ${shipping === 0 ? "FREE" : `₦${shipping.toFixed(2)}`}
+Shipping: ${shipping === 0 ? (isFreeShipping ? "FREE" : "₦0.00") : `₦${shipping.toFixed(2)}`}
 Tax: ₦${tax.toFixed(2)}
 *Total: ₦${total.toFixed(2)}*
 
@@ -254,7 +319,6 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
       if (response.ok) {
         const order = await response.json();
 
-        // 📩 Send email only for BANK_TRANSFER
         if (formData.paymentMethod === "BANK_TRANSFER") {
           await fetch("/api/send-email", {
             method: "POST",
@@ -411,22 +475,41 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="city">City *</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange("city", e.target.value)}
+                <Label htmlFor="state">State *</Label>
+                <select
+                  id="state"
+                  value={selectedStateId}
+                  onChange={(e) => setSelectedStateId(e.target.value)}
                   required
-                />
+                  className="w-full border rounded px-3 py-2 mt-1"
+                >
+                  <option value="">-- Select State --</option>
+                  {statesList.map((state) => (
+                    <option key={state.id} value={state.id}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
-                <Label htmlFor="state">State *</Label>
-                <Input
-                  id="state"
-                  value={formData.state}
-                  onChange={(e) => handleInputChange("state", e.target.value)}
+                <Label htmlFor="city">Location *</Label>
+                <select
+                  id="city"
+                  value={selectedLocationId}
+                  onChange={(e) => setSelectedLocationId(e.target.value)}
                   required
-                />
+                  className="w-full border rounded px-3 py-2 mt-1"
+                  disabled={!selectedStateId}
+                >
+                  <option value="">-- Select Location --</option>
+                  {locationsList
+                    .filter((l) => l.stateId === selectedStateId)
+                    .map((loc) => (
+                      <option key={loc.id} value={loc.id}>
+                        {loc.name}
+                      </option>
+                    ))}
+                </select>
               </div>
               <div>
                 <Label htmlFor="postalCode">Postal Code *</Label>
@@ -535,7 +618,12 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
       </div>
 
       <div className="space-y-6">
-        <CheckoutSummary />
+        <CheckoutSummary
+          shipping={locationShippingFee}
+          isFreeShippingEligible={
+            subtotal >= 200000 && selectedLocationId !== ""
+          }
+        />
         {formData.paymentMethod === "WHATSAPP" ? (
           <Button
             type="button"

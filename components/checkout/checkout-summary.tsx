@@ -5,12 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAppSelector } from "@/hooks/redux";
 
-export function CheckoutSummary() {
-  const { items, subtotal } = useAppSelector((state) => state.cart);
+interface CheckoutSummaryProps {
+  shipping: number;
+  isFreeShippingEligible: boolean;
+}
 
-  const shipping = subtotal >= 200000 ? 0 : 5.99;
-  const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal + shipping + tax;
+export function CheckoutSummary({
+  shipping,
+  isFreeShippingEligible,
+}: CheckoutSummaryProps) {
+  const { items, subtotal } = useAppSelector((state) => state.cart);
+  const shippingFee = isFreeShippingEligible
+    ? 0
+    : typeof shipping === "number"
+      ? shipping
+      : 0;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shippingFee + tax;
 
   return (
     <Card>
@@ -54,7 +65,13 @@ export function CheckoutSummary() {
           </div>
           <div className="flex justify-between text-sm">
             <span>Shipping</span>
-            <span>{shipping === 0 ? "Free" : `₦${shipping.toFixed(2)}`}</span>
+            <span>
+              {shippingFee === 0
+                ? isFreeShippingEligible
+                  ? "Free"
+                  : "₦0.00"
+                : `₦${shippingFee.toFixed(2)}`}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span>Tax</span>
@@ -67,7 +84,7 @@ export function CheckoutSummary() {
           </div>
         </div>
 
-        {subtotal >= 200000 && (
+        {isFreeShippingEligible && (
           <div className="text-xs text-green-600 text-center">
             🎉 You qualify for free shipping!
           </div>
