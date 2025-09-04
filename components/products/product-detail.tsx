@@ -122,7 +122,7 @@ export function ProductDetail({
     }
   }, [wantsPrint, selectedState]);
 
-  // Fetch printers when state/location is selected and user clicks button
+  // Fetch printers when state/location is selected and user click button
   const handleViewPrinters = () => {
     if (!selectedState || !selectedLocation) return;
     setLoadingPrinters(true);
