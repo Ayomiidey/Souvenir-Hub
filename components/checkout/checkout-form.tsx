@@ -134,7 +134,10 @@ export function CheckoutForm() {
       return;
     }
     // Convert shippingFee to number safely
-    const fee = typeof loc.shippingFee === "string" ? parseFloat(loc.shippingFee) : loc.shippingFee || 0;
+    const fee =
+      typeof loc.shippingFee === "string"
+        ? parseFloat(loc.shippingFee)
+        : loc.shippingFee || 0;
     setLocationShippingFee(isNaN(fee) ? 0 : fee);
     setFormData((prev) => ({ ...prev, city: loc.name || "" }));
   }, [selectedLocationId, locationsList]);
