@@ -14,7 +14,7 @@ import {
 async function getPrinter(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/printers/${id}`,
+      `${process.env.NEXTAUTH_URL || ""}/api/printers/${id}`,
       { cache: "no-store" }
     );
     if (!res.ok) return null;
