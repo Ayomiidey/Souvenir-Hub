@@ -1,19 +1,20 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
+  MessageCircle,
   Printer as PrinterIcon,
   MapPin,
-  Mail,
-  MessageSquare,
+  Home,
 } from "lucide-react";
 
 async function getPrinter(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || ""}/api/printers/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/printers/${id}`,
       { cache: "no-store" }
     );
     if (!res.ok) return null;
@@ -31,11 +32,6 @@ export default async function PrinterDetailPage({
   const { id } = await params;
   const printer = await getPrinter(id);
   if (!printer) return notFound();
-
-  const whatsappLink = printer.phone
-    ? `https://wa.me/${printer.phone.replace(/[^\d]/g, "")}`
-    : null;
-  const emailLink = printer.email ? `mailto:${printer.email}` : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col items-center py-10 px-4">
@@ -64,33 +60,64 @@ export default async function PrinterDetailPage({
               </p>
             </div>
           )}
-          <div className="flex gap-3 mt-6">
-            {whatsappLink && (
-              <Button
-                asChild
-                variant="outline"
-                className="flex items-center gap-2"
+          <div className="mb-6">
+            <p className="text-base text-foreground font-medium">
+              Contact this printer to discuss your print job, pricing, and
+              delivery options.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3">
+            {printer.phone && (
+              <a
+                href={`https://wa.me/${printer.phone.replace(/[^\d]/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full"
               >
-                <a
-                  href={whatsappLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5" />
+                  WhatsApp Printer
+                </Button>
+              </a>
+            )}
+            {printer.email && (
+              <a href={`mailto:${printer.email}`} className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center gap-2"
                 >
-                  <MessageSquare className="h-5 w-5 text-green-600" /> WhatsApp
-                </a>
-              </Button>
+                  <MessageCircle className="h-5 w-5" />
+                  Email Printer
+                </Button>
+              </a>
             )}
-            {emailLink && (
-              <Button
-                asChild
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <a href={emailLink} target="_blank" rel="noopener noreferrer">
-                  <Mail className="h-5 w-5 text-blue-600" /> Email
-                </a>
-              </Button>
+            {printer.contact && (
+              <div className="text-sm text-muted-foreground">
+                <span className="font-semibold">Contact Person:</span>{" "}
+                {printer.contact}
+              </div>
             )}
+            {printer.address && (
+              <div className="text-sm text-muted-foreground">
+                <span className="font-semibold">Address:</span>{" "}
+                {printer.address}
+              </div>
+            )}
+          </div>
+          <Separator className="my-6" />
+          <div className="flex justify-between items-center">
+            <Link
+              href="/"
+              className="flex items-center gap-1 text-sm text-primary hover:underline"
+            >
+              <Home className="h-4 w-4" /> Home
+            </Link>
+            <Link
+              href="/products"
+              className="flex items-center gap-1 text-sm text-primary hover:underline"
+            >
+              Back to Products
+            </Link>
           </div>
         </CardContent>
       </Card>
