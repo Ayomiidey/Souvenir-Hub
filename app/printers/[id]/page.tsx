@@ -14,7 +14,7 @@ import {
 async function getPrinter(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXTAUTH_URL || ""}/api/printers/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/printers/${id}`,
       { cache: "no-store" }
     );
     if (!res.ok) return null;
@@ -27,9 +27,9 @@ async function getPrinter(id: string) {
 export default async function PrinterDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
   const printer = await getPrinter(id);
   if (!printer) return notFound();
 
