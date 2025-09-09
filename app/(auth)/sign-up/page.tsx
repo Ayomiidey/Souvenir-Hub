@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import SignUpClient from "./signUpClient";
 
 export const metadata: Metadata = {
-  title: "Sign Up | FAM 8",
+  title: "Sign Up | Souvenir Hub",
   description:
-    "Create your FAM 8 account to start managing your agricultural operations",
+    "Create your Souvenir Hub account to start managing your agricultural operations",
 };
 
 export default function SignUpPage() {
