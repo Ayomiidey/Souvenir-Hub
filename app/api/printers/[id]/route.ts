@@ -17,7 +17,7 @@ export async function GET(
     if (!printer) {
       return NextResponse.json({ error: "Printer not found" }, { status: 404 });
     }
-    // Map fields for frontend compatibility
+
     return NextResponse.json({
       id: printer.id,
       name: printer.name,
