@@ -142,10 +142,10 @@ model Address {
   addressLine2 String?
   city         String
   state        String
-  postalCode   String
-  country      String  @default("US")
-  phone        String?
-  isDefault    Boolean @default(false)
+
+  country   String  @default("US")
+  phone     String?
+  isDefault Boolean @default(false)
 
   user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders Order[]

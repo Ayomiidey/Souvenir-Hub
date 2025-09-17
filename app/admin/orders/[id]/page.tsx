@@ -101,7 +101,6 @@ interface Order {
     addressLine2?: string;
     city: string;
     state: string;
-    postalCode: string;
     country: string;
     phone?: string;
   };
@@ -549,8 +548,8 @@ export default function OrderDetailsPage() {
                     <p>{order.shippingAddress.addressLine2}</p>
                   )}
                   <p>
-                    {order.shippingAddress.city}, {order.shippingAddress.state}{" "}
-                    {order.shippingAddress.postalCode}
+                    {order.shippingAddress.city},{" "}
+                    {order.shippingAddress.state}{" "}
                   </p>
                   <p>{order.shippingAddress.country}</p>
                   {order.shippingAddress.phone && (

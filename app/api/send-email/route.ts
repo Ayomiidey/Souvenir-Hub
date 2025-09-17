@@ -64,7 +64,7 @@ export async function POST(req: Request) {
           <div style="margin-left: 20px;">
             ${order.shippingAddress.addressLine1}<br/>
             ${order.shippingAddress.addressLine2 ? `${order.shippingAddress.addressLine2}<br/>` : ""}
-            ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.postalCode}<br/>
+            ${order.shippingAddress.city}, ${order.shippingAddress.state} <br/>
             ${order.shippingAddress.country}
           </div>
         </div>
@@ -161,89 +161,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false }, { status: 500 });
   }
 }
-
-// import { NextResponse } from "next/server";
-// import { Resend } from "resend";
-
-// const resend = new Resend(process.env.RESEND_API_KEY);
-
-// export async function POST(req: Request) {
-//   try {
-//     const order = await req.json();
-
-//     const itemsHtml = order.items
-//       .map(
-//         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//         (i: any, idx: number) => `
-//           <tr>
-//             <td>${idx + 1}</td>
-//             <td>${i.name}</td>
-//             <td>${i.quantity}</td>
-//             <td>₦${i.unitPrice}</td>
-//             <td>₦${i.quantity * i.unitPrice}</td>
-//           </tr>
-//         `
-//       )
-//       .join("");
-
-//     const html = `
-//       <h2>🛍️ New Bank Transfer Order</h2>
-//       <p><strong>Customer:</strong> ${order.customerInfo.name} (${order.customerInfo.email}, ${order.customerInfo.phone || "N/A"})</p>
-
-//       <h3>Shipping Address:</h3>
-//       <p>
-//         ${order.shippingAddress.firstName} ${order.shippingAddress.lastName}<br/>
-//         ${order.shippingAddress.addressLine1}<br/>
-//         ${order.shippingAddress.addressLine2 || ""}<br/>
-//         ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.postalCode}<br/>
-//         ${order.shippingAddress.country}
-//       </p>
-
-//       <h3>Order Items:</h3>
-//       <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
-//         <thead>
-//           <tr>
-//             <th>#</th><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           ${itemsHtml}
-//         </tbody>
-//       </table>
-
-//       <h3>Order Summary:</h3>
-//       <p>
-//         Subtotal: ₦${order.totals.subtotal}<br/>
-//         Shipping: ₦${order.totals.shipping}<br/>
-//         Tax: ₦${order.totals.tax}<br/>
-//         <strong>Total: ₦${order.totals.total}</strong>
-//       </p>
-
-//       <h3>Payment Method:</h3>
-//       <p>${order.paymentMethod}</p>
-
-//       ${
-//         order.customerNotes
-//           ? `<h3>Notes:</h3><p>${order.customerNotes}</p>`
-//           : ""
-//       }
-//     `;
-
-//     const { error } = await resend.emails.send({
-//       from: "Souvenir Hub <onboarding@resend.dev>", // or your verified domain
-//       to: process.env.ADMIN_EMAIL!,
-//       subject: "New Bank Transfer Order",
-//       html,
-//     });
-
-//     if (error) {
-//       console.error("Resend error:", error);
-//       return NextResponse.json({ success: false, error }, { status: 500 });
-//     }
-
-//     return NextResponse.json({ success: true });
-//   } catch (err) {
-//     console.error("Email API error:", err);
-//     return NextResponse.json({ success: false }, { status: 500 });
-//   }
-// }

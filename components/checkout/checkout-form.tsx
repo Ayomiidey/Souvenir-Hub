@@ -46,7 +46,7 @@ interface FormData {
   addressLine2: string;
   city: string;
   state: string;
-  postalCode: string;
+
   country: string;
   paymentMethod: string;
   customerNotes: string;
@@ -77,7 +77,7 @@ export function CheckoutForm() {
     addressLine2: "",
     city: "",
     state: "",
-    postalCode: "",
+
     country: "NG", // Set default country to Nigeria
     paymentMethod: "BANK_TRANSFER",
     customerNotes: "",
@@ -169,7 +169,7 @@ ${formData.firstName} ${formData.lastName}
 ${formData.company ? `${formData.company}\n` : ""}${formData.addressLine1}
 ${formData.addressLine2 ? `${formData.addressLine2}\n` : ""}${formData.city}, ${
       formData.state
-    } ${formData.postalCode}
+    } 
 ${formData.country}
 
 💰 *Order Summary:*
@@ -205,7 +205,6 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
       "addressLine1",
       "city",
       "state",
-      "postalCode",
     ];
 
     const missingFields = requiredFields.filter((field) => !formData[field]);
@@ -235,7 +234,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
         addressLine2: formData.addressLine2,
         city: formData.city,
         state: formData.state,
-        postalCode: formData.postalCode,
+
         country: formData.country,
       },
       paymentMethod: "WHATSAPP",
@@ -308,7 +307,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
           addressLine2: formData.addressLine2,
           city: formData.city,
           state: formData.state,
-          postalCode: formData.postalCode,
+
           country: formData.country,
         },
         paymentMethod: formData.paymentMethod,
@@ -479,7 +478,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="state">State *</Label>
                 <select
@@ -516,17 +515,6 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
                       </option>
                     ))}
                 </select>
-              </div>
-              <div>
-                <Label htmlFor="postalCode">Postal Code *</Label>
-                <Input
-                  id="postalCode"
-                  value={formData.postalCode}
-                  onChange={(e) =>
-                    handleInputChange("postalCode", e.target.value)
-                  }
-                  required
-                />
               </div>
             </div>
           </CardContent>

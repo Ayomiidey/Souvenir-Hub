@@ -25,7 +25,7 @@ interface ShippingAddress {
   addressLine2?: string;
   city: string;
   state: string;
-  postalCode: string;
+
   country: string;
 }
 
@@ -86,7 +86,7 @@ async function sendOrderEmail(orderData: any, orderNumber: string) {
               }
               ${orderData.shippingAddress.city}, ${
                 orderData.shippingAddress.state
-              } ${orderData.shippingAddress.postalCode}<br>
+              }}<br>
               ${orderData.shippingAddress.country}
             </p>
           </div>
@@ -180,7 +180,6 @@ export async function POST(request: NextRequest) {
         addressLine2: body.shippingAddress.addressLine2 || null,
         city: body.shippingAddress.city,
         state: body.shippingAddress.state,
-        postalCode: body.shippingAddress.postalCode,
         country: body.shippingAddress.country,
       },
     });
