@@ -76,6 +76,11 @@ const navigation = [
     icon: ShipWheel,
   },
   {
+    name: "States & Locations",
+    href: "/admin/states-locations",
+    icon: FolderTree,
+  },
+  {
     name: "Customers",
     href: "/admin/customers",
     icon: Users,
