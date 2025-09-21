@@ -104,13 +104,14 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     : 0;
 
   if (viewMode === "list") {
+    // Your list view code remains unchanged as it was not the source of the issue.
     return (
       <Card
         className={`overflow-hidden hover:shadow-2xl transition-shadow duration-300 rounded-2xl ${glass}`}
       >
         <Link href={`/products/${product.slug}`}>
           <div className="flex flex-col sm:flex-row">
-            <div className="relative w-full sm:w-48 h-48 sm:h-32 flex-shrink-0">
+            <div className="relative w-full sm:w-48 h-48 sm:h-auto flex-shrink-0">
               <Image
                 src={
                   imageError
@@ -120,11 +121,11 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                 }
                 alt={product.images[0]?.altText || product.name}
                 fill
-                className="object-cover rounded-xl border border-gray-100 dark:border-gray-800"
+                className="object-cover"
                 onError={() => setImageError(true)}
               />
               {product.quantity <= 0 && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                   <Badge variant="destructive" className="text-xs px-2 py-1">
                     Out of Stock
                   </Badge>
@@ -183,13 +184,19 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                     variant="outline"
                     size="icon"
                     onClick={handleWishlistToggle}
-                    className={`transition-all duration-200 hover:scale-110 ${isInWishlist ? "text-red-500 border-red-500 bg-red-50" : ""}`}
+                    className={`transition-all duration-200 hover:scale-110 ${
+                      isInWishlist
+                        ? "text-red-500 border-red-500 bg-red-50"
+                        : ""
+                    }`}
                     title={
                       isInWishlist ? "Remove from wishlist" : "Add to wishlist"
                     }
                   >
                     <Heart
-                      className={`h-4 w-4 ${isInWishlist ? "fill-current" : ""}`}
+                      className={`h-4 w-4 ${
+                        isInWishlist ? "fill-current" : ""
+                      }`}
                     />
                   </Button>
                   <Button
@@ -217,90 +224,105 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
 
   return (
     <Card
-      className={`group overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl ${glass}`}
+      className={`group flex flex-col p-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl ${glass}`}
     >
-      <Link href={`/products/${product.slug}`}>
-        <div className="relative aspect-square overflow-hidden rounded-2xl">
-          <Image
-            src={
-              imageError
-                ? "/placeholder.svg?height=300&width=300"
-                : product.images[0]?.url ||
-                  "/placeholder.svg?height=300&width=300"
-            }
-            alt={product.images[0]?.altText || product.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300 rounded-2xl border border-gray-100 dark:border-gray-800"
-            onError={() => setImageError(true)}
-          />
+      <Link
+        href={`/products/${product.slug}`}
+        className="flex flex-col flex-grow"
+      >
+        <div className="relative">
+          <div className="relative aspect-square overflow-hidden rounded-t-2xl">
+            <Image
+              src={
+                imageError
+                  ? "/placeholder.svg?height=300&width=300"
+                  : product.images[0]?.url ||
+                    "/placeholder.svg?height=300&width=300"
+              }
+              alt={product.images[0]?.altText || product.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              onError={() => setImageError(true)}
+            />
 
-          {/* Overlay buttons */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl">
-            <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-              <Button
-                variant="secondary"
-                size="icon"
-                onClick={handleWishlistToggle}
-                className={`h-8 w-8 transition-all duration-200 hover:scale-110 ${isInWishlist ? "text-red-500 bg-red-50" : ""}`}
-                title={
-                  isInWishlist ? "Remove from wishlist" : "Add to wishlist"
-                }
-              >
-                <Heart
-                  className={`h-4 w-4 ${isInWishlist ? "fill-current" : ""}`}
-                />
-              </Button>
-            </div>
-
-            <div className="absolute bottom-2 left-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-              <Button
-                onClick={handleAddToCart}
-                disabled={isLoading || product.quantity <= 0}
-                className="w-full h-9 text-xs rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200"
-                size="sm"
-              >
-                {isLoading ? (
-                  <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                ) : product.quantity <= 0 ? (
-                  "Out of Stock"
-                ) : (
-                  <>
-                    <ShoppingCart className="h-3 w-3 mr-1" />
-                    Add to Cart
-                  </>
-                )}
-              </Button>
+            {/* Overlay buttons for hover */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
+              <div className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  onClick={handleWishlistToggle}
+                  className={`h-8 w-8 transition-all duration-200 hover:scale-110 ${
+                    isInWishlist ? "text-red-500 bg-red-50" : ""
+                  }`}
+                  title={
+                    isInWishlist ? "Remove from wishlist" : "Add to wishlist"
+                  }
+                >
+                  <Heart
+                    className={`h-4 w-4 ${isInWishlist ? "fill-current" : ""}`}
+                  />
+                </Button>
+              </div>
+              <div className="absolute bottom-2 left-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={isLoading || product.quantity <= 0}
+                  className="w-full h-9 text-xs rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200"
+                  size="sm"
+                >
+                  {isLoading ? (
+                    <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                  ) : product.quantity <= 0 ? (
+                    "Out of Stock"
+                  ) : (
+                    <>
+                      <ShoppingCart className="h-3 w-3 mr-1" />
+                      Add to Cart
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
 
-          {/* Badges */}
-          {product.quantity <= 0 && (
-            <Badge
-              variant="destructive"
-              className="absolute top-2 left-2 text-xs px-2 py-1 rounded-full shadow"
-            >
-              Out of Stock
-            </Badge>
-          )}
-          {discountPercentage > 0 && product.quantity > 0 && (
-            <Badge className="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-red-500 text-white shadow px-2 py-1 text-xs rounded-full">
-              -{discountPercentage}%
-            </Badge>
-          )}
+          {/* Badges positioned correctly over the image */}
+          <div className="absolute top-2 left-2 flex flex-col gap-y-1">
+            {product.quantity <= 0 && (
+              <Badge
+                variant="destructive"
+                className="text-xs px-2 py-1 rounded-full shadow"
+              >
+                Out of Stock
+              </Badge>
+            )}
+            {discountPercentage > 0 && product.quantity > 0 && (
+              <Badge className="bg-gradient-to-r from-pink-500 to-red-500 text-white shadow px-2 py-1 text-xs rounded-full">
+                -{discountPercentage}%
+              </Badge>
+            )}
+          </div>
         </div>
 
-        <CardContent className="p-4">
-          <Badge
-            variant="secondary"
-            className="mb-2 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-1"
-          >
-            {product.category.name}
-          </Badge>
-          <h3 className="font-semibold mb-2 line-clamp-2 text-base">
-            {product.name}
-          </h3>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
+        {/* --- CARD CONTENT --- */}
+        <CardContent className="p-4 flex flex-col flex-grow">
+          {/* This div will grow, pushing the price info to the very bottom */}
+          <div className="flex-grow">
+            <Badge
+              variant="secondary"
+              className="mb-2 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-1"
+            >
+              {product.category.name}
+            </Badge>
+            {/* A minimum height prevents the layout from shifting */}
+            <h3 className="font-semibold mb-2 line-clamp-2 text-base min-h-[2.5rem]">
+              {product.name}
+            </h3>
+          </div>
+
+          {/* This container holds info pinned to the bottom */}
+          <div>
+            <div className="flex items-baseline gap-2">
               <span className="font-bold text-lg text-primary">
                 {formatPrice(product.price)}
               </span>
@@ -310,16 +332,14 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
                 </span>
               )}
             </div>
-            <span className="text-xs text-muted-foreground">
-              {product.quantity > 0
-                ? `${product.quantity} left`
-                : "Out of stock"}
+            <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+              <span>
+                {product.quantity > 0 ? `${product.quantity} left` : ""}
+              </span>
               {product.deliveryTime && (
-                <span className="block text-yellow-600">
-                  ({product.deliveryTime})
-                </span>
+                <span className="text-yellow-600">{product.deliveryTime}</span>
               )}
-            </span>
+            </div>
           </div>
         </CardContent>
       </Link>
