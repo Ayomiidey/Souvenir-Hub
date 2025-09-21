@@ -61,7 +61,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       categoryId: undefined,
       status: "ACTIVE",
       isFeatured: false,
-  allowCustomPrint: false,
+      allowCustomPrint: false,
       images: [],
       deliveryTime: "",
       isActive: true,
