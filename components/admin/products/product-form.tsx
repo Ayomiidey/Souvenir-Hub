@@ -31,7 +31,6 @@ interface ProductFormData {
   status: string;
   isFeatured: boolean;
   allowCustomPrint: boolean;
-  printPrice?: number;
   images: { url: string; altText: string; file?: File }[];
   deliveryTime?: string;
   isActive: boolean;
@@ -62,8 +61,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       categoryId: undefined,
       status: "ACTIVE",
       isFeatured: false,
-      allowCustomPrint: false,
-      printPrice: 0,
+  allowCustomPrint: false,
       images: [],
       deliveryTime: "",
       isActive: true,
@@ -102,7 +100,6 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
               status: data.status || "ACTIVE",
               isFeatured: data.isFeatured || false,
               allowCustomPrint: data.allowCustomPrint || false,
-              printPrice: data.printPrice || 0,
               images: data.images || [],
               deliveryTime: data.deliveryTime || "",
               isActive: data.isActive || true,
@@ -212,7 +209,6 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       price: Number(formData.price),
       comparePrice: formData.comparePrice,
       quantity: Number(formData.quantity),
-      printPrice: formData.printPrice,
       images: uploadedImages,
       isActive: true,
       priceTiers: formData.priceTiers, // Ensure priceTiers is included
@@ -569,26 +565,6 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                   Allow Custom Print
                 </Label>
               </div>
-              {formData.allowCustomPrint && (
-                <div>
-                  <Label htmlFor="printPrice" className="text-sm md:text-base">
-                    Print Price (NGN)
-                  </Label>
-                  <Input
-                    id="printPrice"
-                    type="number"
-                    step="0.01"
-                    value={formData.printPrice || ""}
-                    onChange={(e) =>
-                      updateFormData(
-                        "printPrice",
-                        Number.parseFloat(e.target.value) || undefined
-                      )
-                    }
-                    className="w-full"
-                  />
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>

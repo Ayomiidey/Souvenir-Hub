@@ -222,9 +222,10 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
     );
   }
 
+  // --- START: FIXED GRID VIEW CODE ---
   return (
     <Card
-      className={`group flex flex-col p-0 h-full overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl ${glass}`}
+      className={`group flex flex-col h-full overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl ${glass}`}
     >
       <Link
         href={`/products/${product.slug}`}
