@@ -124,21 +124,41 @@ export default function AdminStatesLocations() {
   };
 
   const handleDeleteState = async (id: string) => {
-    if (!window.confirm("Delete this state and all its locations?")) return;
-    setActionLoading(`delete-state-${id}`);
-    try {
-      const res = await fetch(`/api/admin/states/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        toast.success("State deleted");
-        fetchStates();
-      } else {
-        toast.error("Failed to delete state");
-      }
-    } catch {
-      toast.error("Failed to delete state");
-    } finally {
-      setActionLoading(null);
-    }
+    const stateName = states.find((s) => s.id === id)?.name || "this state";
+
+    toast(`Delete ${stateName}?`, {
+      description:
+        "This will also delete all locations in this state. This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          setActionLoading(`delete-state-${id}`);
+          try {
+            const res = await fetch(`/api/admin/states/${id}`, {
+              method: "DELETE",
+            });
+            if (res.ok) {
+              toast.success("State deleted successfully");
+              fetchStates();
+            } else {
+              toast.error("Failed to delete state");
+            }
+          } catch {
+            toast.error("Failed to delete state");
+          } finally {
+            setActionLoading(null);
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+      style: {
+        backgroundColor: "#fff",
+        color: "#000",
+      },
+    });
   };
 
   // Location CRUD
@@ -192,23 +212,43 @@ export default function AdminStatesLocations() {
   };
 
   const handleDeleteLocation = async (id: string) => {
-    if (!window.confirm("Delete this location?")) return;
-    setActionLoading(`delete-location-${id}`);
-    try {
-      const res = await fetch(`/api/admin/locations/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        toast.success("Location deleted");
-        fetchStates();
-      } else {
-        toast.error("Failed to delete location");
-      }
-    } catch {
-      toast.error("Failed to delete location");
-    } finally {
-      setActionLoading(null);
-    }
+    const location = states
+      .flatMap((s) => s.locations || [])
+      .find((l) => l.id === id);
+    const locationName = location?.name || "this location";
+
+    toast(`Delete ${locationName}?`, {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          setActionLoading(`delete-location-${id}`);
+          try {
+            const res = await fetch(`/api/admin/locations/${id}`, {
+              method: "DELETE",
+            });
+            if (res.ok) {
+              toast.success("Location deleted successfully");
+              fetchStates();
+            } else {
+              toast.error("Failed to delete location");
+            }
+          } catch {
+            toast.error("Failed to delete location");
+          } finally {
+            setActionLoading(null);
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+      style: {
+        backgroundColor: "#fff",
+        color: "#000",
+      },
+    });
   };
 
   const getTotalLocations = () => {
