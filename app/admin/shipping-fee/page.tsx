@@ -41,8 +41,7 @@ export default function ShippingFeeAdminPage() {
 	const [tableFilterState, setTableFilterState] = useState<string>("");
 	const [selectedLocation, setSelectedLocation] = useState<string>("");
 	const [loading, setLoading] = useState(false);
-	const [newState, setNewState] = useState({ name: "" });
-	const [newLocation, setNewLocation] = useState({ name: "" });
+	// Removed add state and add location state
 	const [feeInput, setFeeInput] = useState<string>("");
 	const [editingLocationId, setEditingLocationId] = useState<string | null>(null);
 	const [editingLocationName, setEditingLocationName] = useState<string>("");
@@ -74,47 +73,7 @@ export default function ShippingFeeAdminPage() {
 		fetchLocations();
 	}, [selectedState]);
 
-	// Add new state
-	const handleAddState = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!newState.name.trim()) return;
-		setLoading(true);
-		const res = await fetch("/api/admin/states", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ name: newState.name }),
-		});
-		setLoading(false);
-		if (res.ok) {
-			setNewState({ name: "" });
-			toast.success("State added!");
-			fetch("/api/admin/states")
-				.then((res) => res.json())
-				.then((data) => setStates(Array.isArray(data) ? data : data.states || []));
-		} else {
-			toast.error("Failed to add state");
-		}
-	};
-
-	// Add new location
-	const handleAddLocation = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!newLocation.name.trim() || !selectedState) return;
-		setLoading(true);
-		const res = await fetch("/api/admin/locations", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ name: newLocation.name, stateId: selectedState }),
-		});
-		setLoading(false);
-		if (res.ok) {
-			setNewLocation({ name: "" });
-			toast.success("Location added!");
-			fetchLocations();
-		} else {
-			toast.error("Failed to add location");
-		}
-	};
+	// Removed add state and add location handlers
 
 	// Edit location
 	const handleEditLocation = (loc: Location) => {
@@ -180,62 +139,7 @@ export default function ShippingFeeAdminPage() {
 					<CardTitle>Shipping Fee Management</CardTitle>
 				</CardHeader>
 				<CardContent>
-					{/* Section 1: Add State */}
-					<div className="mb-2 mt-2">
-						<h2 className="text-lg font-bold mb-2">Add State</h2>
-						<form onSubmit={handleAddState} className="flex gap-2 items-end">
-							<div className="flex-1">
-								<Label htmlFor="newState">State Name</Label>
-								<Input
-									id="newState"
-									value={newState.name}
-									onChange={(e) => setNewState({ name: e.target.value })}
-									placeholder="State name"
-									required
-								/>
-							</div>
-							<Button type="submit" disabled={loading} className="h-10">
-								Add
-							</Button>
-						</form>
-					</div>
-
-					{/* Section 2: Add Location */}
-					<div className="mb-6 mt-6">
-						<h2 className="text-lg font-bold mb-2">Add Location</h2>
-						<form onSubmit={handleAddLocation} className="flex gap-2 items-end">
-							<div className="flex-1">
-								<Label htmlFor="addLocationState">State</Label>
-								<select
-									id="addLocationState"
-									className="w-full border rounded px-3 py-2 mt-1"
-									value={selectedState}
-									onChange={(e) => setSelectedState(e.target.value)}
-									required
-								>
-									<option value="">-- Select State --</option>
-									{states.map((state) => (
-										<option key={state.id} value={state.id}>
-											{state.name}
-										</option>
-									))}
-								</select>
-							</div>
-							<div className="flex-1">
-								<Label htmlFor="newLocation">Location Name</Label>
-								<Input
-									id="newLocation"
-									value={newLocation.name}
-									onChange={(e) => setNewLocation({ name: e.target.value })}
-									placeholder="Location name"
-									required
-								/>
-							</div>
-							<Button type="submit" disabled={loading} className="h-10">
-								Add
-							</Button>
-						</form>
-					</div>
+					{/* Removed Add State and Add Location sections */}
 
 					{/* Section 3: Shipping Fee Management */}
 					<div className="mb-8 mt-6">
