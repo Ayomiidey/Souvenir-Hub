@@ -45,7 +45,7 @@ export function CategoryMegaMenu() {
           href="/products"
           className="flex-1 px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors border-r border-gray-300 dark:border-gray-600"
         >
-          ALL CATEGORIES
+          All Categories
         </Link>
       </div>
     );
@@ -53,7 +53,7 @@ export function CategoryMegaMenu() {
 
   const visibleCategories = categories.slice(0, 7);
   const allCategories = [
-    { id: "all", name: "ALL CATEGORIES", slug: "categories" },
+    { id: "all", name: "All Categories", slug: "categories" },
     ...visibleCategories,
   ];
 
