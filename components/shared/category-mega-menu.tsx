@@ -62,19 +62,17 @@ export function CategoryMegaMenu() {
       {allCategories.map((category, index) => (
         <div
           key={category.id}
-          className="flex-1 flex items-center justify-center min-w-[140px]"
+          className={cn(
+            "flex-1 min-w-[140px] flex items-stretch justify-center",
+            index < allCategories.length - 1 &&
+              "border-r border-gray-300 dark:border-gray-600"
+          )}
         >
           {category.id === "all" ? (
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger
-                    className={cn(
-                      "w-full h-auto px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors rounded-none border-0",
-                      index < allCategories.length - 1 &&
-                        "border-r border-gray-300 dark:border-gray-600"
-                    )}
-                  >
+                  <NavigationMenuTrigger className="w-full h-full flex justify-center items-center text-sm font-medium bg-white dark:bg-slate-900 transition-colors rounded-none border-0 hover:bg-gray-50 dark:hover:bg-slate-800">
                     {category.name}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -102,20 +100,13 @@ export function CategoryMegaMenu() {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-          ) : // Only show dropdown for categories that have children
-          "children" in category &&
+          ) : "children" in category &&
             Array.isArray(category.children) &&
             category.children.length > 0 ? (
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger
-                    className={cn(
-                      "w-full h-auto px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors rounded-none border-0",
-                      index < allCategories.length - 1 &&
-                        "border-r border-gray-300 dark:border-gray-600"
-                    )}
-                  >
+                  <NavigationMenuTrigger className="w-full h-full flex justify-center items-center text-sm font-medium bg-white dark:bg-slate-900 transition-colors rounded-none border-0 hover:bg-gray-50 dark:hover:bg-slate-800">
                     {category.name}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -150,11 +141,7 @@ export function CategoryMegaMenu() {
           ) : (
             <Link
               href={`/categories/${category.slug}`}
-              className={cn(
-                "block w-full px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors",
-                index < allCategories.length - 1 &&
-                  "border-r border-gray-300 dark:border-gray-600"
-              )}
+              className="block w-full h-full flex items-center justify-center px-4 py-2 text-sm font-medium text-center bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
             >
               {category.name}
             </Link>

@@ -81,6 +81,11 @@ const navigation = [
     icon: FolderTree,
   },
   {
+    name: "Footer",
+    href: "/admin/footer",
+    icon: FolderTree,
+  },
+  {
     name: "Customers",
     href: "/admin/customers",
     icon: Users,

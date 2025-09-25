@@ -347,6 +347,20 @@ model Order {
   @@map("orders")
 }
 
+model Footer {
+  id                   Int      @id @default(autoincrement())
+  companyTitle         String
+  companyDescription   String
+  socialLinks          Json // Array of {platform: string, href: string}
+  customerServiceTitle String
+  customerServiceLinks Json // Array of {text: string, href: string}
+  contactTitle         String
+  contacts             Json // Array of {icon: string, text: string, href?: string}
+  copyright            String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
 model Carousel {
   id          String           @id @default(uuid()) @db.Uuid
   title       String
