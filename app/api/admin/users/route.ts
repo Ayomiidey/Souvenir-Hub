@@ -10,10 +10,23 @@ export async function GET() {
         email: true,
         phone: true,
         createdAt: true,
+        roles: {
+          select: {
+            role: {
+              select: { name: true },
+            },
+          },
+        },
         _count: { select: { orders: true } },
       },
     });
-    return NextResponse.json(users);
+    // Flatten roles to array of strings
+    const usersWithRoles = users.map((user) => ({
+      ...user,
+      roles: user.roles?.map((ur) => ur.role.name) || [],
+      ordersCount: user._count.orders,
+    }));
+    return NextResponse.json(usersWithRoles);
   } catch (error) {
     console.error("Error fetching users:", error);
     return NextResponse.json(

@@ -14,12 +14,14 @@ interface User {
   email: string;
   phone?: string;
   createdAt: string;
-  ordersCount?: number; // Optional relation count
+  ordersCount?: number;
+  roles: string[];
 }
 
 export default function CustomerAdminPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const roleOptions = ["USER", "ADMIN"];
 
   useEffect(() => {
     fetchUsers();
@@ -40,6 +42,25 @@ export default function CustomerAdminPage() {
       console.error("Error fetching users:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/role`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: newRole }),
+      });
+      if (res.ok) {
+        toast.success("Role updated");
+        fetchUsers();
+      } else {
+        toast.error("Failed to update role");
+      }
+    } catch (err) {
+      console.log("Error updating role:", err);
+      toast.error("Error updating role");
     }
   };
 
@@ -110,9 +131,22 @@ export default function CustomerAdminPage() {
                     </div>
                   </div>
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4 inline mr-1" />
-                  {new Date(user.createdAt).toLocaleDateString()}
+                <div className="flex items-center space-x-4">
+                  <div className="text-sm text-muted-foreground">
+                    <Clock className="h-4 w-4 inline mr-1" />
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </div>
+                  <select
+                    className="border rounded px-2 py-1 text-sm"
+                    value={user.roles[0] || "USER"}
+                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                  >
+                    {roleOptions.map((role) => (
+                      <option key={role} value={role}>
+                        {role.charAt(0) + role.slice(1).toLowerCase()}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             ))}
