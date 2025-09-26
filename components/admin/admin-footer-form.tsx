@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -64,6 +65,7 @@ export function AdminFooterForm() {
     []
   );
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const {
     register,
@@ -169,7 +171,8 @@ export function AdminFooterForm() {
   const onSubmit = async (data: FooterFormData) => {
     setError(null);
     setSuccess(false);
-
+    setSubmitting(true);
+    toast.loading("Updating footer settings...");
     try {
       const res = await fetch("/api/footer", {
         method: "PUT",
@@ -179,24 +182,52 @@ export function AdminFooterForm() {
 
       if (res.ok) {
         setSuccess(true);
+        toast.success("Footer updated successfully!");
         setTimeout(() => setSuccess(false), 3000); // Hide success after 3s
       } else {
         const err = await res.json();
-        setError(
-          Array.isArray(err.error)
-            ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              err.error.map((e: any) => e.message).join(", ")
-            : err.error
-        );
+        const errorMsg = Array.isArray(err.error)
+          ? err.error.map((e: { message: string }) => e.message).join(", ")
+          : err.error;
+        setError(errorMsg);
+        toast.error(errorMsg || "Failed to update footer");
       }
     } catch (err) {
       console.error(err);
       setError("Failed to update footer");
+      toast.error("Failed to update footer");
+    } finally {
+      setSubmitting(false);
+      toast.dismiss();
     }
   };
 
   if (loading) {
-    return <div className="p-4">Loading...</div>;
+    return (
+      <div className="p-4 flex items-center gap-2">
+        <svg
+          className="animate-spin h-5 w-5 text-primary"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8z"
+          ></path>
+        </svg>
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -510,7 +541,29 @@ export function AdminFooterForm() {
         </div>
 
         <div className="flex justify-end pt-4 border-t">
-          <Button type="submit" size="lg">
+          <Button type="submit" size="lg" disabled={submitting}>
+            {submitting && (
+              <svg
+                className="animate-spin h-5 w-5 mr-2 text-primary"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
+              </svg>
+            )}
             Save Footer Settings
           </Button>
         </div>
