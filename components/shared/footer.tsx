@@ -1,4 +1,5 @@
 // components/Footer.tsx
+// Dynamic footer component that fetches data from the API and renders Quick Links with selected categories
 
 "use client";
 
@@ -13,6 +14,7 @@ import {
   MapPin,
 } from "lucide-react";
 
+// Type definition for footer data, including categories
 type FooterData = {
   companyTitle: string;
   companyDescription: string;
@@ -22,8 +24,10 @@ type FooterData = {
   contactTitle: string;
   contacts: { icon: string; text: string; href?: string }[];
   copyright: string;
+  categories: { id: string; name: string; slug: string }[];
 };
 
+// Map social media platforms to their icons
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } =
   {
     facebook: Facebook,
@@ -31,6 +35,7 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } =
     instagram: Instagram,
   };
 
+// Map contact icons
 const contactIconMap: {
   [key: string]: React.ComponentType<{ className?: string }>;
 } = {
@@ -41,18 +46,51 @@ const contactIconMap: {
 
 export function Footer() {
   const [data, setData] = useState<FooterData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch footer data on mount
   useEffect(() => {
     async function fetchFooter() {
-      const res = await fetch("/api/footer");
-      if (res.ok) {
-        setData(await res.json());
+      try {
+        const res = await fetch("/api/footer");
+        if (res.ok) {
+          const footerData = await res.json();
+          setData(footerData);
+        } else {
+          setError("Failed to load footer data");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Failed to fetch footer data");
+      } finally {
+        setLoading(false);
       }
     }
     fetchFooter();
   }, []);
 
-  if (!data) return null;
+  if (loading) {
+    return (
+      <footer className="bg-muted/50 border-t">
+        <div className="px-4 py-8 text-center">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </footer>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <footer className="bg-muted/50 border-t">
+        <div className="px-4 py-8 text-center">
+          <p className="text-muted-foreground">
+            © 2024 SouvenirShop. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className="bg-muted/50 border-t">
@@ -77,6 +115,16 @@ export function Footer() {
           >
             FAQ
           </Link>
+          {/* Show first 2 categories on mobile if available */}
+          {data.categories.slice(0, 2).map((category) => (
+            <Link
+              key={category.id}
+              href={`/categories/${category.slug}`}
+              className="font-medium text-primary hover:underline"
+            >
+              {category.name}
+            </Link>
+          ))}
         </div>
         <p className="w-full text-center">{data.copyright}</p>
       </div>
@@ -90,58 +138,61 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">
               {data.companyDescription}
             </p>
-            <div className="flex space-x-4">
-              {data.socialLinks.map((link, index) => {
-                const Icon = iconMap[link.platform];
-                return (
-                  <Link
-                    key={index}
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Icon className="h-5 w-5" />
-                  </Link>
-                );
-              })}
-            </div>
+            {data.socialLinks && data.socialLinks.length > 0 && (
+              <div className="flex space-x-4">
+                {data.socialLinks.map((link, index) => {
+                  const Icon = iconMap[link.platform];
+                  if (!Icon) return null;
+
+                  return (
+                    <Link
+                      key={index}
+                      href={link.href}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Icon className="h-5 w-5" />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Quick Links (static as per user request) */}
+          {/* Quick Links */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
                   href="/products"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   All Products
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/categories/t-shirts-apparel"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  T-Shirts & Apparel
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/categories/mugs-drinkware"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Mugs & Drinkware
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/categories/home-decor"
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Home Decor
-                </Link>
-              </li>
+              {data.categories && data.categories.length > 0 ? (
+                data.categories.map((category) => (
+                  <li key={category.id}>
+                    <Link
+                      href={`/categories/${category.slug}`}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>
+                  <Link
+                    href="/categories"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Browse Categories
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -155,7 +206,7 @@ export function Footer() {
                 <li key={index}>
                   <Link
                     href={link.href}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {link.text}
                   </Link>
@@ -170,17 +221,20 @@ export function Footer() {
             <div className="space-y-2 text-sm text-muted-foreground">
               {data.contacts.map((contact, index) => {
                 const Icon = contactIconMap[contact.icon];
+                if (!Icon) return null;
+
                 const content = (
-                  <div className="flex items-center space-x-2">
-                    <Icon className="h-4 w-4" />
-                    <span>{contact.text}</span>
+                  <div className="flex items-center space-x-2 hover:text-foreground transition-colors">
+                    <Icon className="h-4 w-4 flex-shrink-0" />
+                    <span className="break-words">{contact.text}</span>
                   </div>
                 );
+
                 return contact.href ? (
                   <Link
                     key={index}
                     href={contact.href}
-                    className="hover:underline"
+                    className="block hover:underline"
                   >
                     {content}
                   </Link>
@@ -192,7 +246,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
+        <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
           <p>{data.copyright}</p>
         </div>
       </div>

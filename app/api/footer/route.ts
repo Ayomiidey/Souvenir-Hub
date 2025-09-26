@@ -1,9 +1,11 @@
 // app/api/footer/route.ts
+// Handles GET and PUT requests for footer data, including validation for category IDs
 
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma"; // Adjust path to your Prisma client
 
+// Zod schema for validating footer data
 const footerSchema = z.object({
   companyTitle: z.string().min(1, "Company title is required"),
   companyDescription: z.string().min(1, "Company description is required"),
@@ -39,13 +41,22 @@ const footerSchema = z.object({
     )
     .length(3, "Exactly three contacts are required (mail, phone, address)"),
   copyright: z.string().min(1, "Copyright text is required"),
+  selectedCategoryIds: z
+    .array(z.string())
+    .max(3, "Maximum three categories allowed"),
 });
 
+// GET: Fetch footer data, including selected categories
 export async function GET() {
   try {
     let footer = await prisma.footer.findFirst();
     if (!footer) {
-      // Create default if none exists
+      // Create default footer if none exists
+      const defaultCategories = await prisma.category.findMany({
+        where: { isActive: true },
+        take: 3,
+        select: { id: true },
+      });
       footer = await prisma.footer.create({
         data: {
           companyTitle: "SouvenirShop",
@@ -78,11 +89,18 @@ export async function GET() {
             { icon: "map", text: "123 Main St, City, State 12345" },
           ],
           copyright: "© 2024 SouvenirShop. All rights reserved.",
+          selectedCategoryIds: defaultCategories.map((cat) => cat.id),
         },
       });
     }
-    return NextResponse.json(footer);
-  } catch {
+    // Fetch category details for selectedCategoryIds
+    const categories = await prisma.category.findMany({
+      where: { id: { in: footer.selectedCategoryIds }, isActive: true },
+      select: { id: true, name: true, slug: true },
+    });
+    return NextResponse.json({ ...footer, categories });
+  } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Failed to fetch footer data" },
       { status: 500 }
@@ -90,6 +108,7 @@ export async function GET() {
   }
 }
 
+// PUT: Update footer data with validated input
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
@@ -100,12 +119,35 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Footer not found" }, { status: 404 });
     }
 
+    // Verify category IDs exist and are active
+    const categories = await prisma.category.findMany({
+      where: { id: { in: validatedData.selectedCategoryIds }, isActive: true },
+    });
+    if (categories.length !== validatedData.selectedCategoryIds.length) {
+      return NextResponse.json(
+        { error: "One or more category IDs are invalid or inactive" },
+        { status: 400 }
+      );
+    }
+
     const updatedFooter = await prisma.footer.update({
       where: { id: existingFooter.id },
-      data: validatedData,
+      data: {
+        ...validatedData,
+        selectedCategoryIds: validatedData.selectedCategoryIds,
+      },
     });
 
-    return NextResponse.json(updatedFooter);
+    // Include category details in response
+    const updatedCategories = await prisma.category.findMany({
+      where: { id: { in: updatedFooter.selectedCategoryIds }, isActive: true },
+      select: { id: true, name: true, slug: true },
+    });
+
+    return NextResponse.json({
+      ...updatedFooter,
+      categories: updatedCategories,
+    });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 });
