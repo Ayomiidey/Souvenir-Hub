@@ -9,6 +9,9 @@ export async function GET(request: Request) {
     const search = searchParams.get("search") || "";
     const parentId = searchParams.get("parentId") || "";
     const status = searchParams.get("status") || "";
+    const page = Number.parseInt(searchParams.get("page") || "1");
+    const limit = Number.parseInt(searchParams.get("limit") || "20");
+    const skip = (page - 1) * limit;
 
     const where: any = { isActive: true };
     if (search) {
@@ -21,18 +24,31 @@ export async function GET(request: Request) {
       where.isActive = status === "active";
     }
 
-    const categories = (await prisma.category.findMany({
-      where,
-      include: {
-        children: {
-          where: { isActive: true },
-          orderBy: { sortOrder: "asc" },
+    const [categories, total] = await Promise.all([
+      prisma.category.findMany({
+        where,
+        include: {
+          children: {
+            where: { isActive: true },
+            orderBy: { sortOrder: "asc" },
+          },
         },
-      },
-      orderBy: { sortOrder: "asc" },
-    })) as CategoryWithChildren[];
+        orderBy: { sortOrder: "asc" },
+        skip,
+        take: limit,
+      }) as Promise<CategoryWithChildren[]>,
+      prisma.category.count({ where }),
+    ]);
 
-    return NextResponse.json({ categories });
+    return NextResponse.json({
+      categories,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     console.error("Error fetching categories:", error);
     return NextResponse.json(

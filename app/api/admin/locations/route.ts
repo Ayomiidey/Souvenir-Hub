@@ -4,18 +4,35 @@ import prisma from "@/lib/prisma";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const stateId = searchParams.get("stateId");
+  const page = Number.parseInt(searchParams.get("page") || "1");
+  const limit = Number.parseInt(searchParams.get("limit") || "20");
+  const skip = (page - 1) * limit;
   try {
-    const locations = await prisma.location.findMany({
-      where: stateId ? { stateId } : {},
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        stateId: true,
-        shippingFee: true,
+    const where = stateId ? { stateId } : {};
+    const [locations, total] = await Promise.all([
+      prisma.location.findMany({
+        where,
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+          stateId: true,
+          shippingFee: true,
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.location.count({ where }),
+    ]);
+    return NextResponse.json({
+      locations,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
       },
     });
-    return NextResponse.json({ locations });
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch locations" },

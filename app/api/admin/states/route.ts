@@ -1,13 +1,30 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const page = Number.parseInt(searchParams.get("page") || "1");
+  const limit = Number.parseInt(searchParams.get("limit") || "20");
+  const skip = (page - 1) * limit;
   try {
-    const states = await prisma.state.findMany({
-      orderBy: { name: "asc" },
-      include: { locations: { orderBy: { name: "asc" } } },
+    const [states, total] = await Promise.all([
+      prisma.state.findMany({
+        orderBy: { name: "asc" },
+        include: { locations: { orderBy: { name: "asc" } } },
+        skip,
+        take: limit,
+      }),
+      prisma.state.count(),
+    ]);
+    return NextResponse.json({
+      states,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
     });
-    return NextResponse.json({ states });
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch states" },

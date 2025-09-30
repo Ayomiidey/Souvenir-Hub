@@ -53,33 +53,39 @@ export function OrdersTable({
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchOrders = useCallback(async () => {
+    setLoading(true);
     try {
-      const url = new URL("/api/admin/orders", window.location.origin);
-      if (filters.search) url.searchParams.set("search", filters.search);
-      if (filters.status) url.searchParams.set("status", filters.status);
-      if (filters.paymentStatus)
-        url.searchParams.set("paymentStatus", filters.paymentStatus);
-      if (filters.sortBy) url.searchParams.set("sortBy", filters.sortBy);
-      if (filters.sortOrder)
-        url.searchParams.set("sortOrder", filters.sortOrder);
-      url.searchParams.set("page", "1");
-      url.searchParams.set("limit", "20");
+      const params = new URLSearchParams();
+      if (filters.search) params.set("search", filters.search);
+      if (filters.status) params.set("status", filters.status);
+      if (filters.paymentStatus) params.set("paymentStatus", filters.paymentStatus);
+      if (filters.sortBy) params.set("sortBy", filters.sortBy);
+      if (filters.sortOrder) params.set("sortOrder", filters.sortOrder);
+      params.set("page", String(page));
+      params.set("limit", "20");
 
-      const response = await fetch(url.toString());
+      const response = await fetch(`/api/admin/orders?${params.toString()}`);
       const data = await response.json();
       setOrders(data.orders || []);
+      setTotalPages(data.pagination?.pages || 1);
     } catch (error) {
       console.error("Error fetching orders:", error);
     } finally {
       setLoading(false);
     }
+  }, [filters, page]);
+
+  useEffect(() => {
+    setPage(1); // Reset to first page when filters change
   }, [filters]);
 
   useEffect(() => {
     fetchOrders();
-  }, [fetchOrders]); // Now safe to include fetchOrders due to useCallback
+  }, [fetchOrders]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -367,6 +373,37 @@ export function OrdersTable({
         {orders.length === 0 && (
           <div className="text-center py-12">
             <div className="text-muted-foreground">No orders found</div>
+          </div>
+        )}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 py-6">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Previous
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pNum) => (
+              <Button
+                key={pNum}
+                variant={pNum === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setPage(pNum)}
+                disabled={pNum === page}
+              >
+                {pNum}
+              </Button>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Next
+            </Button>
           </div>
         )}
       </CardContent>

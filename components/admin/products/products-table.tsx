@@ -49,14 +49,18 @@ interface ProductsTableProps {
   };
 }
 
+
 export function ProductsTable({
   filters = { search: "", category: "all", status: "all" },
 }: ProductsTableProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchProducts = useCallback(async () => {
+    setLoading(true);
     try {
       const params = new URLSearchParams();
       if (filters.search) params.set("search", filters.search);
@@ -64,6 +68,8 @@ export function ProductsTable({
         params.set("category", filters.category);
       if (filters.status && filters.status !== "all")
         params.set("status", filters.status);
+      params.set("page", String(page));
+      params.set("limit", "20");
 
       const response = await fetch(`/api/admin/products?${params.toString()}`);
       const data = await response.json();
@@ -72,16 +78,21 @@ export function ProductsTable({
         price: Number(product.price) || 0,
       }));
       setProducts(formattedProducts);
+      setTotalPages(data.pagination?.pages || 1);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
-  }, [filters]); // Depend on filters to refetch when they change
+  }, [filters, page]);
+
+  useEffect(() => {
+    setPage(1); // Reset to first page when filters change
+  }, [filters]);
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]); // Depend on the memoized fetchProducts
+  }, [fetchProducts]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -331,6 +342,39 @@ export function ProductsTable({
             <div className="text-muted-foreground">No products found</div>
             <Button className="mt-4" asChild>
               <Link href="/admin/products/new">Add your first product</Link>
+            </Button>
+          </div>
+        )}
+
+        {/* Pagination Bar */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 py-6">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Previous
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <Button
+                key={p}
+                variant={p === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setPage(p)}
+                disabled={p === page}
+              >
+                {p}
+              </Button>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Next
             </Button>
           </div>
         )}

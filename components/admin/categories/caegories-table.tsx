@@ -26,6 +26,8 @@ import Link from "next/link";
 export function CategoriesTable({ filters }: { filters: Filters }) {
   const [categories, setCategories] = useState<CategoryWithChildren[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -35,18 +37,21 @@ export function CategoriesTable({ filters }: { filters: Filters }) {
         params.set("parentId", filters.parentId);
       if (filters.status && filters.status !== "all")
         params.set("status", filters.status);
+      params.set("page", String(page));
+      params.set("limit", "20");
 
       const response = await fetch(
         `/api/admin/categories?${params.toString()}`
       );
       const data = await response.json();
       setCategories(data.categories || []);
+      setTotalPages(data.pagination?.pages || 1);
     } catch (error) {
       console.error("Error fetching categories:", error);
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, page]);
 
   useEffect(() => {
     fetchCategories();
@@ -110,60 +115,94 @@ export function CategoriesTable({ filters }: { filters: Filters }) {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Slug</TableHead>
-          <TableHead>Subcategories</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Sort Order</TableHead>
-          <TableHead className="w-12"></TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {categories.map((category) => (
-          <TableRow key={category.id}>
-            <TableCell>{category.name}</TableCell>
-            <TableCell>{category.slug}</TableCell>
-            <TableCell>
-              {(category.children?.length ?? 0) > 0
-                ? (category.children || [])
-                    .map((child) => child.name)
-                    .join(", ")
-                : "None"}
-            </TableCell>
-            <TableCell>
-              <Badge className={getStatusColor(category.isActive)}>
-                {category.isActive ? "Active" : "Inactive"}
-              </Badge>
-            </TableCell>
-            <TableCell>{category.sortOrder}</TableCell>
-            <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={`/admin/categories/${category.id}/edit`}>
-                      <Edit className="mr-2 h-4 w-4" /> Edit
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => handleDeleteCategory(category.id)}
-                    className="text-destructive"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Slug</TableHead>
+            <TableHead>Subcategories</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Sort Order</TableHead>
+            <TableHead className="w-12"></TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {categories.map((category) => (
+            <TableRow key={category.id}>
+              <TableCell>{category.name}</TableCell>
+              <TableCell>{category.slug}</TableCell>
+              <TableCell>
+                {(category.children?.length ?? 0) > 0
+                  ? (category.children || [])
+                      .map((child) => child.name)
+                      .join(", ")
+                  : "None"}
+              </TableCell>
+              <TableCell>
+                <Badge className={getStatusColor(category.isActive)}>
+                  {category.isActive ? "Active" : "Inactive"}
+                </Badge>
+              </TableCell>
+              <TableCell>{category.sortOrder}</TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <Link href={`/admin/categories/${category.id}/edit`}>
+                        <Edit className="mr-2 h-4 w-4" /> Edit
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteCategory(category.id)}
+                      className="text-destructive"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {/* Pagination Bar */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 py-6">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page === 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            Previous
+          </Button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <Button
+              key={p}
+              variant={p === page ? "default" : "outline"}
+              size="sm"
+              onClick={() => setPage(p)}
+              disabled={p === page}
+            >
+              {p}
+            </Button>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            Next
+          </Button>
+        </div>
+      )}
+    </>
   );
 }
