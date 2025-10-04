@@ -4,9 +4,9 @@ import prisma from "@/lib/prisma";
 // PATCH /api/admin/users/[id]/role
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }:  { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   const { role } = await req.json();
   console.log("PATCH /api/admin/users/[id]/role called", { id, role });
   if (!role) {
