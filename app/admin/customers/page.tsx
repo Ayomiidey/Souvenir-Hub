@@ -33,7 +33,7 @@ export default function CustomerAdminPage() {
       const response = await fetch("/api/admin/users");
       if (response.ok) {
         const data = await response.json();
-        setUsers(data.users || []);
+        setUsers(data);
       } else {
         toast.error("Failed to fetch users");
       }
