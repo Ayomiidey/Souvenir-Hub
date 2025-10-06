@@ -31,9 +31,9 @@ export async function GET(request: NextRequest) {
       prisma.user.count(),
     ]);
     // Flatten roles to array of strings
-    const usersWithRoles = users.map((user) => ({
+    const usersWithRoles = users.map((user: typeof users[0]) => ({
       ...user,
-      roles: user.roles?.map((ur) => ur.role.name) || [],
+      roles: user.roles?.map((ur: typeof user.roles[0]) => ur.role.name) || [],
       ordersCount: user._count.orders,
     }));
     return NextResponse.json({
