@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma';
 // PUT /api/faq/[id] - Update FAQ
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { question, answer, categoryId, order, isActive } = body;
 
@@ -73,10 +73,10 @@ export async function PUT(
 // DELETE /api/faq/[id] - Delete FAQ
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Check if FAQ exists
     const existingFaq = await prisma.fAQ.findUnique({

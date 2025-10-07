@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma';
 // PUT /api/faq/categories/[id] - Update FAQ category
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { name, description, order, isActive } = body;
 
@@ -80,10 +80,10 @@ export async function PUT(
 // DELETE /api/faq/categories/[id] - Delete FAQ category
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Check if category exists
     const existingCategory = await prisma.fAQCategory.findUnique({
