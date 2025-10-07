@@ -9,11 +9,11 @@ const updateStatusSchema = z.object({
 // GET: Fetch a specific contact message
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const message = await prisma.contactMessage.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
     });
 
     if (!message) {
@@ -36,14 +36,14 @@ export async function GET(
 // PATCH: Update contact message status
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
     const { status } = updateStatusSchema.parse(body);
 
     const updatedMessage = await prisma.contactMessage.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: { status },
     });
 
@@ -71,11 +71,11 @@ export async function PATCH(
 // DELETE: Delete a contact message
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await prisma.contactMessage.delete({
-      where: { id: params.id },
+      where: { id: (await params).id },
     });
 
     return NextResponse.json(
