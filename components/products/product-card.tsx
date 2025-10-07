@@ -225,14 +225,14 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
   // --- START: FIXED GRID VIEW CODE ---
   return (
     <Card
-      className={`group flex flex-col h-full overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl ${glass}`}
+      className={`group flex flex-col h-full overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 rounded-2xl ${glass} p-0`}
     >
       <Link
         href={`/products/${product.slug}`}
         className="flex flex-col flex-grow"
       >
-        <div className="relative">
-          <div className="relative aspect-square overflow-hidden rounded-t-2xl">
+        <div className="relative w-full">
+          <div className="relative aspect-square overflow-hidden rounded-t-2xl bg-gray-100">
             <Image
               src={
                 imageError
@@ -242,6 +242,7 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
               }
               alt={product.images[0]?.altText || product.name}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               onError={() => setImageError(true)}
             />
