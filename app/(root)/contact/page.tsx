@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Clock, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,16 @@ type FormData = {
   message: string;
 };
 
+type ContactInfo = {
+  phone: string;
+  email: string;
+  address: string;
+  businessHours: {
+    weekdays: string;
+    weekends: string;
+  };
+};
+
 export default function ContactPage() {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -28,6 +38,33 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  
+  const [contactInfo, setContactInfo] = useState<ContactInfo>({
+    phone: "+1 (555) 123-4567",
+    email: "info@souvenirshop.com",
+    address: "123 Main St, City, State 12345",
+    businessHours: {
+      weekdays: "Mon - Fri: 9AM - 6PM",
+      weekends: "Sat - Sun: 10AM - 4PM"
+    }
+  });
+
+  // Fetch contact info on component mount
+  useEffect(() => {
+    fetchContactInfo();
+  }, []);
+
+  const fetchContactInfo = async () => {
+    try {
+      const response = await fetch('/api/contact-info');
+      if (response.ok) {
+        const data = await response.json();
+        setContactInfo(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch contact info:', error);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -102,33 +139,43 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-6">
-              <Card className="border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-blue-100 p-3 rounded-full">
-                      <Phone className="h-6 w-6 text-blue-600" />
+              <a href={`tel:${contactInfo.phone.replace(/[^+\d]/g, '')}`} className="block">
+                <Card className="border-l-4 border-l-blue-500 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:border-l-blue-600">
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="bg-blue-100 p-3 rounded-full group-hover:bg-blue-200 transition-colors">
+                        <Phone className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Phone</h3>
+                        <p className="text-blue-600 hover:text-blue-800 transition-colors">
+                          {contactInfo.phone}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">Click to call</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Phone</h3>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </a>
 
-              <Card className="border-l-4 border-l-green-500 shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-green-100 p-3 rounded-full">
-                      <Mail className="h-6 w-6 text-green-600" />
+              <a href={`mailto:${contactInfo.email}`} className="block">
+                <Card className="border-l-4 border-l-green-500 shadow-sm hover:shadow-lg transition-all cursor-pointer hover:border-l-green-600">
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="bg-green-100 p-3 rounded-full group-hover:bg-green-200 transition-colors">
+                        <Mail className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Email</h3>
+                        <p className="text-green-600 hover:text-green-800 transition-colors">
+                          {contactInfo.email}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">Click to send email</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Email</h3>
-                      <p className="text-gray-600">info@souvenirshop.com</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </a>
 
               <Card className="border-l-4 border-l-purple-500 shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
@@ -138,7 +185,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Address</h3>
-                      <p className="text-gray-600">123 Main St, City, State 12345</p>
+                      <p className="text-gray-600">{contactInfo.address}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -152,8 +199,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Business Hours</h3>
-                      <p className="text-gray-600">Mon - Fri: 9AM - 6PM</p>
-                      <p className="text-gray-600">Sat - Sun: 10AM - 4PM</p>
+                      <p className="text-gray-600">{contactInfo.businessHours.weekdays}</p>
+                      <p className="text-gray-600">{contactInfo.businessHours.weekends}</p>
                     </div>
                   </div>
                 </CardContent>

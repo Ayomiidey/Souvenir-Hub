@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +57,24 @@ export default function ContactManagePage() {
     }
   });
 
+  // Fetch contact info on component mount
+  useEffect(() => {
+    fetchContactInfo();
+  }, []);
+
+  const fetchContactInfo = async () => {
+    try {
+      const response = await fetch('/api/contact-info');
+      if (response.ok) {
+        const data = await response.json();
+        setContactInfo(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch contact info:', error);
+      toast.error('Failed to load contact information');
+    }
+  };
+
   const [faqs, setFaqs] = useState<FAQItem[]>([
     {
       id: "1",
@@ -93,16 +111,24 @@ export default function ContactManagePage() {
   const [editingCategory, setEditingCategory] = useState<FAQCategory | null>(null);
 
   const handleSaveContactInfo = () => {
-    // Here you would make an API call to save the contact information
     toast.promise(
-      new Promise((resolve) => {
-        // Simulate API call
-        setTimeout(() => resolve("Contact information updated"), 1000);
+      fetch('/api/contact-info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactInfo),
+      }).then(async (response) => {
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to update contact information');
+        }
+        return response.json();
       }),
       {
         loading: "Saving contact information...",
         success: "Contact information updated successfully!",
-        error: "Failed to update contact information",
+        error: (err) => err.message || "Failed to update contact information",
       }
     );
   };
