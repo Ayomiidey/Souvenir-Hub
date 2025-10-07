@@ -444,6 +444,34 @@ enum ContactMessageStatus {
   REPLIED
 }
 
+// FAQ System
+model FAQCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  faqs        FAQ[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("faq_categories")
+}
+
+model FAQ {
+  id         String      @id @default(cuid())
+  question   String
+  answer     String      @db.Text
+  order      Int         @default(0)
+  isActive   Boolean     @default(true)
+  categoryId String
+  category   FAQCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@map("faqs")
+}
+
 // System Settings (for admin configuration)
 model Setting {
   id    String @id @default(cuid())

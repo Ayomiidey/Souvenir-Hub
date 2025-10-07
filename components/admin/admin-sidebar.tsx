@@ -22,6 +22,7 @@ import {
   Store,
   ImagePlus,
   MessageCircle,
+  HelpCircle,
 } from "lucide-react";
 
 const navigation = [
@@ -100,6 +101,11 @@ const navigation = [
       { name: "Manage Content", href: "/admin/contact/manage" },
       // { name: "Email Configuration", href: "/admin/contact/email-test" },
     ],
+  },
+  {
+    name: "FAQ Management",
+    href: "/admin/faq",
+    icon: HelpCircle,
   },
 
   // {

@@ -1,12 +1,28 @@
 "use client";
 
 import { ChevronDown, ChevronUp, MessageCircle, Phone, Mail } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-const faqs = [
+type FAQ = {
+  id: string;
+  question: string;
+  answer: string;
+  category: {
+    name: string;
+  };
+};
+
+type FAQCategory = {
+  id: string;
+  name: string;
+  description?: string;
+  faqs: FAQ[];
+};
+
+const fallbackFaqs = [
   {
     category: "Orders & Shipping",
     questions: [
@@ -119,6 +135,61 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function FAQPage() {
+  const [categories, setCategories] = useState<FAQCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const loadFAQData = async () => {
+      try {
+        const response = await fetch('/api/faq/categories');
+        const data = await response.json();
+        
+        if (data.success) {
+          // Filter out inactive categories and FAQs
+          const activeCategories = data.data
+            .filter((cat: FAQCategory) => cat.faqs && cat.faqs.length > 0)
+            .map((cat: FAQCategory) => ({
+              ...cat,
+              faqs: cat.faqs.filter(faq => faq)  // Filter active FAQs
+            }));
+          setCategories(activeCategories);
+        } else {
+          // Use fallback data if API fails
+          setError(true);
+        }
+      } catch (err) {
+        console.error('Failed to load FAQ data:', err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFAQData();
+  }, []);
+
+  // Use fallback data if there's an error or no data
+  const displayData = error || categories.length === 0 ? fallbackFaqs : categories;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
+            <p className="text-xl md:text-2xl text-blue-100">Loading FAQ content...</p>
+          </div>
+        </div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Hero Section */}
@@ -161,26 +232,38 @@ export default function FAQPage() {
 
         {/* FAQ Categories */}
         <div className="space-y-8">
-          {faqs.map((category, categoryIndex) => (
-            <Card key={categoryIndex} className="shadow-lg border-0">
-              <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100">
-                <CardTitle className="text-xl font-bold text-gray-900">
-                  {category.category}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y divide-gray-200">
-                  {category.questions.map((faq, faqIndex) => (
-                    <FAQItem
-                      key={faqIndex}
-                      question={faq.question}
-                      answer={faq.answer}
-                    />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {displayData.map((category, categoryIndex) => {
+            const isDBCategory = 'faqs' in category;
+            const categoryName = isDBCategory ? category.name : category.category;
+            const categoryItems = isDBCategory ? category.faqs : category.questions;
+            const categoryId = isDBCategory ? category.id : `fallback-${categoryIndex}`;
+            
+            return (
+              <Card key={categoryId} className="shadow-lg border-0">
+                <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100">
+                  <CardTitle className="text-xl font-bold text-gray-900">
+                    {categoryName}
+                  </CardTitle>
+                  {isDBCategory && category.description && (
+                    <CardDescription className="text-gray-600">
+                      {category.description}
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="divide-y divide-gray-200">
+                    {categoryItems.map((faq, faqIndex) => (
+                      <FAQItem
+                        key={isDBCategory && faq && typeof faq === 'object' && 'id' in faq ? (faq as { id: string }).id : `faq-${faqIndex}`}
+                        question={faq.question}
+                        answer={faq.answer}
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Bottom CTA */}
