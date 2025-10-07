@@ -98,7 +98,7 @@ const navigation = [
     children: [
       { name: "Contact Messages", href: "/admin/contact" },
       { name: "Manage Content", href: "/admin/contact/manage" },
-      { name: "Email Configuration", href: "/admin/contact/email-test" },
+      // { name: "Email Configuration", href: "/admin/contact/email-test" },
     ],
   },
 
