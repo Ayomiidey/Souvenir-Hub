@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Store,
   ImagePlus,
+  MessageCircle,
 } from "lucide-react";
 
 const navigation = [
@@ -89,6 +90,15 @@ const navigation = [
     name: "Customers",
     href: "/admin/customers",
     icon: Users,
+  },
+  {
+    name: "Contact Us",
+    href: "/admin/contact",
+    icon: MessageCircle,
+    children: [
+      { name: "Contact Messages", href: "/admin/contact" },
+      { name: "Manage Content", href: "/admin/contact/manage" },
+    ],
   },
 
   // {

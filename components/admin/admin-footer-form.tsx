@@ -36,7 +36,12 @@ const footerSchema = z.object({
     .array(
       z.object({
         text: z.string().min(1, "Link text is required"),
-        href: z.string().min(1, "Link href is required"),
+        href: z.string()
+          .min(1, "Link href is required")
+          .refine(
+            (href) => href.startsWith('/') || href.startsWith('http'),
+            "Internal links must start with '/' (e.g., /contact) or be full URLs (e.g., https://example.com)"
+          ),
       })
     )
     .min(1, "At least one customer service link is required"),
@@ -363,7 +368,7 @@ export function AdminFooterForm() {
                   {...register(`customerServiceLinks.${index}.text`)}
                 />
                 <Input
-                  placeholder="Link URL"
+                  placeholder="/contact or https://example.com"
                   className="flex-1"
                   {...register(`customerServiceLinks.${index}.href`)}
                 />

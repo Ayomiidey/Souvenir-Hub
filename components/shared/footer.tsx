@@ -202,16 +202,25 @@ export function Footer() {
               {data.customerServiceTitle}
             </h3>
             <ul className="space-y-2 text-sm">
-              {data.customerServiceLinks.map((link, index) => (
-                <li key={index}>
-                  <Link
-                    href={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.text}
-                  </Link>
-                </li>
-              ))}
+              {data.customerServiceLinks.map((link, index) => {
+                // Ensure internal links start with '/' for absolute paths
+                const href = link.href.startsWith('http') 
+                  ? link.href 
+                  : link.href.startsWith('/') 
+                    ? link.href 
+                    : `/${link.href}`;
+                
+                return (
+                  <li key={index}>
+                    <Link
+                      href={href}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {link.text}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -233,7 +242,11 @@ export function Footer() {
                 return contact.href ? (
                   <Link
                     key={index}
-                    href={contact.href}
+                    href={contact.href.startsWith('http') || contact.href.startsWith('mailto:') || contact.href.startsWith('tel:')
+                      ? contact.href 
+                      : contact.href.startsWith('/') 
+                        ? contact.href 
+                        : `/${contact.href}`}
                     className="block hover:underline"
                   >
                     {content}
