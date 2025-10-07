@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { 
   Table, 
   TableBody, 
@@ -71,6 +73,54 @@ function MessageDetailDialog({ message, onStatusUpdate }: {
   message: ContactMessage; 
   onStatusUpdate: (messageId: string, status: string) => void;
 }) {
+  const [isReplying, setIsReplying] = useState(false);
+  const [replyMessage, setReplyMessage] = useState("");
+  const [replySubject, setReplySubject] = useState(`Re: ${message.subject}`);
+  const [isSending, setIsSending] = useState(false);
+
+  const handleSendReply = async () => {
+    if (!replyMessage.trim()) {
+      toast.error("Please enter a reply message");
+      return;
+    }
+
+    setIsSending(true);
+    
+    try {
+      const response = await fetch('/api/contact/reply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: message.email,
+          subject: replySubject,
+          message: replyMessage,
+          originalMessageId: message.id,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to send reply');
+      }
+
+      // Update message status to replied
+      onStatusUpdate(message.id, "REPLIED");
+      
+      // Reset form
+      setReplyMessage("");
+      setIsReplying(false);
+      
+      toast.success("Reply sent successfully!");
+      
+    } catch (error) {
+      console.error('Reply error:', error);
+      toast.error(error instanceof Error ? error.message : "Failed to send reply");
+    } finally {
+      setIsSending(false);
+    }
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -128,16 +178,61 @@ function MessageDetailDialog({ message, onStatusUpdate }: {
           </div>
         </div>
         
+        {isReplying && (
+          <div className="space-y-4 border-t pt-4">
+            <h4 className="font-medium">Reply to Customer:</h4>
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="replySubject">Subject</Label>
+                <Input
+                  id="replySubject"
+                  value={replySubject}
+                  onChange={(e) => setReplySubject(e.target.value)}
+                  placeholder="Reply subject"
+                />
+              </div>
+              <div>
+                <Label htmlFor="replyMessage">Your Reply</Label>
+                <Textarea
+                  id="replyMessage"
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  placeholder="Type your reply here..."
+                  rows={6}
+                  className="resize-none"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <DialogFooter className="flex gap-2">
-          <Button variant="outline" onClick={() => window.open(`mailto:${message.email}?subject=Re: ${message.subject}`)}>
-            Reply via Email
-          </Button>
-          {message.status !== "REPLIED" && (
-            <Button onClick={() => onStatusUpdate(message.id, "REPLIED")}>
-              Mark as Replied
-            </Button>
+          {isReplying ? (
+            <>
+              <Button variant="outline" onClick={() => setIsReplying(false)} disabled={isSending}>
+                Cancel Reply
+              </Button>
+              <Button onClick={handleSendReply} disabled={isSending || !replyMessage.trim()}>
+                {isSending ? "Sending..." : "Send Reply"}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" onClick={() => setIsReplying(true)}>
+                <Mail className="h-4 w-4 mr-2" />
+                Reply via Email
+              </Button>
+              <Button variant="outline" onClick={() => window.open(`mailto:${message.email}?subject=Re: ${message.subject}`)}>
+                Open Email Client
+              </Button>
+              {message.status !== "REPLIED" && (
+                <Button onClick={() => onStatusUpdate(message.id, "REPLIED")}>
+                  Mark as Replied
+                </Button>
+              )}
+            </>
           )}
-          {message.status === "NEW" && (
+          {!isReplying && message.status === "NEW" && (
             <Button variant="secondary" onClick={() => onStatusUpdate(message.id, "READ")}>
               Mark as Read
             </Button>
