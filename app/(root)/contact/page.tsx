@@ -222,12 +222,12 @@ export default function ContactPage() {
                 <Button variant="outline" className="w-full justify-start" asChild>
                   <a href="/faq">Frequently Asked Questions</a>
                 </Button>
-                <Button variant="outline" className="w-full justify-start" asChild>
+                {/* <Button variant="outline" className="w-full justify-start" asChild>
                   <a href="/shipping">Shipping Information</a>
                 </Button>
                 <Button variant="outline" className="w-full justify-start" asChild>
                   <a href="/returns">Returns & Exchanges</a>
-                </Button>
+                </Button> */}
               </CardContent>
             </Card>
           </div>
