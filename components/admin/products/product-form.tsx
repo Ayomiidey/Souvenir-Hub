@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -17,6 +16,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import Image from "next/image";
 import { CategoryWithChildren } from "@/types/category";
 
@@ -312,14 +312,10 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                 <Label htmlFor="description" className="text-sm md:text-base">
                   Description
                 </Label>
-                <Textarea
-                  id="description"
+                <RichTextEditor
                   value={formData.description}
-                  onChange={(e) =>
-                    updateFormData("description", e.target.value)
-                  }
-                  rows={4}
-                  className="w-full"
+                  onChange={(value) => updateFormData("description", value)}
+                  placeholder="Enter product description with rich text formatting..."
                 />
               </div>
               <div>

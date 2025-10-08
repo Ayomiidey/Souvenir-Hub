@@ -23,6 +23,7 @@ import {
   ImagePlus,
   MessageCircle,
   HelpCircle,
+  MapPin,
 } from "lucide-react";
 
 const navigation = [
@@ -80,7 +81,7 @@ const navigation = [
   {
     name: "States & Locations",
     href: "/admin/states-locations",
-    icon: FolderTree,
+    icon: MapPin,
   },
   {
     name: "Footer",

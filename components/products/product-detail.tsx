@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -711,10 +711,11 @@ Please let me know about availability and delivery options. Thank you!`;
 
             <TabsContent value="description" className="mt-0">
               <CardContent className="p-6">
-                <div className="prose max-w-none dark:prose-invert prose-sm">
+                <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert prose-headings:font-bold prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-ul:list-disc prose-ol:list-decimal prose-li:ml-4 prose-strong:font-bold prose-strong:text-gray-900 dark:prose-strong:text-gray-100">
                   {product.description ? (
                     <div
                       dangerouslySetInnerHTML={{ __html: product.description }}
+                      className="formatted-content"
                     />
                   ) : (
                     <p className="text-muted-foreground">
