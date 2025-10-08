@@ -90,7 +90,7 @@ export function CheckoutForm() {
   // Calculate totals
   const isFreeShipping = subtotal >= 200000 && selectedLocationId !== "";
   const shipping = isFreeShipping ? 0 : locationShippingFee;
-  const tax = subtotal * 0.08;
+  const tax = 0; // No tax applied
   const total = subtotal + shipping + tax;
 
   // Fetch states and locations on mount
@@ -611,7 +611,7 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
         </Card>
       </div>
 
-      <div className="space-y-6">
+      <div className="lg:sticky lg:top-4 lg:self-start space-y-6">
         <CheckoutSummary
           shipping={locationShippingFee}
           isFreeShippingEligible={

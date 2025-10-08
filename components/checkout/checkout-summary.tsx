@@ -20,7 +20,7 @@ export function CheckoutSummary({
     : typeof shipping === "number"
       ? shipping
       : 0;
-  const tax = subtotal * 0.08;
+  const tax = 0; // No tax applied
   const total = subtotal + shippingFee + tax;
 
   return (
