@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectTrigger,
@@ -69,8 +70,18 @@ export function ProductDetail({
   const wishlistItems = useAppSelector((state) => state.wishlist.items);
 
   const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(5);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [purchaseType, setPurchaseType] = useState<"sample" | "regular">("regular"); // New state for purchase type
+
+  // Update quantity when purchase type changes
+  useEffect(() => {
+    if (purchaseType === "sample") {
+      setQuantity(1);
+    } else {
+      setQuantity(5);
+    }
+  }, [purchaseType]);
 
   // Print service workflow state
   // Print service workflow state
@@ -180,9 +191,11 @@ export function ProductDetail({
           customPrint: false,
           printText: undefined,
           printPrice: undefined,
+          isSample: purchaseType === "sample",
+          minQuantity: purchaseType === "sample" ? 1 : 5,
         })
       );
-      toast.success("Added to cart!");
+      toast.success(purchaseType === "sample" ? "Sample added to cart!" : "Added to cart!");
     } catch (error) {
       toast.error("Failed to add to cart");
     } finally {
@@ -231,10 +244,12 @@ export function ProductDetail({
 
   const handleWhatsAppOrder = () => {
     const whatsappNumber = "+2348068005956"; // Replace with your actual WhatsApp business number
+    const orderType = purchaseType === "sample" ? "Sample Order (1 unit)" : `Regular Order (${quantity} units)`;
     const message = `Hi! I'm interested in ordering this product:
 
 *${product.name}*
 SKU: ${product.sku}
+Order Type: ${orderType}
 Price: ₦${finalPrice.toFixed(2)}
 Quantity: ${quantity}
 Total: ₦${finalTotal.toFixed(2)}
@@ -416,6 +431,40 @@ Please let me know about availability and delivery options. Thank you!`;
                 </Badge>
               )}
             </div>
+
+            {/* Purchase Type Selection */}
+            <div className="space-y-3 bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border">
+              <Label className="text-sm font-medium">Purchase Option:</Label>
+              <RadioGroup
+                value={purchaseType}
+                onValueChange={(value) => setPurchaseType(value as "sample" | "regular")}
+                className="space-y-2"
+              >
+                <div className="flex items-start space-x-3 p-3 rounded-md border bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
+                  <RadioGroupItem value="sample" id="sample" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="sample" className="cursor-pointer font-medium text-base">
+                      Buy Sample
+                    </Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Order 1 unit to test the product quality before bulk purchase
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3 p-3 rounded-md border bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
+                  <RadioGroupItem value="regular" id="regular" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="regular" className="cursor-pointer font-medium text-base">
+                      Buy Regular (Min. 5 units)
+                    </Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Standard purchase with minimum order quantity of 5 units
+                    </p>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
+
             {/* Quantity & Add to Cart */}
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
@@ -424,8 +473,11 @@ Please let me know about availability and delivery options. Thank you!`;
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
+                    onClick={() => {
+                      const minQty = purchaseType === "sample" ? 1 : 5;
+                      setQuantity(Math.max(minQty, quantity - 1));
+                    }}
+                    disabled={purchaseType === "sample" ? true : quantity <= 5}
                     className="h-9 w-9"
                   >
                     <Minus className="h-3 w-3" />
@@ -433,20 +485,20 @@ Please let me know about availability and delivery options. Thank you!`;
                   <Input
                     type="number"
                     value={quantity}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const minQty = purchaseType === "sample" ? 1 : 5;
+                      const newValue = Number.parseInt(e.target.value) || minQty;
                       setQuantity(
                         Math.max(
-                          1,
-                          Math.min(
-                            product.quantity,
-                            Number.parseInt(e.target.value) || 1
-                          )
+                          minQty,
+                          Math.min(product.quantity, newValue)
                         )
-                      )
-                    }
+                      );
+                    }}
                     className="w-14 text-center border-0 focus-visible:ring-0 text-sm"
-                    min={1}
+                    min={purchaseType === "sample" ? 1 : 5}
                     max={product.quantity}
+                    disabled={purchaseType === "sample"}
                   />
                   <Button
                     variant="ghost"
@@ -454,12 +506,17 @@ Please let me know about availability and delivery options. Thank you!`;
                     onClick={() =>
                       setQuantity(Math.min(product.quantity, quantity + 1))
                     }
-                    disabled={quantity >= product.quantity}
+                    disabled={purchaseType === "sample" || quantity >= product.quantity}
                     className="h-9 w-9"
                   >
                     <Plus className="h-3 w-3" />
                   </Button>
                 </div>
+                {purchaseType === "sample" && (
+                  <Badge variant="secondary" className="text-xs">
+                    Sample: 1 unit only
+                  </Badge>
+                )}
               </div>
 
               {/* Price Tiers */}

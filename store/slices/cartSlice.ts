@@ -13,6 +13,8 @@ export interface CartItem {
   printPrice?: number;
   maxQuantity: number;
   sku: string;
+  isSample?: boolean; // Track if this is a sample purchase
+  minQuantity?: number; // Minimum quantity allowed (1 for sample, 5 for regular)
 }
 
 interface CartState {
@@ -86,10 +88,19 @@ const cartSlice = createSlice({
     ) => {
       const item = state.items.find((item) => item.id === action.payload.id);
       if (item) {
-        item.quantity = Math.min(
-          Math.max(action.payload.quantity, 1),
-          item.maxQuantity
-        );
+        // Determine minimum quantity based on whether it's a sample
+        const minQty = item.isSample ? 1 : (item.minQuantity || 5);
+        
+        // For sample items, quantity is always locked at 1
+        if (item.isSample) {
+          item.quantity = 1;
+        } else {
+          // For regular items, enforce minimum of 5
+          item.quantity = Math.min(
+            Math.max(action.payload.quantity, minQty),
+            item.maxQuantity
+          );
+        }
       }
 
       const totals = calculateTotals(state.items);
