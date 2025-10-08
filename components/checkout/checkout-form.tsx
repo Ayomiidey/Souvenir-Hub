@@ -59,6 +59,7 @@ export function CheckoutForm() {
   const [selectedStateId, setSelectedStateId] = useState<string>("");
   const [selectedLocationId, setSelectedLocationId] = useState<string>("");
   const [locationShippingFee, setLocationShippingFee] = useState<number>(0);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number>(200000);
   const loader = useLoader();
   const { data: session } = useSession();
   const router = useRouter();
@@ -88,10 +89,22 @@ export function CheckoutForm() {
   };
 
   // Calculate totals
-  const isFreeShipping = subtotal >= 200000 && selectedLocationId !== "";
+  const isFreeShipping = subtotal >= freeShippingThreshold && selectedLocationId !== "";
   const shipping = isFreeShipping ? 0 : locationShippingFee;
   const tax = 0; // No tax applied
   const total = subtotal + shipping + tax;
+
+  // Fetch free shipping threshold
+  useEffect(() => {
+    fetch("/api/settings/free-shipping-threshold")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.value) {
+          setFreeShippingThreshold(Number(data.value));
+        }
+      })
+      .catch(() => console.error("Failed to load free shipping threshold"));
+  }, []);
 
   // Fetch states and locations on mount
   useEffect(() => {
@@ -615,8 +628,9 @@ Please confirm this order and provide payment instructions. Thank you! 🙏
         <CheckoutSummary
           shipping={locationShippingFee}
           isFreeShippingEligible={
-            subtotal >= 200000 && selectedLocationId !== ""
+            subtotal >= freeShippingThreshold && selectedLocationId !== ""
           }
+          freeShippingThreshold={freeShippingThreshold}
         />
         {formData.paymentMethod === "WHATSAPP" ? (
           <Button

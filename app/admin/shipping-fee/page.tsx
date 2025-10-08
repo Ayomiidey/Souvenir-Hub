@@ -46,6 +46,8 @@ export default function ShippingFeeAdminPage() {
 	const [editingLocationId, setEditingLocationId] = useState<string | null>(null);
 	const [editingLocationName, setEditingLocationName] = useState<string>("");
 	const [editingLocationFee, setEditingLocationFee] = useState<string>("");
+	const [freeShippingThreshold, setFreeShippingThreshold] = useState<string>("200000");
+	const [savingThreshold, setSavingThreshold] = useState(false);
 
 	// Fetch all states
 	useEffect(() => {
@@ -72,6 +74,40 @@ export default function ShippingFeeAdminPage() {
 	useEffect(() => {
 		fetchLocations();
 	}, [selectedState]);
+
+	// Fetch free shipping threshold
+	useEffect(() => {
+		fetch("/api/settings/free-shipping-threshold")
+			.then((res) => res.json())
+			.then((data) => {
+				if (data.value) {
+					setFreeShippingThreshold(data.value);
+				}
+			})
+			.catch(() => toast.error("Failed to load free shipping threshold"));
+	}, []);
+
+	// Save free shipping threshold
+	const handleSaveThreshold = async () => {
+		setSavingThreshold(true);
+		try {
+			const res = await fetch("/api/settings/free-shipping-threshold", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ value: Number(freeShippingThreshold) }),
+			});
+
+			if (res.ok) {
+				toast.success("Free shipping threshold updated!");
+			} else {
+				toast.error("Failed to update threshold");
+			}
+		} catch {
+			toast.error("An error occurred");
+		} finally {
+			setSavingThreshold(false);
+		}
+	};
 
 	// Removed add state and add location handlers
 
@@ -139,11 +175,45 @@ export default function ShippingFeeAdminPage() {
 					<CardTitle>Shipping Fee Management</CardTitle>
 				</CardHeader>
 				<CardContent>
+					{/* Section 1: Free Shipping Threshold */}
+					<div className="mb-8">
+						<h2 className="text-lg font-bold mb-2">Free Shipping Threshold</h2>
+						<p className="text-sm text-muted-foreground mb-4">
+							Set the minimum order amount required for customers to qualify for free shipping.
+						</p>
+						<div className="flex gap-2 items-end">
+							<div className="flex-1 max-w-xs">
+								<Label htmlFor="freeShippingThreshold">Minimum Order Amount (₦)</Label>
+								<Input
+									id="freeShippingThreshold"
+									type="number"
+									min="0"
+									step="1000"
+									value={freeShippingThreshold}
+									onChange={(e) => setFreeShippingThreshold(e.target.value)}
+									placeholder="e.g., 200000"
+								/>
+							</div>
+							<Button
+								type="button"
+								disabled={savingThreshold}
+								onClick={handleSaveThreshold}
+							>
+								{savingThreshold ? "Saving..." : "Save Threshold"}
+							</Button>
+						</div>
+						<p className="text-xs text-muted-foreground mt-2">
+							Current: Orders above ₦{Number(freeShippingThreshold).toLocaleString()} qualify for free shipping
+						</p>
+					</div>
+
+					<Separator className="mb-6" />
+
 					{/* Removed Add State and Add Location sections */}
 
-					{/* Section 3: Shipping Fee Management */}
+					{/* Section 2: Shipping Fee Management */}
 					<div className="mb-8 mt-6">
-						<h2 className="text-lg font-bold mb-2">Shipping Fee Management</h2>
+						<h2 className="text-lg font-bold mb-2">Location Shipping Fees</h2>
 						<div className="flex gap-2 items-end">
 							<div className="flex-1">
 								<Label htmlFor="feeState">State</Label>
@@ -207,7 +277,7 @@ export default function ShippingFeeAdminPage() {
 
 					<Separator className="mb-6" />
 
-					{/* Section 4: All Locations */}
+					{/* Section 3: All Locations */}
 					<div className="mt-8">
 						<h2 className="text-lg font-bold mb-2">All Locations</h2>
 						<div className="mb-4 flex items-center gap-2">

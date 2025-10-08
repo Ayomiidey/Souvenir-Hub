@@ -57,10 +57,12 @@ export function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
           price: product.price,
           image:
             product.images[0]?.url || "/placeholder.svg?height=300&width=300",
-          quantity: 1,
+          quantity: 5, // Default to minimum quantity of 5
           customPrint: false,
           maxQuantity: product.quantity,
           sku: product.sku,
+          isSample: false,
+          minQuantity: 5,
         })
       );
       toast.success("Added to cart!");

@@ -8,11 +8,13 @@ import { useAppSelector } from "@/hooks/redux";
 interface CheckoutSummaryProps {
   shipping: number;
   isFreeShippingEligible: boolean;
+  freeShippingThreshold?: number;
 }
 
 export function CheckoutSummary({
   shipping,
   isFreeShippingEligible,
+  freeShippingThreshold = 200000,
 }: CheckoutSummaryProps) {
   const { items, subtotal } = useAppSelector((state) => state.cart);
   const shippingFee = isFreeShippingEligible
@@ -87,6 +89,12 @@ export function CheckoutSummary({
         {isFreeShippingEligible && (
           <div className="text-xs text-green-600 text-center">
             🎉 You qualify for free shipping!
+          </div>
+        )}
+
+        {!isFreeShippingEligible && subtotal > 0 && subtotal < freeShippingThreshold && (
+          <div className="text-xs text-muted-foreground text-center">
+            Add ₦{(freeShippingThreshold - subtotal).toLocaleString()} more to qualify for free shipping
           </div>
         )}
       </CardContent>
