@@ -1,6 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { type NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+
+// Slugify helper to remove unsafe URL characters
+function slugify(input: string) {
+  return input
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -96,7 +107,7 @@ export async function POST(request: NextRequest) {
     const product = await prisma.product.create({
       data: {
         name: body.name,
-        slug: body.slug || body.name.toLowerCase().replace(/\s+/g, "-"),
+        slug: slugify(body.slug ? body.slug : body.name),
         description: body.description,
         shortDescription: body.shortDescription,
         sku: body.sku,
