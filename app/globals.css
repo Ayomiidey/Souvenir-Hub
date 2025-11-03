@@ -12,7 +12,7 @@
 }
 
 /* Add cursor pointer to all clickable elements */
-button,
+/* button,
 [role="button"],
 [type="button"],
 [type="submit"],
@@ -24,7 +24,7 @@ input[type="radio"],
 label[for],
 .cursor-pointer {
   cursor: pointer;
-}
+} */
 /* @import "tailwindcss";
 @import "tw-animate-css";
 
