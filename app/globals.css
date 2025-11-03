@@ -10,6 +10,21 @@
 .prose li {
   margin: 0.25em 0;
 }
+
+/* Add cursor pointer to all clickable elements */
+button,
+[role="button"],
+[type="button"],
+[type="submit"],
+[type="reset"],
+a,
+select,
+input[type="checkbox"],
+input[type="radio"],
+label[for],
+.cursor-pointer {
+  cursor: pointer;
+}
 /* @import "tailwindcss";
 @import "tw-animate-css";
 
