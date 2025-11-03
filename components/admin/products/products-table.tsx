@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
-import { MoreHorizontal, Edit, Eye, Trash2, Copy } from "lucide-react";
+import { MoreHorizontal, Edit, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Product {
@@ -148,26 +148,6 @@ export function ProductsTable({
     ));
   };
 
-  const handleDuplicateProduct = async (productId: string) => {
-    try {
-      const response = await fetch(
-        `/api/admin/products/${productId}/duplicate`,
-        {
-          method: "POST",
-        }
-      );
-
-      if (response.ok) {
-        toast.success("Product duplicated successfully");
-        fetchProducts();
-      } else {
-        toast.error("Failed to duplicate product");
-      }
-    } catch (error) {
-      toast.error("Error duplicating product");
-      console.log(error);
-    }
-  };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -316,11 +296,7 @@ export function ProductsTable({
                             <Edit className="mr-2 h-4 w-4" /> Edit
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDuplicateProduct(product.id)}
-                        >
-                          <Copy className="mr-2 h-4 w-4" /> Duplicate
-                        </DropdownMenuItem>
+                  
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           onClick={() => handleDeleteProduct(product.id)}
