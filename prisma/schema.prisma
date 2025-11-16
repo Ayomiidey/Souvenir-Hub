@@ -208,6 +208,7 @@ model Product {
   status     ProductStatus @default(DRAFT)
   isActive   Boolean       @default(true)
   isFeatured Boolean       @default(false)
+  isLowBudget Boolean      @default(false)
 
   // Timestamps
   createdAt DateTime @default(now())

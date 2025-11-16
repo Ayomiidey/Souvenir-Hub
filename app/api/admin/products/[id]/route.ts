@@ -92,10 +92,15 @@ export async function PUT(
         status: body.status,
         isActive: body.isActive,
         isFeatured: body.isFeatured,
+        isLowBudget: body.isLowBudget,
         categoryId: body.categoryId,
         deliveryTime: body.deliveryTime || null,
       },
-      include: { images: true, category: true, priceTiers: true },
+      include: { 
+        images: true, 
+        category: true, 
+        priceTiers: true 
+      },
     });
 
     if (body.images) {

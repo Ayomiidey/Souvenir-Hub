@@ -62,13 +62,26 @@ export default async function CategoryPage({
         break;
     }
 
+    // Check if this is the "Low Budget" category by slug
+    const isLowBudgetCategory = slug === "low-budget" || category.name.toLowerCase().includes("low budget");
+
+    // Build where clause
+    const whereClause: any = {
+      status: "ACTIVE",
+      isActive: true,
+    };
+
+    if (isLowBudgetCategory) {
+      // For low budget category, show all products where isLowBudget = true
+      whereClause.isLowBudget = true;
+    } else {
+      // For normal categories, filter by categoryId
+      whereClause.categoryId = { in: categoryIds };
+    }
+
     // Get products
     const products = await prisma.product.findMany({
-      where: {
-        categoryId: { in: categoryIds },
-        status: "ACTIVE",
-        isActive: true,
-      },
+      where: whereClause,
       include: {
         images: {
           orderBy: { sortOrder: "asc" },

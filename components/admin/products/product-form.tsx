@@ -30,6 +30,7 @@ interface ProductFormData {
   categoryId: string | undefined;
   status: string;
   isFeatured: boolean;
+  isLowBudget: boolean;
   allowCustomPrint: boolean;
   images: { url: string; altText: string; file?: File }[];
   deliveryTime?: string;
@@ -61,6 +62,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       categoryId: undefined,
       status: "ACTIVE",
       isFeatured: false,
+      isLowBudget: false,
       allowCustomPrint: false,
       images: [],
       deliveryTime: "",
@@ -99,6 +101,7 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
               categoryId: data.categoryId || undefined,
               status: data.status || "ACTIVE",
               isFeatured: data.isFeatured || false,
+              isLowBudget: data.isLowBudget || false,
               allowCustomPrint: data.allowCustomPrint || false,
               images: data.images || [],
               deliveryTime: data.deliveryTime || "",
@@ -660,6 +663,19 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                 />
                 <Label htmlFor="isFeatured" className="text-sm md:text-base">
                   Featured Product
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isLowBudget"
+                  checked={formData.isLowBudget}
+                  onCheckedChange={(checked) =>
+                    updateFormData("isLowBudget", checked)
+                  }
+                  className="w-5 h-5"
+                />
+                <Label htmlFor="isLowBudget" className="text-sm md:text-base">
+                  Low Budget
                 </Label>
               </div>
             </CardContent>

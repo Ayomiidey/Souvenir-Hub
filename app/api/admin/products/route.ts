@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
         where,
         include: {
           images: { where: { isMain: true }, take: 1 },
-          category: { select: { name: true, slug: true } },
+          category: { select: { id: true, name: true, slug: true } },
           _count: { select: { orderItems: true } },
         },
         orderBy,
@@ -126,6 +126,7 @@ export async function POST(request: NextRequest) {
         status: body.status || "DRAFT",
         isActive: body.isActive || true,
         isFeatured: body.isFeatured || false,
+        isLowBudget: body.isLowBudget || false,
         categoryId: body.categoryId,
         deliveryTime: body.deliveryTime || null,
         images: {
@@ -149,7 +150,11 @@ export async function POST(request: NextRequest) {
             })) || [],
         },
       },
-      include: { images: true, category: true, priceTiers: true },
+      include: { 
+        images: true, 
+        category: true, 
+        priceTiers: true 
+      },
     });
 
     return NextResponse.json(product, { status: 201 });
