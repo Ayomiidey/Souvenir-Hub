@@ -48,27 +48,47 @@ export function Footer() {
   const [data, setData] = useState<FooterData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  // Fetch footer data on mount
+  // Fetch footer data on mount and when refreshKey changes
   useEffect(() => {
     async function fetchFooter() {
       try {
-        const res = await fetch("/api/footer");
+        // Add timestamp to force fresh data
+        const timestamp = new Date().getTime();
+        const res = await fetch(`/api/footer?t=${timestamp}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+          },
+        });
         if (res.ok) {
           const footerData = await res.json();
+          console.log("Footer data loaded:", footerData);
           setData(footerData);
+          setError(null);
         } else {
+          console.error("Failed to load footer, status:", res.status);
           setError("Failed to load footer data");
         }
       } catch (err) {
-        console.error(err);
+        console.error("Footer fetch error:", err);
         setError("Failed to fetch footer data");
       } finally {
         setLoading(false);
       }
     }
     fetchFooter();
-  }, []);
+    
+    // Poll for updates every 10 seconds to keep footer fresh
+    const interval = setInterval(() => {
+      setRefreshKey(prev => prev + 1);
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [refreshKey]);
 
   if (loading) {
     return (

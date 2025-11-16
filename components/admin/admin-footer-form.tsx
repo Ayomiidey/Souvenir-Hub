@@ -16,8 +16,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 
 // Zod schema matching the API schema for validation
 const footerSchema = z.object({
@@ -130,21 +138,41 @@ export function AdminFooterForm() {
           fetch("/api/categories"),
         ]);
 
-        if (footerRes.ok) {
-          const footerData = await footerRes.json();
-          reset(footerData);
-        } else {
-          setError("Failed to load footer data");
-        }
-
+        let loadedCategories: { id: string; name: string }[] = [];
+        
         if (categoriesRes.ok) {
           const categoriesData = await categoriesRes.json();
+          console.log("Loaded categories:", categoriesData);
           setCategories(categoriesData);
+          loadedCategories = categoriesData;
         } else {
           setError("Failed to load categories");
         }
+
+        if (footerRes.ok) {
+          const footerData = await footerRes.json();
+          console.log("Loaded footer data:", footerData);
+          
+          // Filter out invalid category IDs (categories that no longer exist or are inactive)
+          const validCategoryIds = Array.isArray(footerData.selectedCategoryIds)
+            ? footerData.selectedCategoryIds.filter((id: string) => 
+                loadedCategories.some(cat => cat.id === id)
+              )
+            : [];
+          
+          console.log("Filtered valid category IDs:", validCategoryIds);
+          
+          // Ensure selectedCategoryIds is always an array with only valid IDs
+          const dataToReset = {
+            ...footerData,
+            selectedCategoryIds: validCategoryIds,
+          };
+          reset(dataToReset);
+        } else {
+          setError("Failed to load footer data");
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Fetch error:", err);
         setError("Failed to fetch data");
       } finally {
         setLoading(false);
@@ -155,10 +183,18 @@ export function AdminFooterForm() {
 
   // Handle adding a category
   const addCategory = (categoryId: string) => {
-    if (!categoryId || selectedCategoryIds.includes(categoryId)) return;
+    console.log("Adding category:", categoryId);
+    console.log("Current selectedCategoryIds:", selectedCategoryIds);
+    
+    if (!categoryId || selectedCategoryIds.includes(categoryId)) {
+      console.log("Category already selected or invalid");
+      return;
+    }
 
-    const newIds = [...selectedCategoryIds, categoryId];
-    setValue("selectedCategoryIds", newIds);
+    const newIds = [...(selectedCategoryIds || []), categoryId];
+    console.log("New category IDs:", newIds);
+    setValue("selectedCategoryIds", newIds, { shouldValidate: true, shouldDirty: true });
+    toast.success("Category added!");
   };
 
   // Handle removing a category
@@ -169,41 +205,77 @@ export function AdminFooterForm() {
 
   // Get available categories (not already selected)
   const availableCategories = categories.filter(
-    (cat) => !selectedCategoryIds.includes(cat.id)
+    (cat) => !(selectedCategoryIds || []).includes(cat.id)
   );
+  
+  console.log("Available categories:", availableCategories.length);
+  console.log("Selected category IDs:", selectedCategoryIds);
 
   // Handle form submission
   const onSubmit = async (data: FooterFormData) => {
     setError(null);
     setSuccess(false);
     setSubmitting(true);
-    toast.loading("Updating footer settings...");
+    
+    const loadingToast = toast.loading("Updating footer settings...");
+    
     try {
+      // Ensure selectedCategoryIds is always an array
+      const submitData = {
+        ...data,
+        selectedCategoryIds: data.selectedCategoryIds || [],
+      };
+      
+      console.log("Submitting footer data:", submitData);
+      
       const res = await fetch("/api/footer", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(submitData),
       });
+
+      toast.dismiss(loadingToast);
 
       if (res.ok) {
         setSuccess(true);
-        toast.success("Footer updated successfully!");
-        setTimeout(() => setSuccess(false), 3000); // Hide success after 3s
+        toast.success("Footer updated successfully! Changes will appear on the customer site.", {
+          duration: 4000,
+        });
+        
+        // Force multiple cache-busting requests to ensure update
+        const timestamp = new Date().getTime();
+        Promise.all([
+          fetch(`/api/footer?t=${timestamp}`, { 
+            cache: "no-store",
+            headers: { "Cache-Control": "no-cache" }
+          }),
+          fetch(`/api/footer?t=${timestamp + 1}`, { 
+            cache: "no-store",
+            headers: { "Cache-Control": "no-cache" }
+          }),
+        ]).catch(() => {});
+        
+        setTimeout(() => setSuccess(false), 3000);
       } else {
         const err = await res.json();
+        console.error("Footer update error:", err);
         const errorMsg = Array.isArray(err.error)
           ? err.error.map((e: { message: string }) => e.message).join(", ")
           : err.error;
         setError(errorMsg);
-        toast.error(errorMsg || "Failed to update footer");
+        toast.error(errorMsg || "Failed to update footer", {
+          duration: 5000,
+        });
       }
     } catch (err) {
-      console.error(err);
+      console.error("Footer submission error:", err);
+      toast.dismiss(loadingToast);
       setError("Failed to update footer");
-      toast.error("Failed to update footer");
+      toast.error("Failed to update footer", {
+        duration: 5000,
+      });
     } finally {
       setSubmitting(false);
-      toast.dismiss();
     }
   };
 
@@ -334,9 +406,9 @@ export function AdminFooterForm() {
             type="button"
             variant="outline"
             onClick={() => appendSocial({ platform: "facebook", href: "" })}
-            disabled={socialFields.length >= 3}
+            disabled={socialFields.length >= 6}
           >
-            Add Social Link
+            Add Social Link {socialFields.length >= 6 && "(Max 6 reached)"}
           </Button>
         </div>
 
@@ -498,30 +570,53 @@ export function AdminFooterForm() {
             </div>
           )}
 
-          {/* Add Category Dropdown */}
-          {selectedCategoryIds.length < 3 && availableCategories.length > 0 && (
-            <div>
-              <Label>Add Category:</Label>
-              <Select onValueChange={(value) => addCategory(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category to add..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {selectedCategoryIds.length >= 3 && (
-            <p className="text-sm text-muted-foreground">
-              Maximum of 3 categories reached. Remove a category to add another.
-            </p>
-          )}
+          {/* Add Category Button with Dialog */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={selectedCategoryIds.length >= 3 || availableCategories.length === 0}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Category {selectedCategoryIds.length >= 3 && "(Max 3 reached)"}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Select a Category</DialogTitle>
+                <DialogDescription>
+                  Choose a category to add to the footer quick links section.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-2 py-4">
+                {availableCategories.map((category) => (
+                  <Button
+                    key={category.id}
+                    type="button"
+                    variant="outline"
+                    className="justify-start"
+                    onClick={() => {
+                      addCategory(category.id);
+                      // Close dialog by clicking the trigger again
+                      document.querySelector('[data-state="open"]')?.dispatchEvent(
+                        new KeyboardEvent('keydown', { key: 'Escape' })
+                      );
+                    }}
+                  >
+                    {category.name}
+                  </Button>
+                ))}
+                {availableCategories.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    {categories.length === 0 
+                      ? "No categories available. Please create categories first." 
+                      : "All categories have been selected."}
+                  </p>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
 
           {errors.selectedCategoryIds && (
             <p className="text-destructive text-sm">
