@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from "@prisma/client";
-import { PrismaNeon } from "@prisma/adapter-neon";
 
-// Type assertion approach if types are still not working
 declare global {
   var __prisma: PrismaClient | undefined;
 }
@@ -13,11 +10,7 @@ function createPrismaClient() {
     throw new Error("DATABASE_URL environment variable is not set");
   }
 
-  const adapter = new PrismaNeon({ connectionString });
-
-  // Use type assertion if needed
   const client = new PrismaClient({
-    adapter: adapter as any,
     log:
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
