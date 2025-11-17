@@ -52,10 +52,12 @@ export default function AdminStatesLocations() {
   const fetchStates = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/states");
+      const res = await fetch("/api/admin/states?limit=1000");
       const data = await res.json();
+      console.log("Fetched states:", data.states?.length, "states");
       setStates(data.states || []);
-    } catch {
+    } catch (error) {
+      console.error("Error fetching states:", error);
       toast.error("Failed to fetch states");
     } finally {
       setLoading(false);
@@ -85,14 +87,19 @@ export default function AdminStatesLocations() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newState }),
       });
+      
+      const data = await res.json();
+      
       if (res.ok) {
-        toast.success("State added");
+        toast.success("State added successfully");
         setNewState("");
         fetchStates();
       } else {
-        toast.error("Failed to add state");
+        // Show the specific error message from the API
+        toast.error(data.error || "Failed to add state");
       }
-    } catch {
+    } catch (error) {
+      console.error("Error adding state:", error);
       toast.error("Failed to add state");
     } finally {
       setActionLoading(null);
@@ -174,14 +181,19 @@ export default function AdminStatesLocations() {
           stateId: newLocation.stateId,
         }),
       });
+      
+      const data = await res.json();
+      
       if (res.ok) {
-        toast.success("Location added");
+        toast.success("Location added successfully");
         setNewLocation({ name: "", stateId: "" });
         fetchStates();
       } else {
-        toast.error("Failed to add location");
+        // Show the specific error message from the API
+        toast.error(data.error || "Failed to add location");
       }
-    } catch {
+    } catch (error) {
+      console.error("Error adding location:", error);
       toast.error("Failed to add location");
     } finally {
       setActionLoading(null);

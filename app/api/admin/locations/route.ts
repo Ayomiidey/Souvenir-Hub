@@ -42,10 +42,38 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const { name, stateId, shippingFee } = await req.json();
   try {
+    const { name, stateId, shippingFee } = await req.json();
+    
+    // Validation
+    if (!name || !name.trim()) {
+      return NextResponse.json(
+        { error: "Location name is required" },
+        { status: 400 }
+      );
+    }
+    
+    if (!stateId) {
+      return NextResponse.json(
+        { error: "State is required" },
+        { status: 400 }
+      );
+    }
+
+    // Verify state exists
+    const stateExists = await prisma.state.findUnique({
+      where: { id: stateId },
+    });
+    
+    if (!stateExists) {
+      return NextResponse.json(
+        { error: "Selected state does not exist" },
+        { status: 400 }
+      );
+    }
+
     const data: { name: string; stateId: string; shippingFee?: number } = {
-      name,
+      name: name.trim(),
       stateId,
     };
     if (shippingFee !== undefined && shippingFee !== null) {
@@ -55,11 +83,10 @@ export async function POST(req: Request) {
     return NextResponse.json(location);
   } catch (error) {
     console.error("Failed to create location:", error);
+    
+    const errorMessage = error instanceof Error ? error.message : "Failed to create location";
     return NextResponse.json(
-      {
-        error: "Failed to create location",
-        details: error instanceof Error ? error.message : error,
-      },
+      { error: errorMessage },
       { status: 500 }
     );
   }
