@@ -5,7 +5,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const stateId = searchParams.get("stateId");
   const page = Number.parseInt(searchParams.get("page") || "1");
-  const limit = Number.parseInt(searchParams.get("limit") || "20");
+  const limit = Number.parseInt(searchParams.get("limit") || "1000");
   const skip = (page - 1) * limit;
   try {
     const where = stateId ? { stateId } : {};

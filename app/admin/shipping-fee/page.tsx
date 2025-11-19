@@ -51,7 +51,7 @@ export default function ShippingFeeAdminPage() {
 
 	// Fetch all states
 	useEffect(() => {
-		fetch("/api/admin/states")
+		fetch("/api/admin/states?limit=1000")
 			.then((res) => res.json())
 			.then((data) => setStates(Array.isArray(data) ? data : data.states || []))
 			.catch(() => setStates([]));
@@ -61,7 +61,7 @@ export default function ShippingFeeAdminPage() {
 	// Fetch all locations for the table and dropdowns
 	const fetchLocations = () => {
 		setLoading(true);
-		fetch(`/api/admin/locations`)
+		fetch(`/api/admin/locations?limit=10000`)
 			.then((res) => res.json())
 			.then((data) => setLocations(data.locations || []))
 			.catch(() => setLocations([]))

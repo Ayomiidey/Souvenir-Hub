@@ -135,6 +135,12 @@ export function Footer() {
           >
             FAQ
           </Link>
+          <Link
+            href="/about"
+            className="font-medium text-primary hover:underline"
+          >
+            About Us
+          </Link>
           {/* Show first 2 categories on mobile if available */}
           {data.categories.slice(0, 2).map((category) => (
             <Link
