@@ -13,9 +13,10 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "About Us | Souvenir Hub - Crafting Memories Since 2019",
+  title: "About Us | Souvenir Hub - Crafting Memories Since 2024",
   description: "Discover the story behind Souvenir Hub. Learn about our mission to create beautiful, personalized souvenirs that celebrate life's special moments.",
   keywords: "about us, souvenir hub, custom souvenirs, personalized gifts, company story",
 };
@@ -25,7 +26,7 @@ export default function AboutPage() {
     { icon: Users, label: "Happy Customers", value: "10,000+" },
     { icon: Package, label: "Products Delivered", value: "50,000+" },
     { icon: Smile, label: "Satisfaction Rate", value: "98%" },
-    { icon: TrendingUp, label: "Years in Business", value: "5+" },
+    { icon: TrendingUp, label: "Years in Business", value: "2+" },
   ];
 
   const values = [
@@ -51,29 +52,20 @@ export default function AboutPage() {
     }
   ];
 
-  const milestones = [
-    { year: "2019", event: "Founded with a vision to revolutionize personalized souvenirs" },
-    { year: "2020", event: "Launched our first custom printing facility" },
-    { year: "2021", event: "Reached 5,000 happy customers milestone" },
-    { year: "2022", event: "Expanded to nationwide shipping across all states" },
-    { year: "2023", event: "Introduced eco-friendly product line" },
-    { year: "2024", event: "Celebrated 10,000+ customers and growing!" }
-  ];
 
   return (
+
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="absolute inset-0 bg-[url('/patterns/grid.svg')] opacity-10"></div>
-        
         <div className="relative container max-w-7xl mx-auto px-4 py-24 md:py-32">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">Since 2019</span>
+              <span className="text-sm font-medium">Since 2024</span>
             </div>
-            
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight">
               Crafting Memories,
               <br />
@@ -81,12 +73,10 @@ export default function AboutPage() {
                 One Souvenir at a Time
               </span>
             </h1>
-            
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
               We&apos;re not just another souvenir shop. We&apos;re memory makers, dream weavers, 
               and passionate believers that every moment deserves to be celebrated in style.
             </p>
-
             <div className="flex flex-wrap justify-center gap-4">
               <a 
                 href="#our-story" 
@@ -103,12 +93,51 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-
         {/* Decorative bottom wave */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
             <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
           </svg>
+        </div>
+      </section>
+
+      {/* About Souvenir Hub Section */}
+      <section className="py-20 bg-gradient-to-br from-white to-blue-50">
+        <div className="container max-w-5xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-orange-100 rounded-full px-4 py-2 mb-4">
+              <Award className="w-4 h-4 text-orange-600" />
+              <span className="text-sm font-semibold text-orange-600">About Souvenir Hub</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
+              All About Us
+            </h2>
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Souvenir Hub is Nigeria&apos;s leading platform for personalized and custom souvenirs. We help individuals, businesses, and organizations create unique, memorable keepsakes for every occasion—weddings, birthdays, corporate events, and more. Our app makes it easy to browse, customize, and order a wide range of products, from mugs and t-shirts to plaques, bags, and branded gifts. With nationwide delivery, top-notch customer service, and a commitment to quality, we turn your special moments into lasting memories. Whether you&apos;re a customer looking for the perfect gift or a business seeking branded merchandise, Souvenir Hub is your one-stop shop for creativity, convenience, and celebration.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div className="space-y-4 text-slate-700 text-lg">
+              <ul className="list-disc pl-6 space-y-2 text-left">
+                <li><b>Personalized Products:</b> Easily customize souvenirs with names, photos, logos, and messages.</li>
+                <li><b>Wide Selection:</b> Choose from hundreds of items for every event and budget.</li>
+                <li><b>Easy Ordering:</b> Seamless online experience from design to doorstep.</li>
+                <li><b>Business Solutions:</b> Bulk orders, corporate branding, and event support for organizations.</li>
+                <li><b>Nationwide Delivery:</b> Fast, reliable shipping to all states in Nigeria.</li>
+                <li><b>Exceptional Support:</b> Friendly, responsive customer service every step of the way.</li>
+              </ul>
+            </div>
+            <div className="flex items-center justify-center">
+              <Image
+                src="https://plus.unsplash.com/premium_photo-1665203442280-1118daf3de38?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGRlbGl2ZXJ5JTIwbWFufGVufDB8fDB8fHww"
+                alt="Souvenir Hub Business"
+                width={400}
+                height={400}
+                className="w-full max-w-md rounded-2xl shadow-xl"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -152,7 +181,7 @@ export default function AboutPage() {
               <div className="space-y-4 text-slate-600 leading-relaxed">
                 <p>
                   It all started with a simple idea: what if every special moment could be preserved 
-                  in something beautiful, tangible, and uniquely yours? In 2019, we set out to revolutionize 
+                  in something beautiful, tangible, and uniquely yours? In 2024, we set out to revolutionize 
                   the souvenir industry by combining traditional craftsmanship with modern customization technology.
                 </p>
                 <p>
@@ -224,47 +253,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-purple-50">
-        <div className="container max-w-5xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-green-100 rounded-full px-4 py-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-semibold text-green-600">Our Milestones</span>
-            </div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
-              A Journey of Growth
-            </h2>
-          </div>
-
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 hidden md:block"></div>
-
-            <div className="space-y-8">
-              {milestones.map((milestone, index) => (
-                <div key={index} className="relative flex items-start gap-6">
-                  <div className="hidden md:flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold shadow-lg flex-shrink-0">
-                    {milestone.year}
-                  </div>
-                  
-                  <Card className="flex-1 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-x-2">
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-4 mb-2 md:hidden">
-                        <span className="text-2xl font-bold text-purple-600">{milestone.year}</span>
-                      </div>
-                      <p className="text-slate-700 leading-relaxed font-medium">
-                        {milestone.event}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
