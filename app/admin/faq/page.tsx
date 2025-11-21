@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -287,111 +286,229 @@ export default function FAQManagementPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">FAQ Management</h1>
-          <p className="text-muted-foreground">Loading FAQ data...</p>
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <div className="h-10 bg-gradient-to-r from-blue-200 to-purple-200 rounded-lg w-64 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-96 mt-2 animate-pulse"></div>
+          </div>
+
+          {/* Category Management Section Skeleton */}
+          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl border border-indigo-100/50 shadow-sm mb-6">
+            <div className="mb-6">
+              <div className="h-6 bg-gradient-to-r from-indigo-200 to-blue-200 rounded w-48 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-80 mt-2 animate-pulse"></div>
+            </div>
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="h-10 bg-white/80 rounded-lg flex-1 animate-pulse"></div>
+                <div className="h-10 bg-gradient-to-r from-indigo-200 to-blue-200 rounded-lg w-32 animate-pulse"></div>
+              </div>
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-3 p-4 bg-white/60 rounded-lg border border-gray-200">
+                    <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                    <div className="h-8 bg-gray-200 rounded w-16 animate-pulse"></div>
+                    <div className="h-8 bg-gray-200 rounded w-16 animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ Management Section Skeleton */}
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm mb-6">
+            <div className="mb-6">
+              <div className="h-6 bg-gradient-to-r from-purple-200 to-pink-200 rounded w-40 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-72 mt-2 animate-pulse"></div>
+            </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                  <div className="h-10 bg-white/80 rounded-lg w-full animate-pulse"></div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                  <div className="h-10 bg-white/80 rounded-lg w-full animate-pulse"></div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                <div className="h-24 bg-white/80 rounded-lg w-full animate-pulse"></div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <div className="h-24 bg-white/80 rounded-lg w-full animate-pulse"></div>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-10 bg-gradient-to-r from-purple-200 to-pink-200 rounded-lg w-24 animate-pulse"></div>
+                <div className="h-10 bg-gray-200 rounded-lg w-20 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ List Section Skeleton */}
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100/50 shadow-sm">
+            <div className="mb-6">
+              <div className="h-6 bg-gradient-to-r from-green-200 to-emerald-200 rounded w-32 animate-pulse"></div>
+              <div className="h-4 bg-gray-200 rounded w-64 mt-2 animate-pulse"></div>
+            </div>
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <div className="animate-pulse">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="space-y-2">
+                        <div className="h-5 bg-gray-200 rounded w-48"></div>
+                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                      </div>
+                      <div className="flex gap-2">
+                        <div className="h-8 bg-gray-200 rounded w-16"></div>
+                        <div className="h-8 bg-gray-200 rounded w-16"></div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="h-4 bg-gray-200 rounded w-full"></div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">FAQ Management</h1>
-        <p className="text-muted-foreground">
-          Manage frequently asked questions and their categories
-        </p>
-      </div>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            FAQ Management
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Manage frequently asked questions and their categories
+          </p>
+        </div>
 
-      {/* Category Management */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <MessageCircle className="h-5 w-5" />
-            <span>FAQ Categories</span>
-          </CardTitle>
-          <CardDescription>
-            Manage FAQ categories ({categories.length} total)
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        {/* Category Management Section */}
+        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl border border-indigo-100/50 shadow-sm mb-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full"></div>
+              FAQ Categories ({categories.length})
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Organize your FAQs into categories
+            </p>
+          </div>
+
           {/* Add New Category Form */}
-          <div className="border rounded-lg p-4 bg-gray-50 space-y-4">
-            <h4 className="font-medium">Add New Category</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-indigo-100 to-blue-100 rounded-lg flex items-center justify-center">
+                <MessageCircle className="w-5 h-5 text-indigo-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Add New Category</h3>
+                <p className="text-sm text-gray-600">Create a new FAQ category</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="space-y-2">
-                <Label htmlFor="categoryName">Category Name</Label>
+                <Label htmlFor="categoryName" className="text-sm font-medium text-gray-700">Category Name</Label>
                 <Input
                   id="categoryName"
                   value={newCategory.name}
                   onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
                   placeholder="e.g., Orders & Shipping, Returns, Products"
+                  className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="categoryDescription">Description (Optional)</Label>
+                <Label htmlFor="categoryDescription" className="text-sm font-medium text-gray-700">Description (Optional)</Label>
                 <Input
                   id="categoryDescription"
                   value={newCategory.description}
                   onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
                   placeholder="Brief description of this category"
+                  className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 />
               </div>
             </div>
-            <Button onClick={handleAddCategory} disabled={!newCategory.name} size="sm">
+            <Button
+              onClick={handleAddCategory}
+              disabled={!newCategory.name}
+              className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white border-0"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Add Category
             </Button>
           </div>
 
           {/* Existing Categories */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             {categories.map((category) => (
-              <div key={category.id} className="border rounded-lg p-3">
+              <div key={category.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
                 {editingCategory?.id === category.id ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label>Category Name</Label>
+                        <Label className="text-sm font-medium text-gray-700">Category Name</Label>
                         <Input
                           value={editingCategory.name}
                           onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
                           placeholder="Category name"
+                          className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>Description</Label>
+                        <Label className="text-sm font-medium text-gray-700">Description</Label>
                         <Input
                           value={editingCategory.description || ""}
                           onChange={(e) => setEditingCategory({ ...editingCategory, description: e.target.value })}
                           placeholder="Category description"
+                          className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                         />
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" onClick={handleUpdateCategory}>
+                      <Button
+                        size="sm"
+                        onClick={handleUpdateCategory}
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
+                      >
                         <Check className="h-4 w-4 mr-2" />
                         Save
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => setEditingCategory(null)}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setEditingCategory(null)}
+                        className="bg-white/80 hover:bg-white border-gray-200"
+                      >
                         <X className="h-4 w-4 mr-2" />
                         Cancel
                       </Button>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h4 className="font-medium">{category.name}</h4>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-8 bg-gradient-to-r from-indigo-100 to-blue-100 rounded-lg flex items-center justify-center">
+                          <MessageCircle className="w-4 h-4 text-indigo-600" />
+                        </div>
+                        <h4 className="font-semibold text-gray-900">{category.name}</h4>
+                      </div>
                       {category.description && (
-                        <p className="text-sm text-gray-600 mt-1">{category.description}</p>
+                        <p className="text-sm text-gray-600 ml-11">{category.description}</p>
                       )}
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 ml-11 mt-1">
                         {faqs.filter(faq => faq.category === category.name).length} FAQ(s)
                       </p>
                     </div>
@@ -400,6 +517,7 @@ export default function FAQManagementPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => handleEditCategory(category)}
+                        className="bg-white/80 hover:bg-white border-gray-200 text-indigo-600 hover:text-indigo-700 hover:border-indigo-300"
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -407,7 +525,7 @@ export default function FAQManagementPage() {
                         size="sm"
                         variant="outline"
                         onClick={() => handleDeleteCategory(category.id)}
-                        className="text-red-600 hover:text-red-800"
+                        className="bg-white/80 hover:bg-white border-gray-200 text-red-600 hover:text-red-700 hover:border-red-300"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -417,176 +535,203 @@ export default function FAQManagementPage() {
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Add New FAQ */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Plus className="h-5 w-5" />
-            <span>Add New FAQ</span>
-          </CardTitle>
-          <CardDescription>
-            Create a new frequently asked question
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <select
-              id="category"
-              value={newFaq.categoryId}
-              onChange={(e) => {
-                const selectedCategory = categories.find(cat => cat.id === e.target.value);
-                setNewFaq({ 
-                  ...newFaq, 
-                  categoryId: e.target.value,
-                  categoryName: selectedCategory?.name || "" 
-                });
-              }}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+        {/* Add New FAQ Section */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100/50 shadow-sm mb-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"></div>
+              Add New FAQ
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Create a new frequently asked question
+            </p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="question">Question</Label>
-            <Input
-              id="question"
-              value={newFaq.question}
-              onChange={(e) => setNewFaq({ ...newFaq, question: e.target.value })}
-              placeholder="Enter the question"
-            />
+          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
+                <select
+                  id="category"
+                  value={newFaq.categoryId}
+                  onChange={(e) => {
+                    const selectedCategory = categories.find(cat => cat.id === e.target.value);
+                    setNewFaq({
+                      ...newFaq,
+                      categoryId: e.target.value,
+                      categoryName: selectedCategory?.name || ""
+                    });
+                  }}
+                  className="w-full border border-gray-200 rounded-md px-3 py-2 bg-gray-50/50 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="question" className="text-sm font-medium text-gray-700">Question</Label>
+                <Input
+                  id="question"
+                  value={newFaq.question}
+                  onChange={(e) => setNewFaq({ ...newFaq, question: e.target.value })}
+                  placeholder="Enter the question"
+                  className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="answer" className="text-sm font-medium text-gray-700">Answer</Label>
+                <Textarea
+                  id="answer"
+                  value={newFaq.answer}
+                  onChange={(e) => setNewFaq({ ...newFaq, answer: e.target.value })}
+                  placeholder="Enter the answer"
+                  rows={4}
+                  className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                />
+              </div>
+
+              <Button
+                onClick={handleAddFaq}
+                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add FAQ
+              </Button>
+            </div>
           </div>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="answer">Answer</Label>
-            <Textarea
-              id="answer"
-              value={newFaq.answer}
-              onChange={(e) => setNewFaq({ ...newFaq, answer: e.target.value })}
-              placeholder="Enter the answer"
-              rows={4}
-            />
-          </div>
+        {/* Existing FAQs by Category */}
+        {categories.map((category) => {
+          const categoryFaqs = faqs.filter(faq => faq.category === category.name);
 
-          <Button onClick={handleAddFaq}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add FAQ
-          </Button>
-        </CardContent>
-      </Card>
+          return (
+            <div key={category.id} className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm mb-6">
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+                  <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                  {category.name} ({categoryFaqs.length})
+                </h2>
+                <p className="text-gray-600 text-sm">
+                  {category.description && `${category.description} • `}
+                  {categoryFaqs.length} question{categoryFaqs.length !== 1 ? 's' : ''}
+                </p>
+              </div>
 
-      {/* Existing FAQs by Category */}
-      {categories.map((category) => {
-        const categoryFaqs = faqs.filter(faq => faq.category === category.name);
-        
-        return (
-          <Card key={category.id}>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <HelpCircle className="h-5 w-5" />
-                  <span>{category.name}</span>
-                </div>
-              </CardTitle>
-              <CardDescription>
-                {categoryFaqs.length} question{categoryFaqs.length !== 1 ? 's' : ''}
-                {category.description && ` • ${category.description}`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
               {categoryFaqs.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>No FAQs in this category yet.</p>
-                  <p className="text-sm">Add your first FAQ using the form above.</p>
+                <div className="text-center py-12">
+                  <HelpCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">No FAQs in this category yet.</p>
+                  <p className="text-sm text-gray-400 mt-1">Add your first FAQ using the form above.</p>
                 </div>
               ) : (
-                categoryFaqs.map((faq) => (
-                  <div key={faq.id} className="border rounded-lg p-4 space-y-2">
-                    {editingFaq?.id === faq.id ? (
-                      <div className="space-y-3">
-                        <div className="space-y-2">
-                          <Label>Category</Label>
-                          <select
-                            value={editingFaq.category}
-                            onChange={(e) => setEditingFaq({ ...editingFaq, category: e.target.value })}
-                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          >
-                            {categories.map((cat) => (
-                              <option key={cat.id} value={cat.name}>
-                                {cat.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Question</Label>
-                          <Input
-                            value={editingFaq.question}
-                            onChange={(e) => setEditingFaq({ ...editingFaq, question: e.target.value })}
-                            placeholder="Enter the question"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Answer</Label>
-                          <Textarea
-                            value={editingFaq.answer}
-                            onChange={(e) => setEditingFaq({ ...editingFaq, answer: e.target.value })}
-                            placeholder="Enter the answer"
-                            rows={4}
-                          />
-                        </div>
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={handleUpdateFaq}>
-                            <Check className="h-4 w-4 mr-2" />
-                            Save Changes
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={handleCancelEdit}>
-                            <X className="h-4 w-4 mr-2" />
-                            Cancel
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-medium">{faq.question}</h4>
+                <div className="space-y-4">
+                  {categoryFaqs.map((faq) => (
+                    <div key={faq.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                      {editingFaq?.id === faq.id ? (
+                        <div className="p-6 space-y-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">Category</Label>
+                            <select
+                              value={editingFaq.category}
+                              onChange={(e) => setEditingFaq({ ...editingFaq, category: e.target.value })}
+                              className="w-full border border-gray-200 rounded-md px-3 py-2 bg-gray-50/50 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                            >
+                              {categories.map((cat) => (
+                                <option key={cat.id} value={cat.name}>
+                                  {cat.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">Question</Label>
+                            <Input
+                              value={editingFaq.question}
+                              onChange={(e) => setEditingFaq({ ...editingFaq, question: e.target.value })}
+                              placeholder="Enter the question"
+                              className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">Answer</Label>
+                            <Textarea
+                              value={editingFaq.answer}
+                              onChange={(e) => setEditingFaq({ ...editingFaq, answer: e.target.value })}
+                              placeholder="Enter the answer"
+                              rows={4}
+                              className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                            />
+                          </div>
                           <div className="flex gap-2">
                             <Button
-                              variant="outline"
                               size="sm"
-                              onClick={() => handleEditFaq(faq)}
+                              onClick={handleUpdateFaq}
+                              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
                             >
-                              <Edit className="h-4 w-4" />
+                              <Check className="h-4 w-4 mr-2" />
+                              Save Changes
                             </Button>
                             <Button
-                              variant="outline"
                               size="sm"
-                              onClick={() => handleDeleteFaq(faq.id)}
-                              className="text-red-600 hover:text-red-800"
+                              variant="outline"
+                              onClick={handleCancelEdit}
+                              className="bg-white/80 hover:bg-white border-gray-200"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <X className="h-4 w-4 mr-2" />
+                              Cancel
                             </Button>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-600">{faq.answer}</p>
-                      </div>
-                    )}
-                  </div>
-                ))
+                      ) : (
+                        <div className="p-6">
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="flex-1">
+                              <div className="flex items-start gap-3 mb-3">
+                                <div className="w-8 h-8 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <HelpCircle className="w-4 h-4 text-purple-600" />
+                                </div>
+                                <h4 className="font-semibold text-gray-900 leading-tight">{faq.question}</h4>
+                              </div>
+                              <p className="text-sm text-gray-600 ml-11 leading-relaxed">{faq.answer}</p>
+                            </div>
+                            <div className="flex gap-2 ml-4">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEditFaq(faq)}
+                                className="bg-white/80 hover:bg-white border-gray-200 text-purple-600 hover:text-purple-700 hover:border-purple-300"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDeleteFaq(faq.id)}
+                                className="bg-white/80 hover:bg-white border-gray-200 text-red-600 hover:text-red-700 hover:border-red-300"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               )}
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div>
+            </div>
+          );
+        })}
+      </div>
+    </main>
   );
 }

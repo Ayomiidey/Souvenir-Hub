@@ -34,38 +34,41 @@ export function OrdersHeader({ onFilterChange }: OrdersHeaderProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-xl border border-orange-100/50 shadow-sm">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Orders</h1>
-          <p className="text-muted-foreground">
-            Manage customer orders and fulfillment
-          </p>
+          <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+            <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+            Order Management
+          </h2>
+          <p className="text-gray-600 text-sm">Track orders, update status, and manage fulfillment</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline">
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
         </div>
       </div>
 
-      <div className="flex items-center space-x-4">
-        <div className="flex-1 max-w-sm">
-          <Input
-            placeholder="Search orders..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleFilter()}
-            className="w-full"
-          />
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex-1 min-w-[250px] max-w-sm">
+          <div className="relative">
+            <Input
+              placeholder="Search orders..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleFilter()}
+              className="w-full pl-4 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white/80 backdrop-blur-sm hover:bg-white"
+            />
+          </div>
         </div>
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -79,7 +82,7 @@ export function OrdersHeader({ onFilterChange }: OrdersHeaderProps) {
           </SelectContent>
         </Select>
         <Select value={paymentStatus} onValueChange={setPaymentStatus}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <SelectValue placeholder="Payment Status" />
           </SelectTrigger>
           <SelectContent>
@@ -90,7 +93,7 @@ export function OrdersHeader({ onFilterChange }: OrdersHeaderProps) {
             <SelectItem value="refunded">Refunded</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" onClick={handleFilter}>
+        <Button variant="outline" onClick={handleFilter} className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
           <Filter className="h-4 w-4 mr-2" />
           Apply Filters
         </Button>

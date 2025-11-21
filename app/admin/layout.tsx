@@ -15,11 +15,15 @@ export default async function AdminLayout({
     redirect("/sign-in");
   }
   return (
-    <div className="flex h-screen bg-muted/10">
+    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30">
       <AdminSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader />
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-transparent via-white/40 to-transparent">
+          <div className="max-w-[1600px] mx-auto">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );

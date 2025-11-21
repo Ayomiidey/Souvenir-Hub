@@ -1,21 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -25,20 +16,18 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { 
-  MessageCircle, 
-  Eye, 
-  Trash2, 
-  Search, 
+import {
+  MessageCircle,
+  Eye,
+  Trash2,
+  Search,
   Filter,
   Calendar,
   Mail,
   Phone,
   User
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-
-type ContactMessage = {
+import { formatDistanceToNow } from "date-fns";type ContactMessage = {
   id: string;
   firstName: string;
   lastName: string;
@@ -69,7 +58,7 @@ function getStatusLabel(status: string) {
   }
 }
 
-function MessageDetailDialog({ message, onStatusUpdate }: { 
+function MessageDialog({ message, onStatusUpdate }: { 
   message: ContactMessage; 
   onStatusUpdate: (messageId: string, status: string) => void;
 }) {
@@ -349,65 +338,68 @@ export default function AdminContactPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Contact Messages</h1>
-        <p className="text-muted-foreground">
-          Manage customer inquiries and support requests
-        </p>
-      </div>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Contact Messages
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Manage customer inquiries and support requests
+          </p>
+        </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Messages</CardTitle>
-            <MessageCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{statusCounts.all}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">New</CardTitle>
-            <Badge className="bg-red-100 text-red-800">{statusCounts.NEW}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{statusCounts.NEW}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Read</CardTitle>
-            <Badge className="bg-yellow-100 text-yellow-800">{statusCounts.READ}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{statusCounts.READ}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Replied</CardTitle>
-            <Badge className="bg-green-100 text-green-800">{statusCounts.REPLIED}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{statusCounts.REPLIED}</div>
-          </CardContent>
-        </Card>
-      </div>
+        {/* Stats Cards */}
+        <div className="grid gap-6 md:grid-cols-4 mb-8">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100/50 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-gray-700">Total Messages</h3>
+              <MessageCircle className="h-5 w-5 text-blue-600" />
+            </div>
+            <div className="text-3xl font-bold text-blue-600">{statusCounts.all}</div>
+          </div>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Filter Messages</CardTitle>
-          <CardDescription>Search and filter contact messages</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
+          <div className="bg-gradient-to-r from-red-50 to-pink-50 p-6 rounded-xl border border-red-100/50 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-gray-700">New</h3>
+              <Badge className="bg-red-100 text-red-800 border-red-200">{statusCounts.NEW}</Badge>
+            </div>
+            <div className="text-3xl font-bold text-red-600">{statusCounts.NEW}</div>
+          </div>
+
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-100/50 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-gray-700">Read</h3>
+              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">{statusCounts.READ}</Badge>
+            </div>
+            <div className="text-3xl font-bold text-yellow-600">{statusCounts.READ}</div>
+          </div>
+
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100/50 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-gray-700">Replied</h3>
+              <Badge className="bg-green-100 text-green-800 border-green-200">{statusCounts.REPLIED}</Badge>
+            </div>
+            <div className="text-3xl font-bold text-green-600">{statusCounts.REPLIED}</div>
+          </div>
+        </div>
+
+        {/* Filters Section */}
+        <div className="bg-gradient-to-r from-slate-50 to-gray-50 p-6 rounded-xl border border-slate-100/50 shadow-sm mb-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-slate-500 to-gray-500 rounded-full"></div>
+              Filter Messages
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Search and filter contact messages
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search by name, email, or subject..."
                   value={searchTerm}
@@ -416,17 +408,21 @@ export default function AdminContactPage() {
                     // Debounce search
                     setTimeout(() => fetchMessages(), 500);
                   }}
-                  className="pl-8"
+                  className="pl-10 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {["all", "NEW", "READ", "REPLIED"].map((status) => (
                 <Button
                   key={status}
                   variant={statusFilter === status ? "default" : "outline"}
                   size="sm"
                   onClick={() => setStatusFilter(status)}
+                  className={statusFilter === status
+                    ? "bg-gradient-to-r from-slate-600 to-gray-600 hover:from-slate-700 hover:to-gray-700 text-white border-0"
+                    : "bg-white/80 hover:bg-white border-gray-200"
+                  }
                 >
                   <Filter className="h-4 w-4 mr-2" />
                   {status === "all" ? "All" : getStatusLabel(status)}
@@ -435,76 +431,136 @@ export default function AdminContactPage() {
               ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Messages Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Messages ({filteredMessages.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
+        {/* Messages Section */}
+        <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-6 rounded-xl border border-violet-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"></div>
+              Messages ({filteredMessages.length})
+            </h2>
+            <p className="text-gray-600 text-sm">
+              View and manage all contact messages.
+            </p>
+          </div>
+
           {loading && (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">Loading messages...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <div className="animate-pulse">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="h-3 bg-gray-200 rounded w-full"></div>
+                      <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
-          
+
           {error && (
-            <div className="text-center py-8">
-              <p className="text-red-600">{error}</p>
-              <button 
+            <div className="text-center py-12">
+              <MessageCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+              <p className="text-red-600 mb-4">{error}</p>
+              <Button
                 onClick={fetchMessages}
-                className="mt-2 text-blue-600 hover:underline"
+                className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white border-0"
               >
                 Try Again
-              </button>
+              </Button>
             </div>
           )}
-          
+
           {!loading && !error && (
-            <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Subject</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMessages.map((message) => (
-                <TableRow key={message.id}>
-                  <TableCell className="font-medium">
-                    {message.firstName} {message.lastName}
-                  </TableCell>
-                  <TableCell>{message.email}</TableCell>
-                  <TableCell className="max-w-xs truncate">{message.subject}</TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(message.status)}>
-                      {getStatusLabel(message.status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {formatDistanceToNow(new Date(message.createdAt))} ago
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <MessageDetailDialog message={message} onStatusUpdate={updateMessageStatus} />
-                      <Button variant="outline" size="sm" onClick={() => deleteMessage(message.id)}>
+                <div
+                  key={message.id}
+                  className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm group"
+                >
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-violet-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <User className="w-6 h-6 text-violet-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1 group-hover:text-violet-600 transition-colors">
+                        {message.firstName} {message.lastName}
+                      </h3>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                          <Mail className="w-3 h-3" />
+                          <span className="truncate">{message.email}</span>
+                        </div>
+                        {message.phone && (
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Phone className="w-3 h-3" />
+                            <span>{message.phone}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-1 line-clamp-1">{message.subject}</h4>
+                      <p className="text-sm text-gray-600 line-clamp-2">{message.message}</p>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
+                      </span>
+                      <Badge
+                        className={`${
+                          message.status === "NEW"
+                            ? "bg-red-100 text-red-800 border-red-200"
+                            : message.status === "READ"
+                            ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                            : "bg-green-100 text-green-800 border-green-200"
+                        }`}
+                      >
+                        {getStatusLabel(message.status)}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                      <MessageDialog
+                        message={message}
+                        onStatusUpdate={updateMessageStatus}
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => deleteMessage(message.id)}
+                        className="bg-white/80 hover:bg-white border-gray-200 text-red-600 hover:text-red-700 hover:border-red-300"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
+                  </div>
+                </div>
               ))}
-            </TableBody>
-          </Table>
+              {filteredMessages.length === 0 && (
+                <div className="col-span-full text-center py-12">
+                  <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">No messages found.</p>
+                </div>
+              )}
+            </div>
           )}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </main>
   );
 }

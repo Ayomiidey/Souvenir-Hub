@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Plus,
@@ -14,7 +13,6 @@ import {
   MapPin,
   Globe,
   Search,
-  AlertCircle,
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -271,26 +269,26 @@ export default function AdminStatesLocations() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-      <div className="max-w-6xl mx-auto">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="container mx-auto px-4 py-8">
         {/* Header Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             States & Locations Manager
           </h1>
-          <p className="text-slate-600">
+          <p className="text-gray-600 mt-2">
             Manage your geographical data with ease
           </p>
           <div className="flex justify-center gap-6 mt-4">
             <div className="flex items-center gap-2">
               <Globe className="w-5 h-5 text-blue-500" />
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-gray-600">
                 {states.length} {states.length === 1 ? "State" : "States"}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="w-5 h-5 text-green-500" />
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-gray-600">
                 {getTotalLocations()}{" "}
                 {getTotalLocations() === 1 ? "Location" : "Locations"}
               </span>
@@ -299,356 +297,362 @@ export default function AdminStatesLocations() {
         </div>
 
         {/* Search Bar */}
-        <Card className="mb-6 shadow-md border-0 bg-white/70 backdrop-blur-sm">
-          <CardContent className="p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-              <Input
-                placeholder="Search states or locations..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-0 bg-slate-50/50 focus:bg-white transition-colors"
-              />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="bg-gradient-to-r from-slate-50 to-gray-50 p-6 rounded-xl border border-slate-100/50 shadow-sm mb-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-slate-500 to-gray-500 rounded-full"></div>
+              Search & Filter
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Find states and locations quickly
+            </p>
+          </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search states or locations..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
+            />
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Add Forms */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Add State Card */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-              <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Globe className="w-5 h-5" />
-                  Add New State
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  <Input
-                    placeholder="Enter state name"
-                    value={newState}
-                    onChange={(e) => setNewState(e.target.value)}
-                    className="border-slate-200 focus:border-blue-300 focus:ring-blue-100"
-                    onKeyPress={(e) => e.key === "Enter" && handleAddState()}
-                  />
-                  <Button
-                    onClick={handleAddState}
-                    className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
-                    disabled={!newState.trim() || actionLoading === "add-state"}
-                  >
-                    {actionLoading === "add-state" ? (
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    ) : (
-                      <Plus className="w-4 h-4 mr-2" />
-                    )}
-                    Add State
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Add Location Card */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-              <CardHeader className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <MapPin className="w-5 h-5" />
-                  Add New Location
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  <Input
-                    placeholder="Enter location name"
-                    value={newLocation.name}
-                    onChange={(e) =>
-                      setNewLocation((l) => ({ ...l, name: e.target.value }))
-                    }
-                    className="border-slate-200 focus:border-green-300 focus:ring-green-100"
-                  />
-                  <select
-                    value={newLocation.stateId}
-                    onChange={(e) =>
-                      setNewLocation((l) => ({ ...l, stateId: e.target.value }))
-                    }
-                    className="w-full border border-slate-200 rounded-md px-3 py-2 focus:border-green-300 focus:ring-green-100 bg-white"
-                  >
-                    <option value="">Select State</option>
-                    {(states || []).map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
-                  <Button
-                    onClick={handleAddLocation}
-                    className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 transition-all duration-200"
-                    disabled={
-                      !newLocation.name.trim() ||
-                      !newLocation.stateId ||
-                      actionLoading === "add-location"
-                    }
-                  >
-                    {actionLoading === "add-location" ? (
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    ) : (
-                      <Plus className="w-4 h-4 mr-2" />
-                    )}
-                    Add Location
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Add Forms Section */}
+        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-xl border border-indigo-100/50 shadow-sm mb-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full"></div>
+              Add New Entries
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Create new states and locations
+            </p>
           </div>
 
-          {/* Right Column - States List */}
-          <div className="lg:col-span-2">
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-              <CardHeader className="bg-gradient-to-r from-slate-700 to-slate-800 text-white rounded-t-lg">
-                <CardTitle className="text-xl">
-                  All States & Locations
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                {loading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
-                    <span className="ml-2 text-slate-600">
-                      Loading states...
-                    </span>
-                  </div>
-                ) : filteredStates.length === 0 ? (
-                  <div className="text-center py-12">
-                    <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                    <p className="text-slate-600">
-                      {searchTerm
-                        ? "No states or locations match your search."
-                        : "No states found."}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="max-h-[600px] overflow-y-auto">
-                    {filteredStates.map((state, index) => (
-                      <div
-                        key={state.id}
-                        className={`p-6 transition-all duration-200 hover:bg-slate-50/50 ${
-                          index !== filteredStates.length - 1
-                            ? "border-b border-slate-100"
-                            : ""
-                        }`}
-                      >
-                        {/* State Header */}
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-3">
-                            {editingStateId === state.id ? (
-                              <div className="flex items-center gap-2">
-                                <Input
-                                  value={editingStateName}
-                                  onChange={(e) =>
-                                    setEditingStateName(e.target.value)
-                                  }
-                                  className="text-lg font-semibold border-slate-200 focus:border-blue-300"
-                                  onKeyPress={(e) =>
-                                    e.key === "Enter" &&
-                                    handleEditState(state.id)
-                                  }
-                                />
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleEditState(state.id)}
-                                  className="bg-green-500 hover:bg-green-600"
-                                  disabled={
-                                    actionLoading === `edit-state-${state.id}`
-                                  }
-                                >
-                                  {actionLoading ===
-                                  `edit-state-${state.id}` ? (
-                                    <Loader2 className="w-3 h-3 animate-spin" />
-                                  ) : (
-                                    <Save className="w-3 h-3" />
-                                  )}
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => {
-                                    setEditingStateId(null);
-                                    setEditingStateName("");
-                                  }}
-                                >
-                                  <X className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            ) : (
-                              <>
-                                <Globe className="w-5 h-5 text-blue-500" />
-                                <h3 className="text-xl font-bold text-slate-800">
-                                  {state.name}
-                                </h3>
-                                <Badge
-                                  variant="secondary"
-                                  className="bg-blue-100 text-blue-700"
-                                >
-                                  {state.locations?.length || 0}{" "}
-                                  {(state.locations?.length || 0) === 1
-                                    ? "location"
-                                    : "locations"}
-                                </Badge>
-                              </>
-                            )}
-                          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Add State Card */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Add New State</h3>
+                  <p className="text-sm text-gray-600">Create a new state</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <Input
+                  placeholder="Enter state name"
+                  value={newState}
+                  onChange={(e) => setNewState(e.target.value)}
+                  className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onKeyPress={(e) => e.key === "Enter" && handleAddState()}
+                />
+                <Button
+                  onClick={handleAddState}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0"
+                  disabled={!newState.trim() || actionLoading === "add-state"}
+                >
+                  {actionLoading === "add-state" ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <Plus className="w-4 h-4 mr-2" />
+                  )}
+                  Add State
+                </Button>
+              </div>
+            </div>
 
-                          {editingStateId !== state.id && (
-                            <div className="flex items-center gap-2">
+            {/* Add Location Card */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Add New Location</h3>
+                  <p className="text-sm text-gray-600">Create a new location</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <Input
+                  placeholder="Enter location name"
+                  value={newLocation.name}
+                  onChange={(e) =>
+                    setNewLocation((l) => ({ ...l, name: e.target.value }))
+                  }
+                  className="bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+                <select
+                  value={newLocation.stateId}
+                  onChange={(e) =>
+                    setNewLocation((l) => ({ ...l, stateId: e.target.value }))
+                  }
+                  className="w-full border border-gray-200 rounded-md px-3 py-2 bg-gray-50/50 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                >
+                  <option value="">Select State</option>
+                  {(states || []).map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  onClick={handleAddLocation}
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
+                  disabled={
+                    !newLocation.name.trim() ||
+                    !newLocation.stateId ||
+                    actionLoading === "add-location"
+                  }
+                >
+                  {actionLoading === "add-location" ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <Plus className="w-4 h-4 mr-2" />
+                  )}
+                  Add Location
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* States List Section */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+              All States & Locations ({filteredStates.length})
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Manage existing states and their locations
+            </p>
+          </div>
+
+          {loading && (
+            <div className="grid grid-cols-1 gap-6">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                  <div className="animate-pulse">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="h-4 bg-gray-200 rounded w-full"></div>
+                      <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!loading && (
+            <div className="space-y-4">
+              {filteredStates.map((state) => (
+                <div
+                  key={state.id}
+                  className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+                >
+                  {/* State Header */}
+                  <div className="p-6 border-b border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center">
+                          <Globe className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          {editingStateId === state.id ? (
+                            <div className="flex items-center gap-3">
+                              <Input
+                                value={editingStateName}
+                                onChange={(e) => setEditingStateName(e.target.value)}
+                                className="text-lg font-semibold bg-gray-50/50 border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                onKeyPress={(e) => e.key === "Enter" && handleEditState(state.id)}
+                              />
+                              <Button
+                                size="sm"
+                                onClick={() => handleEditState(state.id)}
+                                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
+                                disabled={actionLoading === `edit-state-${state.id}`}
+                              >
+                                {actionLoading === `edit-state-${state.id}` ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <Save className="w-4 h-4" />
+                                )}
+                              </Button>
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => {
-                                  setEditingStateId(state.id);
-                                  setEditingStateName(state.name);
+                                  setEditingStateId(null);
+                                  setEditingStateName("");
                                 }}
-                                className="hover:bg-blue-50 hover:border-blue-200"
+                                className="bg-white/80 hover:bg-white border-gray-200"
                               >
-                                <Edit2 className="w-3 h-3" />
+                                <X className="w-4 h-4" />
                               </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => handleDeleteState(state.id)}
-                                disabled={
-                                  actionLoading === `delete-state-${state.id}`
-                                }
-                                className="hover:bg-red-600"
-                              >
-                                {actionLoading ===
-                                `delete-state-${state.id}` ? (
-                                  <Loader2 className="w-3 h-3 animate-spin" />
-                                ) : (
-                                  <Trash2 className="w-3 h-3" />
-                                )}
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Locations */}
-                        <div className="ml-8">
-                          {state.locations && state.locations.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              {state.locations.map((location) => (
-                                <div
-                                  key={location.id}
-                                  className="flex items-center justify-between p-3 bg-slate-50/50 rounded-lg hover:bg-slate-100/50 transition-colors"
-                                >
-                                  {editingLocation &&
-                                  editingLocation.id === location.id ? (
-                                    <div className="flex items-center gap-2 flex-1">
-                                      <Input
-                                        value={editingLocation.name}
-                                        onChange={(e) =>
-                                          setEditingLocation((l) =>
-                                            l
-                                              ? { ...l, name: e.target.value }
-                                              : null
-                                          )
-                                        }
-                                        className="text-sm border-slate-200 focus:border-green-300"
-                                        onKeyPress={(e) =>
-                                          e.key === "Enter" &&
-                                          handleEditLocation()
-                                        }
-                                      />
-                                      <Button
-                                        size="sm"
-                                        onClick={handleEditLocation}
-                                        className="bg-green-500 hover:bg-green-600"
-                                        disabled={
-                                          actionLoading ===
-                                          `edit-location-${location.id}`
-                                        }
-                                      >
-                                        {actionLoading ===
-                                        `edit-location-${location.id}` ? (
-                                          <Loader2 className="w-3 h-3 animate-spin" />
-                                        ) : (
-                                          <Save className="w-3 h-3" />
-                                        )}
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => setEditingLocation(null)}
-                                      >
-                                        <X className="w-3 h-3" />
-                                      </Button>
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <div className="flex items-center gap-2">
-                                        <MapPin className="w-4 h-4 text-green-500" />
-                                        <span className="text-slate-700">
-                                          {location.name}
-                                        </span>
-                                      </div>
-                                      <div className="flex items-center gap-1">
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          onClick={() =>
-                                            setEditingLocation({
-                                              id: location.id,
-                                              name: location.name,
-                                              stateId: state.id,
-                                            })
-                                          }
-                                          className="h-7 w-7 p-0 hover:bg-blue-100"
-                                        >
-                                          <Edit2 className="w-3 h-3" />
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          onClick={() =>
-                                            handleDeleteLocation(location.id)
-                                          }
-                                          disabled={
-                                            actionLoading ===
-                                            `delete-location-${location.id}`
-                                          }
-                                          className="h-7 w-7 p-0 hover:bg-red-100"
-                                        >
-                                          {actionLoading ===
-                                          `delete-location-${location.id}` ? (
-                                            <Loader2 className="w-3 h-3 animate-spin" />
-                                          ) : (
-                                            <Trash2 className="w-3 h-3 text-red-500" />
-                                          )}
-                                        </Button>
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              ))}
                             </div>
                           ) : (
-                            <div className="text-center py-6 text-slate-500 bg-slate-50/50 rounded-lg">
-                              <MapPin className="w-8 h-8 mx-auto mb-2 text-slate-400" />
-                              <p className="text-sm">
-                                No locations in this state yet
-                              </p>
+                            <div>
+                              <h3 className="text-xl font-bold text-gray-900">{state.name}</h3>
+                              <Badge className="mt-1 bg-blue-100 text-blue-800 border-blue-200">
+                                {state.locations?.length || 0} {(state.locations?.length || 0) === 1 ? "location" : "locations"}
+                              </Badge>
                             </div>
                           )}
                         </div>
                       </div>
-                    ))}
+
+                      {editingStateId !== state.id && (
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setEditingStateId(state.id);
+                              setEditingStateName(state.name);
+                            }}
+                            className="bg-white/80 hover:bg-white border-gray-200 text-blue-600 hover:text-blue-700 hover:border-blue-300"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteState(state.id)}
+                            disabled={actionLoading === `delete-state-${state.id}`}
+                            className="bg-white/80 hover:bg-white border-gray-200 text-red-600 hover:text-red-700 hover:border-red-300"
+                          >
+                            {actionLoading === `delete-state-${state.id}` ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+
+                  {/* Locations */}
+                  <div className="p-6">
+                    {state.locations && state.locations.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {state.locations.map((location) => (
+                          <div
+                            key={location.id}
+                            className="bg-gray-50/50 rounded-lg p-4 hover:bg-gray-100/50 transition-colors border border-gray-100"
+                          >
+                            {editingLocation && editingLocation.id === location.id ? (
+                              <div className="space-y-3">
+                                <div className="flex items-center gap-2">
+                                  <MapPin className="w-4 h-4 text-green-500" />
+                                  <Input
+                                    value={editingLocation.name}
+                                    onChange={(e) =>
+                                      setEditingLocation((l) =>
+                                        l ? { ...l, name: e.target.value } : null
+                                      )
+                                    }
+                                    className="text-sm bg-white/80 border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    onKeyPress={(e) => e.key === "Enter" && handleEditLocation()}
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={handleEditLocation}
+                                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
+                                    disabled={actionLoading === `edit-location-${location.id}`}
+                                  >
+                                    {actionLoading === `edit-location-${location.id}` ? (
+                                      <Loader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      <Save className="w-3 h-3" />
+                                    )}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setEditingLocation(null)}
+                                    className="bg-white/80 hover:bg-white border-gray-200"
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg flex items-center justify-center">
+                                    <MapPin className="w-4 h-4 text-green-600" />
+                                  </div>
+                                  <span className="font-medium text-gray-900">{location.name}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() =>
+                                      setEditingLocation({
+                                        id: location.id,
+                                        name: location.name,
+                                        stateId: state.id,
+                                      })
+                                    }
+                                    className="h-8 w-8 p-0 hover:bg-blue-100 text-blue-600"
+                                  >
+                                    <Edit2 className="w-3 h-3" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleDeleteLocation(location.id)}
+                                    disabled={actionLoading === `delete-location-${location.id}`}
+                                    className="h-8 w-8 p-0 hover:bg-red-100 text-red-600"
+                                  >
+                                    {actionLoading === `delete-location-${location.id}` ? (
+                                      <Loader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      <Trash2 className="w-3 h-3" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <MapPin className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-500 text-sm">No locations in this state yet</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {filteredStates.length === 0 && (
+                <div className="text-center py-12">
+                  <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">
+                    {searchTerm ? "No states or locations match your search." : "No states found."}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

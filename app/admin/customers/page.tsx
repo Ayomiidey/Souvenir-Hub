@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-import { ArrowLeft, User, Mail, Phone, Clock } from "lucide-react";
+import { ArrowLeft, User, Mail, Phone, Clock, Users } from "lucide-react";
 import { toast } from "sonner";
 
 interface User {
@@ -66,98 +64,195 @@ export default function CustomerAdminPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center space-x-4">
-          <div className="h-8 w-8 bg-muted rounded shimmer"></div>
-          <div className="h-8 bg-muted rounded shimmer w-48"></div>
-        </div>
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <div className="h-6 bg-muted rounded shimmer w-32"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-12 bg-muted rounded shimmer"></div>
-                ))}
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Customer Management
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Manage customer accounts and roles
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                <div className="animate-pulse">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="h-6 bg-gray-200 rounded w-16"></div>
+                      <div className="h-6 bg-gray-200 rounded w-20"></div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded w-16"></div>
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded w-12"></div>
+                      <div className="h-4 bg-gray-200 rounded w-16"></div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded w-14"></div>
+                      <div className="h-4 bg-gray-200 rounded w-12"></div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded w-16"></div>
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            ))}
+          </div>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/admin">
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-          </Button>
-          <h1 className="text-2xl font-bold">Customer Management</h1>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Customer Management
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Manage customer accounts and roles
+              </p>
+            </div>
+            <Button variant="outline" size="sm" asChild className="bg-white/80 hover:bg-white border-gray-200">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Admin
+              </Link>
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* User List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Customers ({users.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+              Customers ({users.length})
+            </h2>
+            <p className="text-gray-600 text-sm">
+              View and manage all registered customers.
+            </p>
+          </div>
+
           <div className="space-y-4">
             {users.map((user) => (
               <div
                 key={user.id}
-                className="flex items-center justify-between py-4 border-b last:border-b-0"
+                className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm group"
               >
-                <div className="flex items-center space-x-4">
-                  <User className="h-6 w-6 text-muted-foreground" />
-                  <div>
-                    <h4 className="font-medium">{user.name}</h4>
-                    <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                      <Mail className="h-4 w-4" />
-                      <span>{user.email}</span>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <User className="w-6 h-6 text-indigo-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1 group-hover:text-indigo-600 transition-colors">
+                      {user.name}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">{user.email}</span>
                       {user.phone && (
-                        <>
-                          <Phone className="h-4 w-4" />
-                          <span>{user.phone}</span>
-                        </>
+                        <span className="text-xs text-gray-500">• {user.phone}</span>
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4 inline mr-1" />
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </div>
-                  <select
-                    className="border rounded px-2 py-1 text-sm"
-                    value={user.roles[0] || "USER"}
-                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                  >
-                    {roleOptions.map((role) => (
-                      <option key={role} value={role}>
-                        {role.charAt(0) + role.slice(1).toLowerCase()}
-                      </option>
+                  <div className="flex gap-2">
+                    {user.roles.map((role) => (
+                      <span
+                        key={role}
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          role === "ADMIN"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}
+                      >
+                        {role}
+                      </span>
                     ))}
-                  </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <span className="text-sm text-gray-600 block">Email</span>
+                    <div className="flex items-center gap-1">
+                      <Mail className="w-3 h-3 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-900">{user.email}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-sm text-gray-600 block">Phone</span>
+                    <div className="flex items-center gap-1">
+                      <Phone className="w-3 h-3 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-900">{user.phone || "N/A"}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-sm text-gray-600 block">Orders</span>
+                    <span className="text-sm font-medium">{user.ordersCount || 0}</span>
+                  </div>
+
+                  <div>
+                    <span className="text-sm text-gray-600 block">Joined</span>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-900">
+                        {new Date(user.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">Role:</span>
+                    <select
+                      value={user.roles[0] || "USER"}
+                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                      className="text-sm border border-gray-200 rounded-md px-2 py-1 bg-gray-50/50 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    >
+                      {roleOptions.map((role) => (
+                        <option key={role} value={role}>
+                          {role}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="bg-white/80 hover:bg-white border-gray-200 text-indigo-600 hover:text-indigo-700 hover:border-indigo-300"
+                  >
+                    <Link href={`/admin/customers/${user.id}`}>
+                      View Details
+                    </Link>
+                  </Button>
                 </div>
               </div>
             ))}
-            {users.length === 0 && (
-              <p className="text-center text-muted-foreground py-4">
-                No customers found.
-              </p>
-            )}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </main>
   );
 }

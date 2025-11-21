@@ -62,10 +62,10 @@ export function AdminDashboard() {
       <div className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i}>
+            <Card key={i} className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 border-blue-100/50 shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <div className="h-4 bg-muted rounded shimmer w-20"></div>
-                <div className="h-4 w-4 bg-muted rounded shimmer"></div>
+                <div className="h-8 w-8 bg-muted rounded shimmer"></div>
               </CardHeader>
               <CardContent>
                 <div className="h-8 bg-muted rounded shimmer w-24 mb-2"></div>
@@ -116,12 +116,14 @@ export function AdminDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
           <p className="text-muted-foreground">
             Welcome back! Here&apos;s what&apos;s happening with your store.
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white border-0">
           <Link href="/admin/products/new">Add Product</Link>
         </Button>
       </div>
@@ -130,7 +132,7 @@ export function AdminDashboard() {
       {(stats.pendingOrders > 0 || stats.lowStockProducts > 0) && (
         <div className="grid gap-4 md:grid-cols-2">
           {stats.pendingOrders > 0 && (
-            <Card className="border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950">
+            <Card className="border-orange-200 bg-gradient-to-br from-orange-50 via-orange-25 to-orange-50 dark:border-orange-800 dark:bg-gradient-to-br dark:from-orange-950 dark:via-orange-900 dark:to-orange-950 shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-orange-800 dark:text-orange-200">
                   Pending Orders
@@ -144,7 +146,7 @@ export function AdminDashboard() {
                 <p className="text-xs text-orange-700 dark:text-orange-300">
                   Orders awaiting processing
                 </p>
-                <Button size="sm" className="mt-2" asChild>
+                <Button size="sm" className="mt-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0" asChild>
                   <Link href="/admin/orders?status=pending">View Orders</Link>
                 </Button>
               </CardContent>
@@ -152,7 +154,7 @@ export function AdminDashboard() {
           )}
 
           {stats.lowStockProducts > 0 && (
-            <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
+            <Card className="border-red-200 bg-gradient-to-br from-red-50 via-red-25 to-red-50 dark:border-red-800 dark:bg-gradient-to-br dark:from-red-950 dark:via-red-900 dark:to-red-950 shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-red-800 dark:text-red-200">
                   Low Stock Alert
@@ -166,7 +168,7 @@ export function AdminDashboard() {
                 <p className="text-xs text-red-700 dark:text-red-300">
                   Products running low
                 </p>
-                <Button size="sm" className="mt-2" asChild>
+                <Button size="sm" className="mt-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0" asChild>
                   <Link href="/admin/products?filter=low-stock">
                     View Products
                   </Link>
@@ -180,15 +182,17 @@ export function AdminDashboard() {
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat, index) => (
-          <Card key={index}>
+          <Card key={index} className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 border-blue-100/50 shadow-lg">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-gray-700">
                 {stat.title}
               </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              <div className="p-2 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 rounded-lg">
+                <stat.icon className="h-4 w-4 text-blue-600" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
               <div className="flex items-center text-xs text-muted-foreground">
                 {stat.change !== 0 && (
                   <>
@@ -239,9 +243,11 @@ export function AdminDashboard() {
       </div> */}
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 border-blue-100/50 shadow-lg">
           <CardHeader>
-            <CardTitle>Recent Orders</CardTitle>
+            <CardTitle className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Recent Orders
+            </CardTitle>
             <CardDescription>Latest orders from your customers</CardDescription>
           </CardHeader>
           <CardContent>
@@ -249,9 +255,11 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 border-blue-100/50 shadow-lg">
           <CardHeader>
-            <CardTitle>Low Stock Alert</CardTitle>
+            <CardTitle className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Low Stock Alert
+            </CardTitle>
             <CardDescription>Products that need restocking</CardDescription>
           </CardHeader>
           <CardContent>

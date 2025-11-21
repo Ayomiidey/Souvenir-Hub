@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
+import { toast } from "sonner";
 import CarouselForm from "./carousel-form";
 import CarouselTable from "./carousel-table";
 import { CarouselItem } from "../../../types/carousel";
@@ -16,6 +17,8 @@ export default function CarouselManager() {
   const [items, setItems] = useState<CarouselItem[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -46,28 +49,37 @@ export default function CarouselManager() {
 
   const fetchItems = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get("/api/carousel");
       setItems(response.data);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
+      setError(null);
+    } catch {
       setError("Failed to fetch carousel items");
+      toast.error("Failed to fetch carousel items");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const onSubmit = async (data: FormData) => {
     try {
+      setIsSubmitting(true);
       if (editingId) {
         await axios.put(`/api/carousel/${editingId}`, data);
+        toast.success("Carousel item updated successfully!");
       } else {
         await axios.post("/api/carousel", data);
+        toast.success("Carousel item created successfully!");
       }
       reset();
       setEditingId(null);
       fetchItems();
       setError(null);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
+    } catch {
       setError("Failed to save carousel item");
+      toast.error("Failed to save carousel item");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -86,13 +98,29 @@ export default function CarouselManager() {
   };
 
   const handleDelete = async (id: string) => {
+    const confirmed = await new Promise<boolean>((resolve) => {
+      toast("Are you sure you want to delete this carousel item?", {
+        action: {
+          label: "Delete",
+          onClick: () => resolve(true),
+        },
+        cancel: {
+          label: "Cancel",
+          onClick: () => resolve(false),
+        },
+      });
+    });
+
+    if (!confirmed) return;
+
     try {
       await axios.delete(`/api/carousel/${id}`);
       fetchItems();
       setError(null);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
+      toast.success("Carousel item deleted successfully!");
+    } catch {
       setError("Failed to delete carousel item");
+      toast.error("Failed to delete carousel item");
     }
   };
 
@@ -102,21 +130,40 @@ export default function CarouselManager() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-6">
-      <h1 className="text-2xl font-bold mb-6">Carousel Manager</h1>
-      <CarouselForm
-        register={register}
-        errors={errors}
-        onSubmit={handleSubmit(onSubmit)}
-        onCancel={handleCancel}
-        isEditing={!!editingId}
-      />
-      {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
-      <CarouselTable
-        items={items}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+    <div className="space-y-8">
+      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100/50 shadow-sm">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+          Create/Edit Carousel Item
+        </h2>
+        <CarouselForm
+          register={register}
+          errors={errors}
+          onSubmit={handleSubmit(onSubmit)}
+          onCancel={handleCancel}
+          isEditing={!!editingId}
+          isSubmitting={isSubmitting}
+        />
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
+
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+          Carousel Items ({items.length})
+        </h2>
+        <CarouselTable
+          items={items}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          isLoading={isLoading}
+        />
+      </div>
     </div>
   );
 }

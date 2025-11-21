@@ -108,6 +108,11 @@ const navigation = [
     href: "/admin/faq",
     icon: HelpCircle,
   },
+  {
+    name: "About Page",
+    href: "/admin/about",
+    icon: Store,
+  },
 
   // {
   //   name: "Analytics",
@@ -158,22 +163,22 @@ export function AdminSidebar() {
   return (
     <div
       className={cn(
-        "bg-background border-r transition-all duration-300",
+        "bg-background border-r",
         collapsed ? "w-16" : "w-64"
       )}
     >
-      <div className="flex h-16 items-center justify-between px-4 border-b">
+      <div className="flex h-16 items-center justify-between px-4 border-b bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
         {!collapsed && (
           <Link href="/admin" className="flex items-center space-x-2">
-            <Store className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg">Admin Panel</span>
+            <Store className="h-6 w-6 text-white" />
+            <span className="font-bold text-lg text-white">Admin Panel</span>
           </Link>
         )}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setCollapsed(!collapsed)}
-          className="h-8 w-8"
+          className="h-8 w-8 text-white hover:bg-white/20"
         >
           {collapsed ? (
             <ChevronRight className="h-4 w-4" />
@@ -250,7 +255,7 @@ export function AdminSidebar() {
       </ScrollArea>
 
       <div className="border-t p-4">
-        <Button variant="outline" className="w-full" asChild>
+        <Button variant="outline" className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white border-0" asChild>
           <Link href="/">
             <Store className="h-4 w-4" />
             {!collapsed && <span className="ml-2">View Store</span>}

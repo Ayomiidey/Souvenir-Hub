@@ -484,3 +484,46 @@ model Setting {
 
   @@map("settings")
 }
+
+// About Page Content Management
+model AboutPage {
+  id String @id @default(cuid())
+
+  // Hero Section
+  heroTitle       String
+  heroSubtitle    String @db.Text
+  heroTagline     String
+  heroBadgeText   String @default("Since 2019")
+
+  // About Section
+  aboutTitle       String
+  aboutDescription String @db.Text
+  aboutFeatures    Json // Array of {title: string, description: string}
+
+  // Stats Section
+  stats Json // Array of {label: string, value: string, icon: string}
+
+  // Our Story Section
+  storyBadgeText  String
+  storyTitle      String
+  storyParagraph1 String @db.Text
+  storyParagraph2 String @db.Text
+  storyParagraph3 String @db.Text
+
+  // Values Section
+  valuesBadgeText String
+  valuesTitle     String
+  valuesSubtitle  String @db.Text
+  values          Json // Array of {icon: string, title: string, description: string}
+
+  // CTA Section
+  ctaTitle    String
+  ctaSubtitle String @db.Text
+
+  // Metadata
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("about_pages")
+}

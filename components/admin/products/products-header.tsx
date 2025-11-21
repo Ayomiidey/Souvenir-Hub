@@ -32,26 +32,29 @@ export function ProductsHeader({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100/50 shadow-sm">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Products</h1>
-          <p className="text-muted-foreground">Manage your product catalog</p>
+          <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+            <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+            Product Catalog
+          </h2>
+          <p className="text-gray-600 text-sm">Search, filter, and manage your products</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button variant="outline" asChild>
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" asChild className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <Link href="/admin/products/export">
               <Download className="h-4 w-4 mr-2" />
               Export
             </Link>
           </Button>
-          <Button variant="outline" asChild>
+          <Button variant="outline" asChild className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <Link href="/admin/products/import">
               <Upload className="h-4 w-4 mr-2" />
               Import
             </Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0">
             <Link href="/admin/products/new">
               <Plus className="h-4 w-4 mr-2" />
               Add Product
@@ -60,20 +63,22 @@ export function ProductsHeader({
         </div>
       </div>
 
-      <div className="flex items-center space-x-4">
-        <div className="flex-1 max-w-sm">
-          <Input
-            placeholder="Search products..."
-            className="w-full"
-            value={filters.search}
-            onChange={(e) => handleFilterChange("search", e.target.value)}
-          />
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex-1 min-w-[250px] max-w-sm">
+          <div className="relative">
+            <Input
+              placeholder="Search products..."
+              className="w-full pl-4 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm hover:bg-white"
+              value={filters.search}
+              onChange={(e) => handleFilterChange("search", e.target.value)}
+            />
+          </div>
         </div>
         <Select
           value={filters.category}
           onValueChange={(value) => handleFilterChange("category", value)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -87,7 +92,7 @@ export function ProductsHeader({
           value={filters.status}
           onValueChange={(value) => handleFilterChange("status", value)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -97,7 +102,7 @@ export function ProductsHeader({
             <SelectItem value="inactive">Inactive</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline">
+        <Button variant="outline" className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white">
           <Filter className="h-4 w-4 mr-2" />
           More Filters
         </Button>

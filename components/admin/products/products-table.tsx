@@ -1,28 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Card, CardContent } from "@/components/ui/card";
 import { MoreHorizontal, Edit, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -55,7 +35,6 @@ export function ProductsTable({
 }: ProductsTableProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -73,7 +52,7 @@ export function ProductsTable({
 
       const response = await fetch(`/api/admin/products?${params.toString()}`);
       const data = await response.json();
-      const formattedProducts = (data.products || []).map((product: any) => ({
+      const formattedProducts = (data.products || []).map((product: Product) => ({
         ...product,
         price: Number(product.price) || 0,
       }));
@@ -93,22 +72,6 @@ export function ProductsTable({
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedProducts(products.map((p) => p.id));
-    } else {
-      setSelectedProducts([]);
-    }
-  };
-
-  const handleSelectProduct = (productId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedProducts((prev) => [...prev, productId]);
-    } else {
-      setSelectedProducts((prev) => prev.filter((id) => id !== productId));
-    }
-  };
 
   const handleDeleteProduct = (id: string) => {
     toast.custom((t) => (
@@ -173,188 +136,214 @@ export function ProductsTable({
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4">
-                <div className="h-4 w-4 bg-muted rounded shimmer"></div>
-                <div className="h-12 w-12 bg-muted rounded shimmer"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded shimmer w-48"></div>
-                  <div className="h-3 bg-muted rounded shimmer w-32"></div>
-                </div>
-                <div className="h-6 bg-muted rounded shimmer w-16"></div>
-                <div className="h-6 bg-muted rounded shimmer w-20"></div>
-                <div className="h-8 w-8 bg-muted rounded shimmer"></div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm">
+        <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+          <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+          Products ({products.length})
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="w-full bg-white rounded-xl border border-gray-200 shadow-sm">
+            <thead className="bg-gradient-to-r from-purple-50 to-pink-50">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <tr key={index} className="animate-pulse">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-gray-200 rounded-lg mr-3"></div>
+                      <div>
+                        <div className="h-4 bg-gray-200 rounded w-32"></div>
+                        <div className="h-3 bg-gray-200 rounded w-20 mt-1"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-gray-200 rounded w-16"></div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-gray-200 rounded w-12"></div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-4 bg-gray-200 rounded w-8"></div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="h-6 bg-gray-200 rounded w-16"></div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex gap-2">
+                      <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                      <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                      <div className="h-8 w-8 bg-gray-200 rounded"></div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">
-                <Checkbox
-                  checked={selectedProducts.length === products.length}
-                  onCheckedChange={handleSelectAll}
-                />
-              </TableHead>
-              <TableHead>Product</TableHead>
-              <TableHead>SKU</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead className="w-12"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.map((product) => {
-              const stockStatus = getStockStatus(product.quantity);
-              return (
-                <TableRow key={product.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedProducts.includes(product.id)}
-                      onCheckedChange={(checked) =>
-                        handleSelectProduct(product.id, checked as boolean)
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <div className="relative h-12 w-12 overflow-hidden rounded-md bg-muted">
-                        <Image
-                          src={product.images[0]?.url || "/placeholder.svg"}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <div className="font-medium">{product.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {product.isFeatured && (
-                            <Badge variant="secondary" className="mr-1">
-                              Featured
-                            </Badge>
-                          )}
+    <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+          <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+          Products ({products.length})
+        </h2>
+      </div>
+
+      {products.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <MoreHorizontal className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-600 mb-2">No products found</h3>
+          <p className="text-gray-500 mb-4">Get started by adding your first product</p>
+          <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0">
+            <Link href="/admin/products/new">Add your first product</Link>
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full bg-white rounded-xl border border-gray-200 shadow-sm">
+              <thead className="bg-gradient-to-r from-purple-50 to-pink-50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {products.map((product) => {
+                  const stockStatus = getStockStatus(product.quantity);
+                  return (
+                    <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-gray-100 flex-shrink-0 mr-3">
+                            <Image
+                              src={product.images[0]?.url || "/placeholder.svg"}
+                              alt={product.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-gray-900 line-clamp-1">{product.name}</div>
+                            <div className="text-sm text-gray-500 font-mono">{product.sku}</div>
+                            {product.isFeatured && (
+                              <Badge className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs mt-1">
+                                Featured
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-mono text-sm">
-                    {product.sku}
-                  </TableCell>
-                  <TableCell>{product.category.name}</TableCell>
-                  <TableCell>₦{product.price.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="font-medium">{product.quantity}</div>
-                      <Badge className={stockStatus.color}>
-                        {stockStatus.label}
-                      </Badge>
-                      {product.deliveryTime && (
-                        <Badge className="bg-yellow-100 text-yellow-800">
-                          {product.deliveryTime}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{product.category.name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-bold text-green-600">₦{product.price.toFixed(2)}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{product.quantity}</div>
+                        <div className="text-xs text-gray-500">{stockStatus.label}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Badge className={getStatusColor(product.status)}>
+                          {product.status}
                         </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(product.status)}>
-                      {product.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(product.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link href={`/products/${product.slug}`}>
-                            <Eye className="mr-2 h-4 w-4" /> View
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/admin/products/${product.id}/edit`}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit
-                          </Link>
-                        </DropdownMenuItem>
-                  
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteProduct(product.id)}
-                          className="text-destructive"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" /> Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-
-        {products.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-muted-foreground">No products found</div>
-            <Button className="mt-4" asChild>
-              <Link href="/admin/products/new">Add your first product</Link>
-            </Button>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0 hover:bg-blue-50"
+                          >
+                            <Link href={`/admin/products/${product.id}`}>
+                              <Eye className="h-4 w-4 text-blue-600" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            className="h-8 w-8 p-0 hover:bg-blue-50"
+                          >
+                            <Link href={`/admin/products/${product.id}/edit`}>
+                              <Edit className="h-4 w-4 text-blue-600" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="h-8 w-8 p-0 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4 text-red-600" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        )}
 
-        {/* Pagination Bar */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 py-6">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page === 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              Previous
-            </Button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+          {/* Pagination Bar */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 pt-6 border-t border-gray-200">
               <Button
-                key={p}
-                variant={p === page ? "default" : "outline"}
+                variant="outline"
                 size="sm"
-                onClick={() => setPage(p)}
-                disabled={p === page}
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white"
               >
-                {p}
+                Previous
               </Button>
-            ))}
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page === totalPages}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            >
-              Next
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <Button
+                  key={p}
+                  variant={p === page ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setPage(p)}
+                  disabled={p === page}
+                  className={p === page ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0" : "bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white"}
+                >
+                  {p}
+                </Button>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-white"
+              >
+                Next
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
   );
 }

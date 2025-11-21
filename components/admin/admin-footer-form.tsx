@@ -24,7 +24,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { X, Plus } from "lucide-react";
 
 // Zod schema matching the API schema for validation
@@ -281,182 +280,240 @@ export function AdminFooterForm() {
 
   if (loading) {
     return (
-      <div className="p-4 flex items-center gap-2">
-        <svg
-          className="animate-spin h-5 w-5 text-primary"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v8z"
-          ></path>
-        </svg>
-        Loading...
+      <div className="space-y-8">
+        <div className="mb-8">
+          <div className="h-10 bg-gradient-to-r from-blue-200 to-purple-200 rounded-lg w-64 animate-pulse"></div>
+          <div className="h-4 bg-gray-200 rounded w-96 mt-2 animate-pulse"></div>
+        </div>
+
+        {/* Company Info Section Skeleton */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100/50 shadow-sm">
+          <div className="mb-6">
+            <div className="h-6 bg-gradient-to-r from-blue-200 to-indigo-200 rounded w-48 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-80 mt-2 animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-32 animate-pulse"></div>
+              <div className="h-10 bg-white/80 rounded-lg w-full animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-40 animate-pulse"></div>
+              <div className="h-24 bg-white/80 rounded-lg w-full animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Social Links Section Skeleton */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm">
+          <div className="mb-6">
+            <div className="h-6 bg-gradient-to-r from-purple-200 to-pink-200 rounded w-40 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-72 mt-2 animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex gap-3 items-start p-4 bg-white/60 rounded-lg border border-gray-200">
+                <div className="h-10 bg-gray-200 rounded w-36 animate-pulse"></div>
+                <div className="h-10 bg-gray-200 rounded flex-1 animate-pulse"></div>
+                <div className="h-8 bg-gray-200 rounded w-8 animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Customer Service Section Skeleton */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100/50 shadow-sm">
+          <div className="mb-6">
+            <div className="h-6 bg-gradient-to-r from-green-200 to-emerald-200 rounded w-44 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-80 mt-2 animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-28 animate-pulse"></div>
+              <div className="h-10 bg-white/80 rounded-lg w-full animate-pulse"></div>
+            </div>
+            <div className="space-y-3 mt-2">
+              {[1, 2].map((i) => (
+                <div key={i} className="flex gap-3 items-start p-4 bg-white/60 rounded-lg border border-gray-200">
+                  <div className="h-10 bg-gray-200 rounded flex-1 animate-pulse"></div>
+                  <div className="h-10 bg-gray-200 rounded flex-1 animate-pulse"></div>
+                  <div className="h-8 bg-gray-200 rounded w-8 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Info Section Skeleton */}
+        <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-6 rounded-xl border border-cyan-100/50 shadow-sm">
+          <div className="mb-6">
+            <div className="h-6 bg-gradient-to-r from-cyan-200 to-blue-200 rounded w-40 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-72 mt-2 animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-28 animate-pulse"></div>
+              <div className="h-10 bg-white/80 rounded-lg w-full animate-pulse"></div>
+            </div>
+            <div className="space-y-3 mt-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-3 items-start p-4 bg-white/60 rounded-lg border border-gray-200">
+                  <div className="h-10 bg-gray-200 rounded w-28 animate-pulse"></div>
+                  <div className="h-10 bg-gray-200 rounded flex-1 animate-pulse"></div>
+                  <div className="h-10 bg-gray-200 rounded flex-1 animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links Categories Section Skeleton */}
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-xl border border-orange-100/50 shadow-sm">
+          <div className="mb-6">
+            <div className="h-6 bg-gradient-to-r from-orange-200 to-amber-200 rounded w-52 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-96 mt-2 animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            <div className="h-10 bg-white/80 rounded-lg w-40 animate-pulse"></div>
+            <div className="flex flex-wrap gap-3 mt-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-8 bg-gradient-to-r from-orange-100 to-amber-100 rounded-lg w-24 animate-pulse"></div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Footer Settings</h1>
+    <div className="space-y-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          Footer Settings
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Configure footer content and links for your website
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         {/* Error and success messages */}
         {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              <p className="text-red-800 font-medium">Error</p>
+            </div>
+            <p className="text-red-700 mt-1">{error}</p>
+          </div>
         )}
         {success && (
-          <Alert>
-            <AlertDescription>Footer updated successfully!</AlertDescription>
-          </Alert>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <p className="text-green-800 font-medium">Success</p>
+            </div>
+            <p className="text-green-700 mt-1">Footer updated successfully!</p>
+          </div>
         )}
 
-        {/* Company Info */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Company Information</h2>
-
-          <div>
-            <Label htmlFor="companyTitle">Company Title</Label>
-            <Input
-              id="companyTitle"
-              {...register("companyTitle")}
-              placeholder="Your Company Name"
-            />
-            {errors.companyTitle && (
-              <p className="text-destructive text-sm mt-1">
-                {errors.companyTitle.message}
-              </p>
-            )}
+        {/* Company Info Section */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
+              Company Information
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Basic information about your company displayed in the footer.
+            </p>
           </div>
 
-          <div>
-            <Label htmlFor="companyDescription">Company Description</Label>
-            <Textarea
-              id="companyDescription"
-              {...register("companyDescription")}
-              placeholder="Brief description of your company..."
-              rows={3}
-            />
-            {errors.companyDescription && (
-              <p className="text-destructive text-sm mt-1">
-                {errors.companyDescription.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Social Links */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Social Media Links</h2>
-          {socialFields.map((field, index) => (
-            <div key={field.id} className="flex gap-2 items-start">
-              <Controller
-                name={`socialLinks.${index}.platform`}
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="facebook">Facebook</SelectItem>
-                      <SelectItem value="twitter">Twitter</SelectItem>
-                      <SelectItem value="instagram">Instagram</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="companyTitle" className="text-sm font-semibold text-gray-700">Company Title</Label>
               <Input
-                placeholder="https://..."
-                className="flex-1"
-                {...register(`socialLinks.${index}.href`)}
+                id="companyTitle"
+                {...register("companyTitle")}
+                placeholder="Your Company Name"
+                className="mt-2 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
-              {socialFields.length > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => removeSocial(index)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-              {errors.socialLinks?.[index] && (
-                <p className="text-destructive text-sm">
-                  {errors.socialLinks[index]?.href?.message ||
-                    errors.socialLinks[index]?.platform?.message}
+              {errors.companyTitle && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.companyTitle.message}
                 </p>
               )}
             </div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => appendSocial({ platform: "facebook", href: "" })}
-            disabled={socialFields.length >= 6}
-          >
-            Add Social Link {socialFields.length >= 6 && "(Max 6 reached)"}
-          </Button>
+
+            <div>
+              <Label htmlFor="companyDescription" className="text-sm font-semibold text-gray-700">Company Description</Label>
+              <Textarea
+                id="companyDescription"
+                {...register("companyDescription")}
+                placeholder="Brief description of your company..."
+                className="mt-2 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 min-h-[100px]"
+              />
+              {errors.companyDescription && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.companyDescription.message}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Customer Service */}
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="customerServiceTitle">
-              Customer Service Section Title
-            </Label>
-            <Input
-              id="customerServiceTitle"
-              {...register("customerServiceTitle")}
-              placeholder="Customer Service"
-            />
-            {errors.customerServiceTitle && (
-              <p className="text-destructive text-sm mt-1">
-                {errors.customerServiceTitle.message}
-              </p>
-            )}
+        {/* Social Links Section */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+              Social Media Links
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Connect your social media profiles to the footer.
+            </p>
           </div>
 
-          <div>
-            <Label>Customer Service Links</Label>
-            {serviceFields.map((field, index) => (
-              <div key={field.id} className="flex gap-2 items-start mt-2">
-                <Input
-                  placeholder="Link text"
-                  className="flex-1"
-                  {...register(`customerServiceLinks.${index}.text`)}
+          <div className="space-y-4">
+            {socialFields.map((field, index) => (
+              <div key={field.id} className="flex gap-3 items-start p-4 bg-white/60 rounded-lg border border-gray-200">
+                <Controller
+                  name={`socialLinks.${index}.platform`}
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-36 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="facebook">Facebook</SelectItem>
+                        <SelectItem value="twitter">Twitter</SelectItem>
+                        <SelectItem value="instagram">Instagram</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 />
                 <Input
-                  placeholder="/contact or https://example.com"
-                  className="flex-1"
-                  {...register(`customerServiceLinks.${index}.href`)}
+                  placeholder="https://..."
+                  className="flex-1 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  {...register(`socialLinks.${index}.href`)}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => removeService(index)}
-                  disabled={serviceFields.length <= 1}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-                {errors.customerServiceLinks?.[index] && (
-                  <p className="text-destructive text-sm">
-                    {errors.customerServiceLinks[index]?.text?.message ||
-                      errors.customerServiceLinks[index]?.href?.message}
+                {socialFields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => removeSocial(index)}
+                    className="bg-white/80 hover:bg-white border-gray-200"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+                {errors.socialLinks?.[index] && (
+                  <p className="text-red-600 text-sm absolute mt-12">
+                    {errors.socialLinks[index]?.href?.message ||
+                      errors.socialLinks[index]?.platform?.message}
                   </p>
                 )}
               </div>
@@ -464,84 +521,180 @@ export function AdminFooterForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => appendService({ text: "", href: "" })}
-              className="mt-2"
+              onClick={() => appendSocial({ platform: "facebook", href: "" })}
+              disabled={socialFields.length >= 6}
+              className="bg-white/80 hover:bg-white border-gray-200"
             >
-              Add Service Link
+              <Plus className="h-4 w-4 mr-2" />
+              Add Social Link {socialFields.length >= 6 && "(Max 6 reached)"}
             </Button>
           </div>
         </div>
 
-        {/* Contact Info */}
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="contactTitle">Contact Section Title</Label>
-            <Input
-              id="contactTitle"
-              {...register("contactTitle")}
-              placeholder="Contact Info"
-            />
-            {errors.contactTitle && (
-              <p className="text-destructive text-sm mt-1">
-                {errors.contactTitle.message}
-              </p>
-            )}
+        {/* Customer Service Section */}
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"></div>
+              Customer Service
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Add helpful links for customer support and assistance.
+            </p>
           </div>
 
-          <div>
-            <Label>Contact Details (Email, Phone, Address)</Label>
-            {contactFields.map((field, index) => (
-              <div key={field.id} className="flex gap-2 items-start mt-2">
-                <Controller
-                  name={`contacts.${index}.icon`}
-                  control={control}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-24">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="mail">Email</SelectItem>
-                        <SelectItem value="phone">Phone</SelectItem>
-                        <SelectItem value="map">Address</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                <Input
-                  placeholder="Contact info"
-                  className="flex-1"
-                  {...register(`contacts.${index}.text`)}
-                />
-                <Input
-                  placeholder="Link (optional)"
-                  className="flex-1"
-                  {...register(`contacts.${index}.href`)}
-                />
-                {errors.contacts?.[index] && (
-                  <p className="text-destructive text-sm">
-                    {errors.contacts[index]?.text?.message ||
-                      errors.contacts[index]?.icon?.message}
-                  </p>
-                )}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="customerServiceTitle" className="text-sm font-semibold text-gray-700">Section Title</Label>
+              <Input
+                id="customerServiceTitle"
+                {...register("customerServiceTitle")}
+                placeholder="Customer Service"
+                className="mt-2 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+              />
+              {errors.customerServiceTitle && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.customerServiceTitle.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label className="text-sm font-semibold text-gray-700">Service Links</Label>
+              <div className="space-y-3 mt-2">
+                {serviceFields.map((field, index) => (
+                  <div key={field.id} className="flex gap-3 items-start p-4 bg-white/60 rounded-lg border border-gray-200">
+                    <Input
+                      placeholder="Link text (e.g., Contact Us)"
+                      className="flex-1 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      {...register(`customerServiceLinks.${index}.text`)}
+                    />
+                    <Input
+                      placeholder="/contact or https://example.com"
+                      className="flex-1 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      {...register(`customerServiceLinks.${index}.href`)}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => removeService(index)}
+                      disabled={serviceFields.length <= 1}
+                      className="bg-white/80 hover:bg-white border-gray-200"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                    {errors.customerServiceLinks?.[index] && (
+                      <p className="text-red-600 text-sm absolute mt-16">
+                        {errors.customerServiceLinks[index]?.text?.message ||
+                          errors.customerServiceLinks[index]?.href?.message}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => appendService({ text: "", href: "" })}
+                className="mt-3 bg-white/80 hover:bg-white border-gray-200"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Service Link
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Quick Links Categories */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Quick Links Categories</h2>
-          <p className="text-sm text-muted-foreground">
-            Select up to 3 categories to display in the footer Quick Links
-            section.
-          </p>
+        {/* Contact Info Section */}
+        <div className="bg-gradient-to-r from-cyan-50 to-blue-50 p-6 rounded-xl border border-cyan-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"></div>
+              Contact Information
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Add your contact details like email, phone, and address.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="contactTitle" className="text-sm font-semibold text-gray-700">Section Title</Label>
+              <Input
+                id="contactTitle"
+                {...register("contactTitle")}
+                placeholder="Contact Info"
+                className="mt-2 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+              />
+              {errors.contactTitle && (
+                <p className="text-red-600 text-sm mt-1">
+                  {errors.contactTitle.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label className="text-sm font-semibold text-gray-700">Contact Details</Label>
+              <div className="space-y-3 mt-2">
+                {contactFields.map((field, index) => (
+                  <div key={field.id} className="flex gap-3 items-start p-4 bg-white/60 rounded-lg border border-gray-200">
+                    <Controller
+                      name={`contacts.${index}.icon`}
+                      control={control}
+                      render={({ field }) => (
+                        <Select value={field.value} onValueChange={field.onChange}>
+                          <SelectTrigger className="w-28 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="mail">Email</SelectItem>
+                            <SelectItem value="phone">Phone</SelectItem>
+                            <SelectItem value="map">Address</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <Input
+                      placeholder="Contact info"
+                      className="flex-1 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                      {...register(`contacts.${index}.text`)}
+                    />
+                    <Input
+                      placeholder="Link (optional)"
+                      className="flex-1 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                      {...register(`contacts.${index}.href`)}
+                    />
+                    {errors.contacts?.[index] && (
+                      <p className="text-red-600 text-sm absolute mt-16">
+                        {errors.contacts[index]?.text?.message ||
+                          errors.contacts[index]?.icon?.message}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links Categories Section */}
+        <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-xl border border-orange-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"></div>
+              Quick Links Categories
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Select up to 3 categories to display in the footer Quick Links section.
+            </p>
+          </div>
 
           {/* Selected Categories */}
           {selectedCategoryIds.length > 0 && (
-            <div className="space-y-2">
-              <Label>Selected Categories:</Label>
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-4">
+              <Label className="text-sm font-semibold text-gray-700">Selected Categories:</Label>
+              <div className="flex flex-wrap gap-3 mt-2">
                 {selectedCategoryIds.map((categoryId) => {
                   const category = categories.find(
                     (cat) => cat.id === categoryId
@@ -551,14 +704,14 @@ export function AdminFooterForm() {
                   return (
                     <div
                       key={categoryId}
-                      className="flex items-center gap-2 bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm"
+                      className="flex items-center gap-2 bg-gradient-to-r from-orange-100 to-amber-100 text-orange-800 px-4 py-2 rounded-lg text-sm border border-orange-200"
                     >
-                      <span>{category.name}</span>
+                      <span className="font-medium">{category.name}</span>
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="h-4 w-4 p-0 hover:bg-primary-foreground/20"
+                        className="h-5 w-5 p-0 hover:bg-orange-200 rounded-full"
                         onClick={() => removeCategory(categoryId)}
                       >
                         <X className="h-3 w-3" />
@@ -577,9 +730,10 @@ export function AdminFooterForm() {
                 type="button"
                 variant="outline"
                 disabled={selectedCategoryIds.length >= 3 || availableCategories.length === 0}
+                className="bg-white/80 hover:bg-white border-gray-200"
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Add Category {selectedCategoryIds.length >= 3 && "(Max 3 reached)"}
+                Add Category ({selectedCategoryIds.length}/3)
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -625,26 +779,44 @@ export function AdminFooterForm() {
           )}
         </div>
 
-        {/* Copyright */}
-        <div>
-          <Label htmlFor="copyright">Copyright Text</Label>
-          <Input
-            id="copyright"
-            {...register("copyright")}
-            placeholder="© 2024 Your Company. All rights reserved."
-          />
-          {errors.copyright && (
-            <p className="text-destructive text-sm mt-1">
-              {errors.copyright.message}
+        {/* Copyright Section */}
+        <div className="bg-gradient-to-r from-gray-50 to-slate-50 p-6 rounded-xl border border-gray-100/50 shadow-sm">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-gray-500 to-slate-500 rounded-full"></div>
+              Copyright
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Set the copyright text displayed at the bottom of the footer.
             </p>
-          )}
+          </div>
+
+          <div>
+            <Label htmlFor="copyright" className="text-sm font-semibold text-gray-700">Copyright Text</Label>
+            <Input
+              id="copyright"
+              {...register("copyright")}
+              placeholder="© 2024 Your Company. All rights reserved."
+              className="mt-2 bg-white/80 backdrop-blur-sm border-gray-200 focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
+            />
+            {errors.copyright && (
+              <p className="text-red-600 text-sm mt-1">
+                {errors.copyright.message}
+              </p>
+            )}
+          </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t">
-          <Button type="submit" size="lg" disabled={submitting}>
+        <div className="flex justify-end pt-6 border-t border-gray-200">
+          <Button
+            type="submit"
+            size="lg"
+            disabled={submitting}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 px-8 py-3 text-lg font-semibold"
+          >
             {submitting && (
               <svg
-                className="animate-spin h-5 w-5 mr-2 text-primary"
+                className="animate-spin h-5 w-5 mr-3"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

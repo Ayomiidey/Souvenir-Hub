@@ -39,9 +39,29 @@ export default function EditCategoryPage() {
     fetchCategory();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    </main>
+  );
 
   return (
-    <CategoryForm categoryId={id} initialData={initialData || undefined} />
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Edit Category
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Update category information and settings
+          </p>
+        </div>
+        <CategoryForm categoryId={id} initialData={initialData || undefined} />
+      </div>
+    </main>
   );
 }
