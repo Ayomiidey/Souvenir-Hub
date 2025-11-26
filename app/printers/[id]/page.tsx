@@ -67,9 +67,9 @@ export default async function PrinterDetailPage({
             </p>
           </div>
           <div className="flex flex-col gap-3">
-            {printer.phone && (
+            {printer.whatsapp && (
               <a
-                href={`https://wa.me/${printer.phone.replace(/[^\d]/g, "")}`}
+                href={`https://wa.me/${printer.whatsapp.replace(/[^\d]/g, "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full"
@@ -77,6 +77,17 @@ export default async function PrinterDetailPage({
                 <Button className="w-full bg-green-600 hover:bg-green-700 text-white flex items-center gap-2">
                   <MessageCircle className="h-5 w-5" />
                   WhatsApp Printer
+                </Button>
+              </a>
+            )}
+            {printer.phone && (
+              <a
+                href={`tel:${printer.phone}`}
+                className="w-full"
+              >
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5" />
+                  Call Printer
                 </Button>
               </a>
             )}

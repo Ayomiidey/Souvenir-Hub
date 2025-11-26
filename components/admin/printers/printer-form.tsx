@@ -1,5 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+const emptyForm = {
+  name: "",
+  contact: "",
+  email: "",
+  phone: "",
+  whatsapp: "",
+  address: "",
+  stateId: "",
+  locationId: "",
+  description: "",
+  isActive: true,
+};
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +25,8 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { StateForm } from "./state-form";
-import { LocationForm } from "./location-form";
+// import { StateForm } from "./state-form";
+// import { LocationForm } from "./location-form";
 
 interface State {
   id: string;
@@ -32,28 +44,20 @@ interface PrinterFormProps {
   onClose?: (refresh?: boolean) => void;
 }
 
+
 const PrinterForm: React.FC<PrinterFormProps> = ({
   printerId,
   initialData,
   onClose,
 }) => {
-  const [showStateForm, setShowStateForm] = useState(false);
-  const [showLocationForm, setShowLocationForm] = useState(false);
   const [states, setStates] = useState<State[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
-  const [formData, setFormData] = useState<any>(
-    initialData || {
-      name: "",
-      contact: "",
-      email: "",
-      phone: "",
-      address: "",
-      stateId: "",
-      locationId: "",
-      description: "",
-      isActive: true,
-    }
-  );
+  const [formData, setFormData] = useState<any>(initialData || emptyForm);
+
+    // Reset form when initialData changes (edit vs add)
+    useEffect(() => {
+      setFormData(initialData || emptyForm);
+    }, [initialData]);
   const [loading, setLoading] = useState(false);
 
   // Fetch states only on mount
@@ -116,44 +120,6 @@ const PrinterForm: React.FC<PrinterFormProps> = ({
 
   return (
     <>
-      {/* Inline State Creation Modal */}
-      {showStateForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md shadow-xl">
-            <StateForm />
-            <div className="flex justify-end mt-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowStateForm(false);
-                  fetchStates();
-                }}
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Inline Location Creation Modal */}
-      {showLocationForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md shadow-xl">
-            <LocationForm />
-            <div className="flex justify-end mt-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowLocationForm(false);
-                  if (formData.stateId) fetchLocations(formData.stateId);
-                }}
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <CardHeader>
@@ -199,6 +165,17 @@ const PrinterForm: React.FC<PrinterFormProps> = ({
               />
             </div>
             <div>
+              <Label>WhatsApp (optional)</Label>
+              <Input
+                value={formData.whatsapp || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, whatsapp: e.target.value })
+                }
+                placeholder="WhatsApp number (optional)"
+                disabled={loading}
+              />
+            </div>
+            <div>
               <Label>Address</Label>
               <Input
                 value={formData.address}
@@ -210,14 +187,7 @@ const PrinterForm: React.FC<PrinterFormProps> = ({
             <div>
               <div className="flex items-center justify-between">
                 <Label>State</Label>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowStateForm(true)}
-                >
-                  Add State
-                </Button>
+                {/* Button removed */}
               </div>
               <Select
                 value={formData.stateId}
@@ -240,15 +210,7 @@ const PrinterForm: React.FC<PrinterFormProps> = ({
             <div>
               <div className="flex items-center justify-between">
                 <Label>Location</Label>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setShowLocationForm(true)}
-                  disabled={!formData.stateId}
-                >
-                  Add Location
-                </Button>
+                {/* Button removed */}
               </div>
               <Select
                 value={formData.locationId}
@@ -296,13 +258,23 @@ const PrinterForm: React.FC<PrinterFormProps> = ({
             </div>
           </CardContent>
         </Card>
-        <Button type="submit" disabled={loading}>
-          {loading
-            ? "Saving..."
-            : printerId
-              ? "Update Printer"
-              : "Create Printer"}
-        </Button>
+        <div className="flex gap-2 justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={loading}
+            onClick={() => onClose && onClose(false)}
+          >
+            Cancel
+          </Button>
+          <Button type="submit" disabled={loading}>
+            {loading
+              ? "Saving..."
+              : printerId
+                ? "Update Printer"
+                : "Create Printer"}
+          </Button>
+        </div>
       </form>
     </>
   );

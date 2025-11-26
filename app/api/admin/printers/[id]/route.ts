@@ -11,6 +11,7 @@ export async function PUT(req: Request) {
         contact: data.contact,
         email: data.email,
         phone: data.phone,
+        whatsapp: data.whatsapp,
         address: data.address,
         stateId: data.stateId,
         locationId: data.locationId,

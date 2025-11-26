@@ -19,18 +19,19 @@ export async function GET(
     }
 
     return NextResponse.json({
-      id: printer.id,
-      name: printer.name,
-      contact: printer.contact,
-      email: printer.email,
-      phone: printer.phone,
-      address: printer.address,
-      description: printer.description,
-      state: printer.state,
-      location: printer.location,
-      isActive: printer.isActive,
-      createdAt: printer.createdAt,
-      updatedAt: printer.updatedAt,
+  id: printer.id,
+  name: printer.name,
+  contact: printer.contact,
+  email: printer.email,
+  phone: printer.phone,
+  whatsapp: printer.whatsapp,
+  address: printer.address,
+  description: printer.description,
+  state: printer.state,
+  location: printer.location,
+  isActive: printer.isActive,
+  createdAt: printer.createdAt,
+  updatedAt: printer.updatedAt,
     });
   } catch {
     return NextResponse.json(

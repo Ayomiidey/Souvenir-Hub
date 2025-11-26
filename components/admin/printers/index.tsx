@@ -18,6 +18,8 @@ interface Location {
 interface PrinterType {
   id: string;
   name: string;
+  whatsapp?: string;
+  phone?: string;
   stateId: string;
   locationId: string;
   state: State;
@@ -55,7 +57,9 @@ export default function PrintersAdminPage() {
 
   const handleCreate = () => {
     setEditPrinter(null);
-    setShowForm(true);
+    setShowForm(false);
+    // Ensure form is always cleared by toggling showForm off then on
+    setTimeout(() => setShowForm(true), 0);
   };
 
   const handleFormClose = (refresh = false) => {
@@ -169,9 +173,23 @@ export default function PrintersAdminPage() {
                     <span className="text-sm text-gray-600">Location</span>
                     <span className="text-sm font-medium text-gray-900">{printer.location?.name}</span>
                   </div>
+
+                  {(printer.phone || printer.whatsapp) && (
+                    <div className="flex flex-col gap-1 pt-2">
+                      {printer.phone && (
+                        <span className="text-xs text-gray-500">Phone: <span className="text-gray-800">{printer.phone}</span></span>
+                      )}
+                      {printer.whatsapp && (
+                        <span className="text-xs text-green-600 flex items-center gap-1">
+                          WhatsApp: <a href={`https://wa.me/${printer.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="underline hover:text-green-700">{printer.whatsapp}</a>
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-end mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-end mt-4 pt-4 border-t border-gray-100 gap-2">
+                  {/* WhatsApp and Call buttons removed */}
                   <Button
                     size="sm"
                     variant="outline"

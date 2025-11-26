@@ -25,6 +25,7 @@ model Printer {
   contact     String
   email       String?
   phone       String?
+  whatsapp    String?
   address     String?
   stateId     String
   locationId  String
