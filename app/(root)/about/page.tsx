@@ -157,11 +157,15 @@ export default async function AboutPage() {
               <span className="text-sm font-medium">{content.heroBadgeText}</span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight">
-              {content.heroTitle.split(',')[0]},
-              <br />
-              <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-                {content.heroTitle.split(',')[1] || 'One Souvenir at a Time'}
-              </span>
+              {content.heroTitle.split(',')[0]}
+              {content.heroTitle.split(',')[1] && (
+                <>
+                  <br />
+                  <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                    {content.heroTitle.split(',')[1]}
+                  </span>
+                </>
+              )}
             </h1>
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
               {content.heroSubtitle}

@@ -396,6 +396,11 @@ export default function AboutPageAdmin() {
                 placeholder="Main hero title"
                 rows={2}
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                <span className="font-semibold">Tip:</span> Use a comma <code>,</code> to break the title into two lines. <br />
+                Example: <span className="italic">Crafting Memories, One Souvenir at a Time</span> will display as:<br />
+                <span className="ml-2">Crafting Memories<br />One Souvenir at a Time</span>
+              </p>
             </div>
             <div>
               <Label htmlFor="heroSubtitle">Subtitle</Label>
