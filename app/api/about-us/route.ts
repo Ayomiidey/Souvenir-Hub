@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/prisma';
 
 // GET: Fetch About Us content
@@ -16,6 +17,10 @@ export async function POST(req: NextRequest) {
   try {
     const { content } = await req.json();
     const about = await prisma.aboutUs.create({ data: { content } });
+
+    // Revalidate the About Us page cache immediately
+    revalidatePath('/about-us');
+
     return NextResponse.json(about);
   } catch {
     return NextResponse.json({ error: 'Failed to create About Us content.' }, { status: 500 });
@@ -27,6 +32,10 @@ export async function PATCH(req: NextRequest) {
   try {
     const { id, content } = await req.json();
     const about = await prisma.aboutUs.update({ where: { id }, data: { content } });
+
+    // Revalidate the About Us page cache immediately
+    revalidatePath('/about-us');
+
     return NextResponse.json(about);
   } catch {
     return NextResponse.json({ error: 'Failed to update About Us content.' }, { status: 500 });

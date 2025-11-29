@@ -1,6 +1,9 @@
 import  prisma  from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 
+// Revalidate every 24 hours (content changes infrequently)
+export const revalidate = 86400;
+
 export default async function AboutUsPage() {
   // Fetch About Us content from the database
   const about = await prisma.aboutUs.findFirst({ orderBy: { createdAt: 'desc' } });
