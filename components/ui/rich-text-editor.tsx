@@ -3,6 +3,8 @@
 import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import TextAlign from "@tiptap/extension-text-align";
+import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
 import {
   Bold,
   Italic,
@@ -24,12 +26,33 @@ interface RichTextEditorProps {
 }
 
 const MenuBar = ({ editor }: { editor: Editor | null }) => {
+  // Text alignment buttons
+  const alignments = [
+    { icon: AlignLeft, align: "left", label: "Align Left" },
+    { icon: AlignCenter, align: "center", label: "Align Center" },
+    { icon: AlignRight, align: "right", label: "Align Right" },
+    { icon: AlignJustify, align: "justify", label: "Justify" },
+  ];
   if (!editor) {
     return null;
   }
 
   return (
     <div className="border-b border-gray-200 bg-gray-50 p-2 flex flex-wrap gap-1">
+      {alignments.map(({ icon: Icon, align, label }) => (
+        <Button
+          key={align}
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => editor.chain().focus().setTextAlign(align).run()}
+          className={editor.isActive({ textAlign: align }) ? "bg-gray-200" : ""}
+          aria-label={label}
+        >
+          <Icon className="h-4 w-4" />
+        </Button>
+      ))}
+      <div className="w-px h-6 bg-gray-300 mx-1" />
       <Button
         type="button"
         variant="ghost"
@@ -121,6 +144,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
+
 export function RichTextEditor({
   value,
   onChange,
@@ -131,6 +155,9 @@ export function RichTextEditor({
       StarterKit,
       Placeholder.configure({
         placeholder,
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
       }),
     ],
     content: value,

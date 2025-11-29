@@ -110,7 +110,7 @@ const navigation = [
   },
   {
     name: "About Page",
-    href: "/admin/about",
+    href: "/admin/about-us",
     icon: Store,
   },
 

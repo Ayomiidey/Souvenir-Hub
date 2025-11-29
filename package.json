@@ -34,6 +34,7 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@reduxjs/toolkit": "^2.8.2",
     "@tiptap/extension-placeholder": "^3.6.5",
+    "@tiptap/extension-text-align": "^3.11.1",
     "@tiptap/react": "^3.6.5",
     "@tiptap/starter-kit": "^3.6.5",
     "@vercel/blob": "^1.1.1",
