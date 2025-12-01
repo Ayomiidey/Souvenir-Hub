@@ -127,6 +127,8 @@ export async function POST(request: NextRequest) {
         isActive: body.isActive || true,
         isFeatured: body.isFeatured || false,
         isLowBudget: body.isLowBudget || false,
+        isCorporate: body.isCorporate || false,
+        isClearance: body.isClearance || false,
         categoryId: body.categoryId,
         deliveryTime: body.deliveryTime || null,
         images: {

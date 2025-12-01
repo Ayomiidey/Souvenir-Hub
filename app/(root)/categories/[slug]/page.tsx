@@ -62,8 +62,10 @@ export default async function CategoryPage({
         break;
     }
 
-    // Check if this is the "Low Budget" category by slug
+    // Check if this is a special category by slug
     const isLowBudgetCategory = slug === "low-budget" || category.name.toLowerCase().includes("low budget");
+    const isCorporateCategory = slug === "corporate" || category.name.toLowerCase().includes("corporate");
+    const isClearanceCategory = slug === "clearance" || category.name.toLowerCase().includes("clearance");
 
     // Build where clause
     const whereClause: any = {
@@ -74,6 +76,12 @@ export default async function CategoryPage({
     if (isLowBudgetCategory) {
       // For low budget category, show all products where isLowBudget = true
       whereClause.isLowBudget = true;
+    } else if (isCorporateCategory) {
+      // For corporate category, show all products where isCorporate = true
+      whereClause.isCorporate = true;
+    } else if (isClearanceCategory) {
+      // For clearance category, show all products where isClearance = true
+      whereClause.isClearance = true;
     } else {
       // For normal categories, filter by categoryId
       whereClause.categoryId = { in: categoryIds };

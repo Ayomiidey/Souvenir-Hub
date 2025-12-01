@@ -93,6 +93,8 @@ export async function PUT(
         isActive: body.isActive,
         isFeatured: body.isFeatured,
         isLowBudget: body.isLowBudget,
+        isCorporate: body.isCorporate,
+        isClearance: body.isClearance,
         categoryId: body.categoryId,
         deliveryTime: body.deliveryTime || null,
       },

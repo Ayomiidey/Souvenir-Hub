@@ -31,6 +31,8 @@ interface ProductFormData {
   status: string;
   isFeatured: boolean;
   isLowBudget: boolean;
+  isCorporate: boolean;
+  isClearance: boolean;
   allowCustomPrint: boolean;
   images: { url: string; altText: string; file?: File }[];
   deliveryTime?: string;
@@ -63,6 +65,8 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
       status: "ACTIVE",
       isFeatured: false,
       isLowBudget: false,
+      isCorporate: false,
+      isClearance: false,
       allowCustomPrint: false,
       images: [],
       deliveryTime: "",
@@ -102,6 +106,8 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
               status: data.status || "ACTIVE",
               isFeatured: data.isFeatured || false,
               isLowBudget: data.isLowBudget || false,
+              isCorporate: data.isCorporate || false,
+              isClearance: data.isClearance || false,
               allowCustomPrint: data.allowCustomPrint || false,
               images: data.images || [],
               deliveryTime: data.deliveryTime || "",
@@ -676,6 +682,32 @@ export function ProductForm({ productId, initialData }: ProductFormProps) {
                 />
                 <Label htmlFor="isLowBudget" className="text-sm md:text-base">
                   Low Budget
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isCorporate"
+                  checked={formData.isCorporate}
+                  onCheckedChange={(checked) =>
+                    updateFormData("isCorporate", checked)
+                  }
+                  className="w-5 h-5"
+                />
+                <Label htmlFor="isCorporate" className="text-sm md:text-base">
+                  Corporate
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isClearance"
+                  checked={formData.isClearance}
+                  onCheckedChange={(checked) =>
+                    updateFormData("isClearance", checked)
+                  }
+                  className="w-5 h-5"
+                />
+                <Label htmlFor="isClearance" className="text-sm md:text-base">
+                  Clearance
                 </Label>
               </div>
             </CardContent>
