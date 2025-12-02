@@ -136,7 +136,7 @@ export function Footer() {
             FAQ
           </Link>
           <Link
-            href="/about"
+            href="/about-us"
             className="font-medium text-primary hover:underline"
           >
             About Us
