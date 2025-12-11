@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import SignInClient from "./signInClient";
 
 export const metadata: Metadata = {
-  title: "Sign In | Souvenir Hub",
+  title: "Sign In | Classy Souvenir",
   description:
-    "Sign in to your Souvenir Hub account to manage your agricultural operations",
+    "Sign in to your Classy Souvenir account to manage your agricultural operations",
 };
 
 export default function SignInPage() {

@@ -30,7 +30,7 @@ export function AuthLayout({
           <div className="flex items-center gap-3 mb-8">
             <Gift className="h-10 w-10 text-white drop-shadow-lg" />
             <span className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-              SouvenirHub
+              ClassySouvenir
             </span>
           </div>
           <div className="flex-1 flex flex-col items-center justify-center gap-8">
@@ -54,7 +54,7 @@ export function AuthLayout({
             </div>
           </div>
           <div className="text-purple-200 mt-12 text-xs">
-            © 2025 SouvenirHub. Crafted with love for memories that last.
+            © 2025 ClassySouvenir. Crafted with love for memories that last.
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@ export function AuthLayout({
           <div className="lg:hidden flex items-center justify-center gap-2 text-blue-700">
             <Gift className="h-8 w-8" />
             <span className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-blue-700 to-purple-600 bg-clip-text text-transparent">
-              SouvenirHub
+              ClassySouvenir
             </span>
           </div>
 

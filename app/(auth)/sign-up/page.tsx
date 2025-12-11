@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import SignUpClient from "./signUpClient";
 
 export const metadata: Metadata = {
-  title: "Sign Up | Souvenir Hub",
+  title: "Sign Up | Classy Souvenir",
   description:
-    "Create your Souvenir Hub account to start managing your agricultural operations",
+    "Create your Classy Souvenir account to start managing your agricultural operations",
 };
 
 export default function SignUpPage() {

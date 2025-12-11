@@ -4,7 +4,7 @@ import { Header } from "@/components/shared/header";
 import { WishlistSidebar } from "@/components/wishlist/wishlist-sidebar";
 
 export const metadata = {
-  title: "Souvenir Hub",
+  title: "ClassySouvenir",
   description: "Shop the best Souvenir!",
 };
 

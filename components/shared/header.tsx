@@ -148,7 +148,7 @@ export function Header() {
                         <span className="text-white font-bold text-sm">S</span>
                       </div>
                       <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        SouvenirHub
+                        ClassySouvenir
                       </span>
                     </Link>
                   </SheetTitle>
@@ -218,7 +218,7 @@ export function Header() {
                 <span className="text-white font-bold text-sm">S</span>
               </div>
               <span className="font-bold text-base sm:text-lg lg:text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                SouvenirHub
+                ClassySouvenir
               </span>
             </Link>
           </div>

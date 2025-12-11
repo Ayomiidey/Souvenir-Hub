@@ -17,7 +17,7 @@ export async function GET() {
         heroTagline: "",
         heroBadgeText: "Since 2019",
         aboutTitle: "All About Us",
-        aboutDescription: "Souvenir Hub is Nigeria's leading platform for personalized and custom souvenirs.",
+        aboutDescription: "Classy Souvenir is Nigeria's leading platform for personalized and custom souvenirs.",
         aboutFeatures: [],
         stats: [],
         storyBadgeText: "Our Journey",

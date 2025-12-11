@@ -243,7 +243,7 @@ export default function AboutPageAdmin() {
       heroTagline: "",
       heroBadgeText: "Since 2019",
       aboutTitle: "All About Us",
-      aboutDescription: "Souvenir Hub is Nigeria's leading platform for personalized and custom souvenirs. We help individuals, businesses, and organizations create unique, memorable keepsakes for every occasion—weddings, birthdays, corporate events, and more.",
+      aboutDescription: "Classy Souvenir is Nigeria's leading platform for personalized and custom souvenirs. We help individuals, businesses, and organizations create unique, memorable keepsakes for every occasion—weddings, birthdays, corporate events, and more.",
       aboutFeatures: [
         { title: "Personalized Products", description: "Easily customize souvenirs with names, photos, logos, and messages." },
         { title: "Wide Selection", description: "Choose from hundreds of items for every event and budget." },
@@ -262,7 +262,7 @@ export default function AboutPageAdmin() {
       storyTitle: "From Passion to Purpose",
       storyParagraph1: "It all started with a simple idea: what if every special moment could be preserved in something beautiful, tangible, and uniquely yours? In 2019, we set out to revolutionize the souvenir industry by combining traditional craftsmanship with modern customization technology.",
       storyParagraph2: "What began as a small workshop has grown into a thriving community of memory makers. Today, we serve thousands of customers across the nation, helping them celebrate life's precious moments—from weddings and birthdays to corporate events and everything in between.",
-      storyParagraph3: "But we haven't forgotten our roots. Every product still receives the same care and attention that went into our very first custom order. Because at Souvenir Hub, you're not just a customer—you're part of our story.",
+      storyParagraph3: "But we haven't forgotten our roots. Every product still receives the same care and attention that went into our very first custom order. Because at Classy Souvenir, you're not just a customer—you're part of our story.",
       valuesBadgeText: "What Drives Us",
       valuesTitle: "Our Core Values",
       valuesSubtitle: "These principles guide everything we do, from product design to customer service",
@@ -493,7 +493,7 @@ export default function AboutPageAdmin() {
           <CardHeader className="bg-gradient-to-r from-pink-50 to-orange-50">
             <CardTitle className="text-pink-900 flex items-center gap-2">
               <div className="w-2 h-6 bg-gradient-to-b from-pink-600 to-orange-600 rounded-full"></div>
-              About Souvenir Hub Section
+              About Classy Souvenir Section
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">

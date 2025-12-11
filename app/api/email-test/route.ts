@@ -64,12 +64,12 @@ export async function POST(request: NextRequest) {
     const result = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'test@resend.dev',
       to: testEmail,
-      subject: '🧪 Email Configuration Test - Souvenir Hub',
+      subject: '🧪 Email Configuration Test - Classy Souvenir',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px; text-align: center;">
             <h1 style="margin: 0;">🎉 Email Test Successful!</h1>
-            <p style="margin: 10px 0 0 0;">Your Souvenir Hub email configuration is working perfectly!</p>
+            <p style="margin: 10px 0 0 0;">Your Classy Souvenir email configuration is working perfectly!</p>
           </div>
           
           <div style="background: #f9f9f9; padding: 30px; border-radius: 8px; margin-top: 20px;">
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
           </div>
           
           <div style="text-align: center; margin-top: 30px; color: #999; font-size: 14px;">
-            <p>This is an automated test email from your Souvenir Hub application.</p>
+            <p>This is an automated test email from your Classy Souvenir application.</p>
           </div>
         </div>
       `,

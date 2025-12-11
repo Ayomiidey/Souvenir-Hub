@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reply from Souvenir Hub</title>
+  <title>Reply from Classy Souvenir</title>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 <body>
   <div class="container">
     <div class="header">
-      <div class="brand">🎁 Souvenir Hub</div>
+      <div class="brand">🎁 Classy Souvenir</div>
       <p>Thank you for contacting us. Here's our response:</p>
     </div>
     
@@ -50,9 +50,9 @@ export async function POST(request: NextRequest) {
       </div>
       
       <div class="footer">
-        <p><strong>Best regards,</strong><br>The Souvenir Hub Team</p>
+        <p><strong>Best regards,</strong><br>The Classy Souvenir Team</p>
         <p>
-          📧 <a href="mailto:${process.env.ADMIN_EMAIL || 'info@souvenirshop.com'}">${process.env.ADMIN_EMAIL || 'info@souvenirshop.com'}</a> | 
+          📧 <a href="mailto:${process.env.ADMIN_EMAIL || 'info@classysouvenir.com'}">${process.env.ADMIN_EMAIL || 'info@classysouvenir.com'}</a> | 
           📞 +1 (555) 123-4567
         </p>
         <p style="font-size: 12px; color: #999;">

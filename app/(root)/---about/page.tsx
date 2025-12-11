@@ -6,9 +6,9 @@ import Image from "next/image";
 import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "About Us | Souvenir Hub - Crafting Memories Since 2019",
-  description: "Discover the story behind Souvenir Hub. Learn about our mission to create beautiful, personalized souvenirs that celebrate life's special moments.",
-  keywords: "about us, souvenir hub, custom souvenirs, personalized gifts, company story",
+  title: "About Us | ClassySouvenir - Crafting Memories Since 2019",
+  description: "Discover the story behind Classy Souvenir. Learn about our mission to create beautiful, personalized souvenirs that celebrate life's special moments.",
+  keywords: "about us, Classy Souvenir, custom souvenirs, personalized gifts, company story",
 };
 
 // TypeScript interfaces for About page content
@@ -64,7 +64,7 @@ const defaultContent: AboutPageContent = {
   heroTagline: "",
   heroBadgeText: "Since 2019",
   aboutTitle: "All About Us",
-  aboutDescription: "Souvenir Hub is Nigeria's leading platform for personalized and custom souvenirs. We help individuals, businesses, and organizations create unique, memorable keepsakes for every occasion—weddings, birthdays, corporate events, and more. Our app makes it easy to browse, customize, and order a wide range of products, from mugs and t-shirts to plaques, bags, and branded gifts. With nationwide delivery, top-notch customer service, and a commitment to quality, we turn your special moments into lasting memories. Whether you're a customer looking for the perfect gift or a business seeking branded merchandise, Souvenir Hub is your one-stop shop for creativity, convenience, and celebration.",
+  aboutDescription: "Classy Souvenir is Nigeria's leading platform for personalized and custom souvenirs. We help individuals, businesses, and organizations create unique, memorable keepsakes for every occasion—weddings, birthdays, corporate events, and more. Our app makes it easy to browse, customize, and order a wide range of products, from mugs and t-shirts to plaques, bags, and branded gifts. With nationwide delivery, top-notch customer service, and a commitment to quality, we turn your special moments into lasting memories. Whether you're a customer looking for the perfect gift or a business seeking branded merchandise, Classy Souvenir is your one-stop shop for creativity, convenience, and celebration.",
   aboutFeatures: [
     { title: "Personalized Products", description: "Easily customize souvenirs with names, photos, logos, and messages." },
     { title: "Wide Selection", description: "Choose from hundreds of items for every event and budget." },
@@ -83,7 +83,7 @@ const defaultContent: AboutPageContent = {
   storyTitle: "From Passion to Purpose",
   storyParagraph1: "It all started with a simple idea: what if every special moment could be preserved in something beautiful, tangible, and uniquely yours? In 2019, we set out to revolutionize the souvenir industry by combining traditional craftsmanship with modern customization technology.",
   storyParagraph2: "What began as a small workshop has grown into a thriving community of memory makers. Today, we serve thousands of customers across the nation, helping them celebrate life's precious moments—from weddings and birthdays to corporate events and everything in between.",
-  storyParagraph3: "But we haven't forgotten our roots. Every product still receives the same care and attention that went into our very first custom order. Because at Souvenir Hub, you're not just a customer—you're part of our story.",
+  storyParagraph3: "But we haven't forgotten our roots. Every product still receives the same care and attention that went into our very first custom order. Because at Classy Souvenir, you're not just a customer—you're part of our story.",
   valuesBadgeText: "What Drives Us",
   valuesTitle: "Our Core Values",
   valuesSubtitle: "These principles guide everything we do, from product design to customer service",
@@ -194,13 +194,13 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* About Souvenir Hub Section */}
+      {/* About Classy Souvenir Section */}
       <section className="py-20 bg-gradient-to-br from-white to-blue-50">
         <div className="container max-w-5xl mx-auto px-4">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-orange-100 rounded-full px-4 py-2 mb-4">
               <Award className="w-4 h-4 text-orange-600" />
-              <span className="text-sm font-semibold text-orange-600">About Souvenir Hub</span>
+              <span className="text-sm font-semibold text-orange-600">About Classy Souvenir</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
               {content.aboutTitle}
@@ -222,7 +222,7 @@ export default async function AboutPage() {
             <div className="flex items-center justify-center">
               <Image
                 src="https://plus.unsplash.com/premium_photo-1665203442280-1118daf3de38?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGRlbGl2ZXJ5JTIwbWFufGVufDB8fDB8fHww"
-                alt="Souvenir Hub Business"
+                alt="Classy Souvenir Business"
                 width={400}
                 height={400}
                 className="w-full max-w-md rounded-2xl shadow-xl"

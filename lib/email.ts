@@ -94,7 +94,7 @@ const createAdminNotificationTemplate = (data: ContactEmailData) => `
         </a>
       </p>
       <p style="margin-top: 20px; font-size: 12px;">
-        This email was sent from your Souvenir Hub contact form system.
+        This email was sent from your Classy Souvenir contact form system.
       </p>
     </div>
   </div>
@@ -123,7 +123,7 @@ const createCustomerConfirmationTemplate = (data: ContactEmailData) => `
   <div class="container">
     <div class="header">
       <h1>✅ Message Received!</h1>
-      <p>Thank you for contacting Souvenir Hub</p>
+      <p>Thank you for contacting Classy Souvenir</p>
     </div>
     
     <div class="content">
@@ -146,10 +146,10 @@ const createCustomerConfirmationTemplate = (data: ContactEmailData) => `
       
       <p>If you have any urgent questions, feel free to call us at <strong>+1 (555) 123-4567</strong> during business hours (Mon-Fri, 9 AM - 6 PM EST).</p>
       
-      <p>Thank you for choosing Souvenir Hub!</p>
+      <p>Thank you for choosing Classy Souvenir!</p>
       
       <p>Best regards,<br>
-      The Souvenir Hub Team</p>
+      The Classy Souvenir Team</p>
     </div>
     
     <div class="footer">
@@ -185,7 +185,7 @@ export async function sendCustomerConfirmation(data: ContactEmailData) {
     const result = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'noreply@yourdomain.com',
       to: data.email,
-      subject: 'Thank you for contacting Souvenir Hub - Message Received',
+      subject: 'Thank you for contacting Classy Souvenir - Message Received',
       html: createCustomerConfirmationTemplate(data),
       replyTo: process.env.ADMIN_EMAIL || 'admin@yourdomain.com',
     });
